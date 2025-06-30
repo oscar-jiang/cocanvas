@@ -2,7 +2,7 @@ import {Request , Response} from "express";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
-export const signup = async (req: Request, res :Response) => {
+export const signup = async (req: Request, res :Response) : Promise<any> => {
   const {fullName,email,password} = req.body;
   try {
     if (password.length < 6) {
