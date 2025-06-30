@@ -48,8 +48,33 @@ export const signup = async (req: Request, res :Response) : Promise<any> => {
   }
 };
 
-export const login = (req: Request, res:Response) => {
-  res.send("login route")
+export const login = async (req: Request, res:Response) : Promoise<any> => {
+  const {email, password} = req.body;
+  try {
+    // Checking to see the user is already created with the same email
+    const user = await User.findOne({email});
+    if (!user) {
+      return res.status(400).json({error: "Invalid Credentials"});
+    }
+
+    // Compare the password that the user has inputted and the password in the database
+    const isPasswordCorrect: boolean = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({error: "Invalid Credentials"});
+    }
+
+    generateToken(user._id.toString(), res);
+
+    res.status(200).json({
+      _id: user._id,
+      fullName: user.fullName,
+      email. user.email,
+      profilePic: user.profilePic,
+    })
+  } catch (e) {
+    console.log(`Error in login controller: ${e}`);
+    res.status(500).json({error: "Internal Server Error"});
+  }
 };
 
 export const logout = (req: Request, res:Response) => {
