@@ -89,3 +89,12 @@ export const logout = async (req: Request, res:Response): Promise<any> => {
 export const updateProfile = async (req: Request, res :Response) : Promise<any> => {
   // TODO: use a cloud service to store profile pictures and implement the function
 }
+
+export const checkAuth = async (req: Request, res :Response) : Promise<any> => {
+  try {
+    res.status(200).json((req as any).user);
+  } catch (e) {
+    console.log(`Error in check Auth: ${e}`);
+    res.status(500).json({error: "Internal Server Error"});
+  }
+}
