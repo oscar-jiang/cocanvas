@@ -87,5 +87,5 @@ export const logout = async (req: Request, res:Response): Promise<any> => {
 };
 
 export const updateProfile = async (req: Request, res :Response) : Promise<any> => {
-
+  // TODO: use a cloud service to store profile pictures and implement the function
 }
