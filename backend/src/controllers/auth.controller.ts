@@ -85,3 +85,7 @@ export const logout = async (req: Request, res:Response): Promise<any> => {
     res.status(500).json({error: "Internal Server Error"});
   }
 };
+
+export const updateProfile = async (req: Request, res :Response) : Promise<any> => {
+
+}
