@@ -48,7 +48,7 @@ export const signup = async (req: Request, res :Response) : Promise<any> => {
   }
 };
 
-export const login = async (req: Request, res:Response) : Promoise<any> => {
+export const login = async (req: Request, res:Response) : Promise<any> => {
   const {email, password} = req.body;
   try {
     // Checking to see the user is already created with the same email
@@ -64,11 +64,10 @@ export const login = async (req: Request, res:Response) : Promoise<any> => {
     }
 
     generateToken(user._id.toString(), res);
-
     res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
-      email. user.email,
+      email: user.email,
       profilePic: user.profilePic,
     })
   } catch (e) {
@@ -77,6 +76,12 @@ export const login = async (req: Request, res:Response) : Promoise<any> => {
   }
 };
 
-export const logout = (req: Request, res:Response) => {
-  res.send("logout route")
+export const logout = async (req: Request, res:Response): Promise<any> => {
+  try {
+    res.cookie("jwtToken", "", {maxAge: 0})
+    res.status(200).json({message: "User logged out successfully."})
+  } catch (e) {
+    console.log(`Error in logout controller: ${e}`);
+    res.status(500).json({error: "Internal Server Error"});
+  }
 };
