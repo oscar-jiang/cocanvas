@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import User from "../models/user.model";
-import Message from "../models/message.model";
+import User from "../models/user.model.js";
+import Message from "../models/message.model.js";
 
 export const getUsersFromSideBar = async (req: Request, res: Response): Promise<any> => {
 	try {
