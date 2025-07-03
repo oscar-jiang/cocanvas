@@ -4,7 +4,7 @@ import {NextFunction, Request, Response} from "express";
 
 export const protectRoute = async (req: Request, res :Response, next: NextFunction) : Promise<any> => {
   try {
-    // Check to see if there is a token saved as a cookie
+    // Check to see if there is a token in the cookie
     const token : string = req.cookies.jwtToken;
     if (!token) {
       return res.status(401).json({message: "Unauthorized - No Token Provided"});
@@ -27,6 +27,7 @@ export const protectRoute = async (req: Request, res :Response, next: NextFuncti
       return res.status(400).json({message: "User not found"});
     }
 
+    //add user to the request so the next function can access the user
     (req as any).user = user;
 
     next();

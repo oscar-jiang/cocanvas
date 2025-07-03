@@ -77,6 +77,7 @@ export const login = async (req: Request, res:Response) : Promise<any> => {
 };
 
 export const logout = async (req: Request, res:Response): Promise<any> => {
+  //clear out the cookie
   try {
     res.cookie("jwtToken", "", {maxAge: 0})
     res.status(200).json({message: "User logged out successfully."})
@@ -88,9 +89,11 @@ export const logout = async (req: Request, res:Response): Promise<any> => {
 
 export const updateProfile = async (req: Request, res :Response) : Promise<any> => {
   // TODO: use a cloud service to store profile pictures and implement the function
+  
 }
 
 export const checkAuth = async (req: Request, res :Response) : Promise<any> => {
+  // send the user as json back to the client
   try {
     res.status(200).json((req as any).user);
   } catch (e) {
