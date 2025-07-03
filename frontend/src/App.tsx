@@ -1,13 +1,14 @@
 import {useEffect} from 'react';
 import {Routes, Route, Navigate} from 'react-router-dom';
 import NavBar from './components/NavBar.tsx';
-import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
 import {useAuthStore} from "./store/useAuthStore.ts";
 import {Toaster} from "react-hot-toast";
+import LandingPage from "./pages/LandingPage.tsx";
+import DashboardPage from "./pages/DashboardPage.tsx";
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
@@ -32,11 +33,35 @@ const App = () => {
       <NavBar />
 
       <Routes>
-        <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/signup" />} />
-        <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to={"/"} />} />
-        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to={"/"} />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
+        {/* Public landing page */}
+        <Route path="/" element={<LandingPage />} />
+
+        {/* Auth routes */}
+        <Route
+          path="/login"
+          element={!authUser ? <LoginPage /> : <Navigate to="/dashboard" />}
+        />
+        <Route
+          path="/signup"
+          element={!authUser ? <SignupPage /> : <Navigate to="/dashboard" />}
+        />
+
+        {/* Protected app routes */}
+        <Route
+          path="/dashboard"
+          element={authUser ? <DashboardPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/settings"
+          element={authUser ? <SettingsPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/profile"
+          element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
 
