@@ -12,18 +12,25 @@ const SignupPage = () => {
     password: ""
   });
 
+  // TODO: add an email verification for safety
+  // TODO: add a confirm password field
+  // TODO: add a rate limiter in the middleware
+
   const {signup, isSigningUp} = useAuthStore();
 
   const validateForm = ():string | boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const normalizedEmail = formData.email.toLowerCase().trim();
+
     if (!formData.fullName.trim()) {
       return toast.error("Full name is required");
     }
 
-    if (!formData.email.trim()) {
+    if (!normalizedEmail) {
       return toast.error("Email is required");
     }
 
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    if (!emailRegex.test(normalizedEmail)) {
       return toast.error("Invalid email address");
     }
 
@@ -51,6 +58,7 @@ const SignupPage = () => {
     <div className={""}>
       <h1>Sign Up</h1>
 
+      {/* The form & login is what is important */}
       <form onSubmit={handleSubmit} className={"space-y-6 "}>
 
         <fieldset className="fieldset">
