@@ -22,7 +22,7 @@ const Navbar = () => {
         {
           !authUser && (
             <div className={"flex items-center gap-2"}>
-              <Link to={"/login"} className={"btn btn-sm gap-2 transition-colors"}>
+              <Link to={"/signup"} className={"btn btn-sm gap-2 transition-colors"}>
                 <LogIn className={"w-4 h-4"}/>
                 <span className={"hidden sm:inline"}>Settings</span>
               </Link>
