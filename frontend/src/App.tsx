@@ -9,6 +9,7 @@ import {useAuthStore} from "./store/useAuthStore.ts";
 import {Toaster} from "react-hot-toast";
 import LandingPage from "./pages/LandingPage.tsx";
 import DashboardPage from "./pages/DashboardPage.tsx";
+import CollaborativeEditorPage from "./pages/CollaborativeEditorPage.tsx";
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
@@ -58,6 +59,10 @@ const App = () => {
         <Route
           path="/profile"
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/editor/:roomId"
+          element={authUser ? <CollaborativeEditorPage /> : <Navigate to="/login"/> }
         />
 
         {/* Fallback */}

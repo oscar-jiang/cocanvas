@@ -7,7 +7,7 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
-  const {login, isLoggingIn} = useAuthStore();
+  const {login, isLoggedIn} = useAuthStore();
 
   const handleSubmit = async (e: FormEvent) :Promise<void> => {
     e.preventDefault();
@@ -35,9 +35,9 @@ const LoginPage = () => {
           />
         </fieldset>
 
-        <button type={"submit"} className={"btn btn-primary w-full"} disabled={isLoggingIn}>
+        <button type={"submit"} className={"btn btn-primary w-full"} disabled={isLoggedIn}>
           {
-            isLoggingIn ? (
+            isLoggedIn ? (
               <>
                 <Loader2 className="size-5 animate-spin" />
                 Loading...
