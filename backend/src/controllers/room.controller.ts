@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Room from "../models/room.model.js";
-import User from "../models/user.model";
+import User from "../models/user.model.js";
 
 export const createRoom = async (req: Request, res: Response) : Promise<any> => {
   try {
@@ -141,7 +141,7 @@ export const addCollaborator = async (req: Request, res: Response): Promise<any>
     await room.save();
 
     // Returning the newly updated room
-    const updatedRoom = await Room.findOne(room.roomId);
+    const updatedRoom = await Room.findOne({roomId: room.roomId});
 
     res.status(200).json(updatedRoom);
   } catch (e) {
