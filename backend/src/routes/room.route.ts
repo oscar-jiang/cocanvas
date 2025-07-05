@@ -15,7 +15,7 @@ import {isRoomOwner} from "../middleware/room.isroomowner.js";
 const router = express.Router();
 
 // Create a new room
-router.post("/", protectRoute, createRoom);
+router.post("/create", protectRoute, createRoom);
 
 // Get all rooms a user is in
 router.get("/user/my", protectRoute, getMyRooms);

@@ -1,4 +1,4 @@
-import Room from "../models/room.model";
+import Room from "../models/room.model.js";
 import { Request, Response, NextFunction } from "express";
 
 export const canAccessRoom = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
