@@ -27,7 +27,7 @@ router.get("/:roomId", protectRoute, canAccessRoom, getRoomById);
 router.put("/:roomId", protectRoute, canAccessRoom, isRoomOwner, updateRoom);
 
 // delete room
-router.delete("/:roomId", protectRoute, canAccessRoom, isRoomOwner, deleteRoom);
+router.delete("/:roomId", protectRoute, isRoomOwner, deleteRoom);
 
 // add a collaborator
 router.post("/:roomId/collaborators", protectRoute, canAccessRoom, addCollaborator);

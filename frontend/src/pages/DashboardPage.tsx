@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Loader2} from "lucide-react";
 import toast from "react-hot-toast";
 import {useRoomStore} from "../store/useRoomStore.ts";
+import {Link} from "react-router-dom";
 
 const DashboardPage = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,7 @@ const DashboardPage = () => {
     description: "",
   });
 
-  const {createRoom, isCreatingRoom, rooms, isRoomsLoading, getRooms } = useRoomStore();
+  const {createRoom, isCreatingRoom, rooms, isRoomsLoading, getRooms, deleteRoom } = useRoomStore();
 
   useEffect(() => {
     getRooms();
@@ -22,7 +23,7 @@ const DashboardPage = () => {
     const name = formData.roomName.trim();
 
     if (!name || name === "") {
-      return toast.error("Full name is required");
+      return toast.error("Room name is required");
     }
 
     return true;
@@ -39,6 +40,7 @@ const DashboardPage = () => {
           roomName: "",
           description: "",
         });
+        getRooms();
       } catch (e) {
         console.error("Room creation failed", e);
         toast.error("Room creation failed");
@@ -46,6 +48,15 @@ const DashboardPage = () => {
     }
   };
 
+  const handleDeleteButton = async (roomId: string) => {
+    try {
+      await deleteRoom(roomId);
+      getRooms();
+    } catch (e) {
+      console.error("Room deletion failed", e);
+      toast.error("Room deletion failed");
+    }
+  };
 
   return (
     <div>
@@ -101,6 +112,14 @@ const DashboardPage = () => {
               <li key={room._id} className="p-4 rounded-lg border bg-gray-800 shadow-sm">
                 <h3 className="text-lg font-semibold">{room.roomName}</h3>
                 <p className="text-sm text-gray-200">{room.description}</p>
+                <div className={"flex flex-row gap-4"}>
+                  <Link to={"/room/"+room.roomId} className={"btn btn-primary"}>
+                    <span>Join Room</span>
+                  </Link>
+                  <button className={"btn btn-primary"} onClick={() => handleDeleteButton(room.roomId)}>
+                    <span>Delete Room</span>
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

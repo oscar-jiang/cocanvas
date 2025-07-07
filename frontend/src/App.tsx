@@ -10,6 +10,7 @@ import {Toaster} from "react-hot-toast";
 import LandingPage from "./pages/LandingPage.tsx";
 import DashboardPage from "./pages/DashboardPage.tsx";
 import CollaborativeEditorPage from "./pages/CollaborativeEditorPage.tsx";
+import UnauthorizedPage from "./pages/UnauthorizedPage";
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
@@ -17,8 +18,6 @@ const App = () => {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-
-  console.log({authUser});
 
   if (isCheckingAuth && !authUser) {
     return (
@@ -61,12 +60,15 @@ const App = () => {
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         />
         <Route
-          path="/editor/:roomId"
+          path="/room/:roomId"
           element={authUser ? <CollaborativeEditorPage /> : <Navigate to="/login"/> }
         />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />
+
+        {/* Unauthorized */}
+        <Route path="/unauthorized" element={<UnauthorizedPage />}/>
       </Routes>
 
 
