@@ -12,6 +12,12 @@ export const createRoom = async (req: Request, res: Response) : Promise<any> => 
       return res.status(400).json({ error: "Room name is required" });
     }
 
+    // Count how many rooms the user has already created
+    const userRoomCount: number = await Room.countDocuments({ createdBy: userId });
+    if (userRoomCount >= 10) {
+      return res.status(403).json({ error: "Room limit reached (10 rooms max)" });
+    }
+
     // Creating the new room
     const newRoom = new Room({
       roomName: roomName,
@@ -46,7 +52,7 @@ export const deleteRoom = async (req: Request, res: Response) : Promise<any> => 
     }
 
     // Deleting room from the database
-    await Room.findOneAndDelete(room.roomId);
+    await Room.findOneAndDelete({roomId: room.roomId});
 
     // TODO: delete the documents associated with the room as well
 

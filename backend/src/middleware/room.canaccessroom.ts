@@ -15,14 +15,14 @@ export const canAccessRoom = async (req: Request, res: Response, next: NextFunct
     // Checking to see if the room exists first
     const room = await Room.findOne({ roomId });
     if (!room) {
-      return res.status(400).json({message: "Room not found"});
+      return res.status(404).json({message: "Room not found"});
     }
 
     // Checking to see if the user is added to the room collaborators
     const isAuthorized = room.createdBy.equals(userId) || room.collaborators.some((currId) => currId.equals(userId));
 
     if (!isAuthorized) {
-      return res.status(401).json({message: "Unauthorized - Not a Collaborator"});
+      return res.status(403).json({message: "Unauthorized - Not a Collaborator"});
     }
 
     // Add room for the request
