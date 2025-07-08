@@ -29,6 +29,7 @@ const MessageList = () => {
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {
         messages.map((message: Message) =>  {
+
           return (
             <div
               key={message.messageId}
@@ -44,7 +45,7 @@ const MessageList = () => {
                 </time>
                 <span className={"text-xs opacity-50 ml-1"}>
               {/* this should not be authUser, should be sender */}
-                  {(message.senderId === authUser.userId) ? authUser.username : message.senderId.username}
+                  {(message.senderId === authUser.userId ) ? authUser.username : message.sender.username}
             </span>
               </div>
               <div className={"chat-bubble flex"}>

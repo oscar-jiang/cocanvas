@@ -23,11 +23,25 @@ export const getMessages = async (req: Request, res: Response): Promise<any> => 
 
 		// Find messages for the room and sort then base on creation time (ascending order)
 		const messages = await Message.find({roomId: roomId})
-			.sort({ createdAt: 1 })
-			.populate("senderId", "fullName email userId username");
+			.sort({ createdAt: 1 });
+
+		// Extract all unique sender UUIDs
+		const senderUUIDs = [...new Set(messages.map(msg => msg.senderId))];
+
+		// Fetch corresponding user info
+		const users = await User.find({ userId: { $in: senderUUIDs } }).select("userId username fullName email -_id");
+
+		// Attach user info manually to each message
+		const enrichedMessages = messages.map(msg => {
+			const sender = users.find(u => u.userId === msg.senderId);
+			return {
+				...msg.toObject(),
+				sender: sender || null,
+			};
+		});
 
 		// Send messages back to request
-		res.status(200).json(messages)
+		res.status(200).json(enrichedMessages);
 	} catch (error) {
 		console.error("Error in getUsersFromSideBar", error);
 		res.status(500).json({ error: "Internal server error" });
