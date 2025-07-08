@@ -4,9 +4,9 @@ import bcrypt from "bcryptjs";
 import {generateToken} from "../lib/utlis.js";
 
 export const signup = async (req: Request, res :Response) : Promise<any> => {
-  const {fullName,email,password} = req.body;
+  const {fullName, username, email,password} = req.body;
   try {
-    if (!fullName || !email || !password) {
+    if (!fullName || !email || !password || !username) {
       return res.status(400).json({error: "All fields are required"});
     }
 
@@ -25,17 +25,19 @@ export const signup = async (req: Request, res :Response) : Promise<any> => {
     // Creating the new user
     const newUser = new User({
       fullName: fullName,
+      username: username,
       email: email,
       password: hashedPassword,
     })
 
     if (newUser) {
       // generate jwt token here
-      generateToken(newUser._id.toString(), res); // User Id is an Object ID in the database but TS is expecting a string
+      generateToken(newUser.userId.toString(), res); // User Id is an Object ID in the database but TS is expecting a string
       await newUser.save();
       res.status(201).json({
-        _id: newUser._id,
+        userId: newUser.userId,
         fullName: newUser.fullName,
+        username: newUser.username,
         email: newUser.email,
         profilePic: newUser.profilePic,
       });
@@ -63,10 +65,11 @@ export const login = async (req: Request, res:Response) : Promise<any> => {
       return res.status(400).json({error: "Invalid Credentials"});
     }
 
-    generateToken(user._id.toString(), res);
+    generateToken(user.userId.toString(), res);
     res.status(200).json({
-      _id: user._id,
+      userId: user.userId,
       fullName: user.fullName,
+      username: user.username,
       email: user.email,
       profilePic: user.profilePic,
     })

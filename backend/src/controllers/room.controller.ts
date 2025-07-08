@@ -4,7 +4,7 @@ import User from "../models/user.model.js";
 
 export const createRoom = async (req: Request, res: Response) : Promise<any> => {
   try {
-    const userId = (req as any).user._id;
+    const userId = (req as any).user.userId;
     const { roomName, description } = req.body;
 
     // Checking to see if the room has a name
@@ -48,12 +48,12 @@ export const createRoom = async (req: Request, res: Response) : Promise<any> => 
 
 export const deleteRoom = async (req: Request, res: Response) : Promise<any> => {
   try {
-    const userId = (req as any).user._id;
+    const userId = (req as any).user.userId;
     const room = (req as any).room;
 
     // Since our middleware handles the these do we still need the check?
     // Check to see if the user is the owner of the
-    const isRoomCreator = room.createdBy.equals(userId);
+    const isRoomCreator = room.createdBy === userId;
     if (!isRoomCreator) {
       return res.status(403).json({message: "You can only delete rooms you created"});
     }
@@ -72,7 +72,7 @@ export const deleteRoom = async (req: Request, res: Response) : Promise<any> => 
 
 export const getMyRooms = async (req: Request, res: Response): Promise<any> => {
   try {
-    const userId = (req as any).user._id;
+    const userId = (req as any).user.userId;
 
     // Find all rooms that the user is the creator & collaborator in
     const rooms = await Room.find({
@@ -127,7 +127,7 @@ export const updateRoom = async (req: Request, res: Response): Promise<any> => {
 
 export const addCollaborator = async (req: Request, res: Response): Promise<any> => {
   try {
-    const userId = (req as any).user._id;
+    const userId = (req as any).user.userId;
     const room = (req as any).room;
     const { collaboratorEmail } = req.body;
 
@@ -142,10 +142,10 @@ export const addCollaborator = async (req: Request, res: Response): Promise<any>
       return res.status(400).json({error: "User does not exist"});
     }
 
-    const userToBeAddedId = userToBeAdded._id;
+    const userToBeAddedId = userToBeAdded.userId;
 
     // Checking if the user to be added is the creator of the room
-    if (room.createdBy.equals(userToBeAddedId) || room.collaborators.includes(userToBeAddedId)) {
+    if (room.createdBy === userToBeAddedId || room.collaborators.includes(userToBeAddedId)) {
       return res.status(400).json({ error: "User is already a collaborator or the owner" });
     }
 
@@ -180,7 +180,7 @@ export const getCollaborators = async (req: Request, res: Response): Promise<any
     const collaboratorIds = room.collaborators;
 
     // Getting the user information in the db
-    const users = await User.find({ _id: { $in: collaboratorIds}}).select("-password");
+    const users = await User.find({ userId: { $in: collaboratorIds}}).select("-password");
 
     res.status(200).json(users);
   } catch (e) {

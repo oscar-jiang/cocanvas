@@ -1,4 +1,5 @@
 import mongoose, {Document as MongooseDocument} from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 interface CustomDoc extends MongooseDocument {
   docType: "code" | "text";
@@ -7,13 +8,12 @@ interface CustomDoc extends MongooseDocument {
 const documentSchema = new mongoose.Schema({
   docId: {
     type: String,
-    default: () => crypto.randomUUID(),
+    default: () => uuidv4(),
     unique: true,
     required: true,
   },
   roomId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Room",
+    type: String,
     required: true,
   },
   docType: {
@@ -27,13 +27,11 @@ const documentSchema = new mongoose.Schema({
     trim: true,
   },
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
   },
   lastModifiedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
   },
   content: {

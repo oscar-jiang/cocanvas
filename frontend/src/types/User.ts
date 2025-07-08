@@ -1,7 +1,7 @@
 export type User = {
-  _id?: string;
-  userId?: string,
-  fullName?: string,
-  email?: string,
-  password?: string,
+  userId?: string;
+  fullName?: string;
+  username?: string;
+  email?: string;
+  password?: string;
 }

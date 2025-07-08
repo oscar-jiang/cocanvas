@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 const messageSchema = new mongoose.Schema(
   {
@@ -6,26 +7,25 @@ const messageSchema = new mongoose.Schema(
       type: String,
       unique: true,
       required: true,
-      default: () => crypto.randomUUID(),
+      default: () => uuidv4(),
     },
     roomId: {
       type: String,
       required: true,
     },
     senderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true,
     },
     text: {
       type: String,
+      maxlength: 1500,
     },
     image: {
       type: String
     },
     seenBy: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
     }],
   },
   { timestamps: true }

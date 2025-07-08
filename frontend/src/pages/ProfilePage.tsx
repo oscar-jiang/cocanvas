@@ -12,6 +12,11 @@ const ProfilePage = () => {
           authUser ? authUser.fullName : null
         }
       </p>
+      <p>
+        {
+          authUser ? authUser.username : null
+        }
+      </p>
     </div>
   );
 };

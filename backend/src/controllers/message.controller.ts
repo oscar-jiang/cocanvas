@@ -5,8 +5,8 @@ import Message from "../models/message.model.js";
 // this function can be handled by the room controller
 export const getUsersFromSideBar = async (req: Request, res: Response): Promise<any> => {
 	try {
-		const loggedInUserId = (req as any).user._id;
-		const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
+		const loggedInUserId = (req as any).user.UserId;
+		const filteredUsers = await User.find({ userId: { $ne: loggedInUserId } }).select("-password");
 
 		res.status(200).json(filteredUsers);
 	} catch (error) {
@@ -19,12 +19,12 @@ export const getMessages = async (req: Request, res: Response): Promise<any> => 
 	try {
 		//use params for dynamic id
 		const { roomId: roomId } = req.params
-		const currentUserId = (req as any).user._id;
+		const currentUserId = (req as any).user.userId;
 
 		// Find messages for the room and sort then base on creation time (ascending order)
 		const messages = await Message.find({roomId: roomId})
 			.sort({ createdAt: 1 })
-			.populate("senderId", "fullName email");
+			.populate("senderId", "fullName email userId username");
 
 		// Send messages back to request
 		res.status(200).json(messages)
@@ -38,7 +38,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
 	try {
 		const { text } = (req as any).body;
 		const roomId = (req as any).room.roomId;
-		const senderId = (req as any).user._id;
+		const senderId = (req as any).user.userId;
 
 		let imageURL;
 		// TODO: upload image to storage

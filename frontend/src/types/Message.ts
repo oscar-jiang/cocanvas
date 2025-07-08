@@ -1,9 +1,10 @@
 export interface Message {
   messageId: string;
   roomId: string;
-  senderId: {
-    _id: string;
+  senderId?: {
+    userId: string;
     fullName: string;
+    username: string;
     email: string;
   };
   text?: string;
