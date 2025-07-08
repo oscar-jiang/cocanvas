@@ -12,6 +12,13 @@ export const createRoom = async (req: Request, res: Response) : Promise<any> => 
       return res.status(400).json({ error: "Room name is required" });
     }
 
+    // Check to see the name is <= 100 characters and description is <= 150 characters long
+    const nameLength:number = roomName.length;
+    const descriptionLength:number = description.length;
+    if (nameLength > 100 || descriptionLength > 150) {
+      return res.status(400).json({ error: "Room name and/or description is too long" });
+    }
+
     // Count how many rooms the user has already created
     const userRoomCount: number = await Room.countDocuments({ createdBy: userId });
     if (userRoomCount >= 10) {

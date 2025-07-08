@@ -21,9 +21,19 @@ const DashboardPage = () => {
   const validateRoomCreation  = (): string | boolean => {
 
     const name = formData.roomName.trim();
+    const nameLength = formData.roomName.length;
+    const descriptionLength = formData.description.length;
 
     if (!name || name === "") {
       return toast.error("Room name is required");
+    }
+
+    if (nameLength > 100) {
+      return toast.error("Room name is too long");
+    }
+
+    if (descriptionLength > 150) {
+      return toast.error("Description is too long");
     }
 
     return true;

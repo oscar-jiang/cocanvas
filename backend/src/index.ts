@@ -7,9 +7,10 @@ import messageRoutes from "./routes/message.route.js"
 import roomRoutes from "./routes/room.route.js"
 import {connectDB} from "./lib/db.js";
 import cors from "cors";
+import { app, server } from "./lib/socket.js"
 
 dotenv.config();
-const app = express();
+// const app = express(); // when creating the socket.io we will remove this and use the one in lin
 
 const PORT = process.env.PORT || 3000;
 
@@ -27,7 +28,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/room", roomRoutes);
 
-app.listen(5001, () => {
+server.listen(5001, () => {
     console.log("Server started on port: " + PORT);
     connectDB()
 });

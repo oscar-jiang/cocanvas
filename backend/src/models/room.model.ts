@@ -11,7 +11,7 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    maxLength: 255,
+    maxLength: 100,
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +20,7 @@ const roomSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    maxLength: 255,
+    maxLength: 150,
   },
   collaborators:[{
     type: mongoose.Schema.Types.ObjectId,

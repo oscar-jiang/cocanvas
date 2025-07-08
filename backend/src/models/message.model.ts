@@ -2,22 +2,31 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    sendId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+    messageId: {
+      type: String,
+      unique: true,
+      required: true,
+      default: () => crypto.randomUUID(),
     },
-    receiverId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+    roomId: {
+      type: String,
+      required: true,
+    },
+    senderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     text: {
-        type: String,
+      type: String,
     },
     image: {
-        type: String
+      type: String
     },
+    seenBy: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    }],
   },
   { timestamps: true }
 );
