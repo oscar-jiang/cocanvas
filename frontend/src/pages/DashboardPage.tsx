@@ -21,9 +21,19 @@ const DashboardPage = () => {
   const validateRoomCreation  = (): string | boolean => {
 
     const name = formData.roomName.trim();
+    const nameLength = formData.roomName.length;
+    const descriptionLength = formData.description.length;
 
     if (!name || name === "") {
       return toast.error("Room name is required");
+    }
+
+    if (nameLength > 100) {
+      return toast.error("Room name is too long");
+    }
+
+    if (descriptionLength > 150) {
+      return toast.error("Description is too long");
     }
 
     return true;
@@ -109,7 +119,7 @@ const DashboardPage = () => {
 
           <ul className="space-y-2">
             {rooms.map((room) => (
-              <li key={room._id} className="p-4 rounded-lg border bg-gray-800 shadow-sm">
+              <li key={room.roomId} className="p-4 rounded-lg border bg-gray-800 shadow-sm">
                 <h3 className="text-lg font-semibold">{room.roomName}</h3>
                 <p className="text-sm text-gray-200">{room.description}</p>
                 <div className={"flex flex-row gap-4"}>

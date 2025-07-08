@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 const roomSchema = new mongoose.Schema({
   roomId: {
     type: String,
-    default: () => crypto.randomUUID(),
+    default: () => uuidv4(),
     unique: true,
     required: true,
   },
@@ -11,24 +12,21 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    maxLength: 255,
+    maxLength: 100,
   },
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    type: String,
     required: true,
   },
   description: {
     type: String,
-    maxLength: 255,
+    maxLength: 150,
   },
   collaborators:[{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    type: String,
   }],
   documents: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Document',
+    type: String,
   }],
   maxDocuments: {
     type: Number,

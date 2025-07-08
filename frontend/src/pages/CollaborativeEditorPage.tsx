@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useRoomStore } from '../store/useRoomStore.ts';
+import RoomLayout from "../components/RoomLayout.tsx";
 
 const CollaborativeEditorPage = () => {
   const { roomId } = useParams();
@@ -40,10 +41,8 @@ const CollaborativeEditorPage = () => {
   // if we have a currentRoom, we are authorized display the room
   if (currentRoom) {
     return (
-      <div className="collaborative-editor-page">
-        <div className="editor-header">
-          <h1>{currentRoom.roomName}</h1>
-        </div>
+      <div>
+          <RoomLayout />
       </div>
     );
   }

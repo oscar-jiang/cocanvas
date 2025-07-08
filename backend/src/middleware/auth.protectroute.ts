@@ -22,7 +22,7 @@ export const protectRoute = async (req: Request, res :Response, next: NextFuncti
 
     // Then we find the User from the database given the decoded UserId
     const userId : string = decoded.userId;
-    const user = await User.findById(userId).select('-password');
+    const user = await User.findOne({userId: userId}).select('-password');
     if (!user) {
       return res.status(400).json({message: "User not found"});
     }

@@ -1,23 +1,32 @@
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 const messageSchema = new mongoose.Schema(
   {
-    sendId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+    messageId: {
+      type: String,
+      unique: true,
+      required: true,
+      default: () => uuidv4(),
     },
-    receiverId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
+    roomId: {
+      type: String,
+      required: true,
+    },
+    senderId: {
+      type: String,
+      required: true,
     },
     text: {
-        type: String,
+      type: String,
+      maxlength: 1500,
     },
     image: {
-        type: String
+      type: String
     },
+    seenBy: [{
+      type: String,
+    }],
   },
   { timestamps: true }
 );

@@ -1,14 +1,25 @@
 import express from "express"
 import { protectRoute } from "../middleware/auth.protectroute.js";
-import { getUsersFromSideBar, getMessages, sendMessage} from "../controllers/message.controller.js"
+import { getMessages, sendMessage, getMessageById, markMessageSeen} from "../controllers/message.controller.js"
+import {canAccessRoom} from "../middleware/room.canaccessroom.js";
 
 const router = express.Router();
 
+// Is this route still needed?
+// router.get("/users", protectRoute, canAccessRoom, getUsersFromSideBar);
 
-router.get("/users", protectRoute, getUsersFromSideBar);
-router.get("/:id", protectRoute, getMessages);
+// Getting all messages for a room
+router.get("/:roomId/getMessages", protectRoute, canAccessRoom , getMessages);
 
-router.post("/send/:id", protectRoute, sendMessage)
+// Getting a specific message
+router.get("/message/:messageId", protectRoute, canAccessRoom , getMessageById);
 
+// Sending a message for a room
+router.post("/send/:roomId", protectRoute, canAccessRoom, sendMessage);
+
+// Marking a message as seen.
+router.put("/seen/:messageId", protectRoute, canAccessRoom, markMessageSeen);
+
+// Delete & edit messages in the future?
 
 export default router;

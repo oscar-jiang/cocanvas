@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 export const isRoomOwner = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const userId = (req as any).user._id;
+    const userId = (req as any).user.userId;
     const { roomId } = req.params; // extracting the roomId from the URL to perform the check /room/:roomId
     if (!userId) {
       return res.status(400).json({message: "User not found"});
@@ -19,7 +19,7 @@ export const isRoomOwner = async (req: Request, res: Response, next: NextFunctio
     }
 
     // Checking to see if the user is added to the room collaborators
-    const isAuthorized = room.createdBy.equals(userId);
+    const isAuthorized = room.createdBy === userId;
 
     if (!isAuthorized) {
       return res.status(401).json({message: "Unauthorized - Not the room owner"});
