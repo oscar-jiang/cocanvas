@@ -1,6 +1,6 @@
 import express from "express"
 import { protectRoute } from "../middleware/auth.protectroute.js";
-import { getMessages, sendMessage, getMessageById, markMessageSeen} from "../controllers/message.controller.js"
+import { getMessages, sendMessage, getMessageById, markMessageSeen, deleteMessage} from "../controllers/message.controller.js"
 import {canAccessRoom} from "../middleware/room.canaccessroom.js";
 
 const router = express.Router();
@@ -20,6 +20,9 @@ router.post("/send/:roomId", protectRoute, canAccessRoom, sendMessage);
 // Marking a message as seen.
 router.put("/seen/:messageId", protectRoute, canAccessRoom, markMessageSeen);
 
-// Delete & edit messages in the future?
+// TODO: Delete (unfinished frontend)
+router.delete("/:messageId", protectRoute, canAccessRoom, deleteMessage);
+
+//edit messages in the future?
 
 export default router;

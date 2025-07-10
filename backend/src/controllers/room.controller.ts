@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Room from "../models/room.model.js";
 import User from "../models/user.model.js";
+import Message from "../models/message.model.js";
+import Document from "../models/document.model.js";
 
 export const createRoom = async (req: Request, res: Response) : Promise<any> => {
   try {
@@ -61,7 +63,11 @@ export const deleteRoom = async (req: Request, res: Response) : Promise<any> => 
     // Deleting room from the database
     await Room.findOneAndDelete({roomId: room.roomId});
 
-    // TODO: delete the documents associated with the room as well
+    //delete Messages associated with the room
+    await Message.deleteMany({ roomId: room.roomId });
+
+    //delete the documents associated with the room as well
+    await Document.deleteMany({ roomId: room.roomId });
 
     res.status(200).json({message: "Room deleted successfully"});
   } catch (e) {

@@ -3,6 +3,8 @@ import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 
 // this function can be handled by the room controller
+
+//probably not needed
 export const getUsersFromSideBar = async (req: Request, res: Response): Promise<any> => {
 	try {
 		const loggedInUserId = (req as any).user.UserId;
@@ -22,14 +24,14 @@ export const getMessages = async (req: Request, res: Response): Promise<any> => 
 		const currentUserId = (req as any).user.userId;
 
 		// Find messages for the room and sort then base on creation time (ascending order)
-		const messages = await Message.find({roomId: roomId})
+		const messages = await Message.find({ roomId: roomId })
 			.sort({ createdAt: 1 });
 
 		// Extract all unique sender UUIDs
 		const senderUUIDs = [...new Set(messages.map(msg => msg.senderId))];
 
 		// Fetch corresponding user info
-		const users = await User.find({ userId: { $in: senderUUIDs } }).select("userId username fullName email -_id");
+		const users = await User.find({ userId: { $in: senderUUIDs } }).select("-_id -password");
 
 		// Attach user info manually to each message
 		const enrichedMessages = messages.map(msg => {
@@ -39,6 +41,7 @@ export const getMessages = async (req: Request, res: Response): Promise<any> => 
 				sender: sender || null,
 			};
 		});
+		console.log("Enriched messages: ", enrichedMessages);
 
 		// Send messages back to request
 		res.status(200).json(enrichedMessages);
@@ -53,13 +56,16 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
 		const { text } = (req as any).body;
 		const roomId = (req as any).room.roomId;
 		const senderId = (req as any).user.userId;
+		const senderUsername = (req as any).user.username;
+		const senderEmail = (req as any).user.email;
+		const senderFullName = (req as any).user.fullName;
 
 		let imageURL;
 		// TODO: upload image to storage
 
 		// there must be a text message
 		if (!text) {
-			return res.status(400).json({ error: "Message must have text."})
+			return res.status(400).json({ error: "Message must have text." })
 		}
 
 		// Creating a new message
@@ -68,12 +74,16 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
 			senderId: senderId,
 			text: text,
 			seenBy: [senderId],
+			sender: {
+				username: senderUsername,
+				email: senderEmail,
+				fullName: senderFullName,
+				userId: senderId
+			}
 		});
 
 		// Saving the message in the database
 		await newMessage.save();
-
-		// TODO:  socket.io for all users in the room
 
 		res.status(201).json(newMessage);
 	} catch (error) {
@@ -82,8 +92,36 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
 	}
 }
 
+// delete Message based on Message Id
+export const deleteMessage = async (req: Request, res: Response): Promise<any> => {
+	try {
+		const { messageId } = (req as any).params;
+		if (!messageId) {
+			return res.status(400).json({ error: "Message ID is required." });
+		}
+		Message.findByIdAndDelete(messageId)
+	} catch (error) {
+		console.error("Error in deleteMessage", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+}
+
 export const getMessageById = async (req: Request, res: Response): Promise<any> => {
-	// TODO
+	try {
+		const { messageId } = (req as any).params;
+
+		if (!messageId) {
+			return res.status(400).json({ error: "Message ID is required." });
+		}
+		// Find the message by ID
+		const message = await Message.find({ messageId: messageId });
+
+		return res.status(200).json(message);
+
+	} catch (error) {
+		console.error("Error in getMessageById", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
 }
 
 export const markMessageSeen = async (req: Request, res: Response): Promise<any> => {
