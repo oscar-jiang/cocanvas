@@ -1,20 +1,21 @@
-import {create} from "zustand";
+import { create } from "zustand";
 import toast from "react-hot-toast";
-import {axiosInstance} from "../lib/Axios.ts";
-import {useRoomStore} from "./useRoomStore.ts";
-import type {ChatStore} from "../types/ChatStore.ts";
-import type {MessageInput} from "../types/MessageInput.ts";
+import { axiosInstance } from "../lib/Axios.ts";
+import { useRoomStore } from "./useRoomStore.ts";
+import type { ChatStore } from "../types/ChatStore.ts";
+import type { MessageInput } from "../types/MessageInput.ts";
+import socket from "../lib/socket.ts";
+import type { Message } from "../types/Message.ts";
 
 export const useChatStore = create<ChatStore>((set, get) => ({
   messages: [],
-
   isMessagesLoading: false,
 
-  getMessages: async (roomId: string) : Promise<void> => {
+  getMessages: async (roomId: string): Promise<void> => {
     set({ isMessagesLoading: true });
     try {
-     const response = await axiosInstance.get(`/message/${roomId}/getMessages`);
-     set({ messages: response.data });
+      const response = await axiosInstance.get(`/message/${roomId}/getMessages`);
+      set({ messages: response.data });
     } catch (e) {
       toast.error("Error getting messages");
       console.log("Error getting messages: ", e);
@@ -22,7 +23,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       set({ isMessagesLoading: false });
     }
   },
-  sendMessage: async (messageData:MessageInput):Promise<void> => {
+  sendMessage: async (messageData: MessageInput): Promise<void> => {
     try {
       const { messages } = get();
       const currentRoom = useRoomStore.getState().currentRoom;
@@ -31,9 +32,22 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       }
       const response = await axiosInstance.post(`/message/send/${currentRoom.roomId}`, messageData);
       set({ messages: [...messages, response.data] });
+
+      // Emit the message to the socket server'
+      socket.emit("sendMessage", response.data);
     } catch (e) {
       toast.error("Error sending messages");
       console.log("Error sending messages: ", e);
+    }
+  },
+  // update local messages list with new message when its received from socket
+  addMessage: async (message: Message): Promise<void> => {
+    try {
+      set((state) => ({
+      messages: [...state.messages, message],
+    }));
+    } catch (e) {
+      toast.error("Error adding message");
     }
   }
 }));

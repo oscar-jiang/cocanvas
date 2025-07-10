@@ -4,10 +4,12 @@ import toast from "react-hot-toast";
 import type {RoomStore} from "../types/RoomStore.ts";
 import {AxiosError} from "axios";
 import axios from "axios";
+import socket from "../lib/socket.ts";
 
 export const useRoomStore = create<RoomStore>((set) => ({
   currentRoom: null,
   isCreatingRoom: false,
+
   createRoom: async (data) => {
     set({isCreatingRoom: true});
     try {
@@ -52,6 +54,11 @@ export const useRoomStore = create<RoomStore>((set) => ({
     try {
       const res = await axiosInstance.get(`/room/${roomId}`);
       set({ currentRoom: res.data });
+      if(!socket.connected) {
+        socket.connect();
+      }
+      socket.emit("joinRoom", roomId);
+      console.log("Socket connected to room: ", roomId);
     } catch (e) {
       set({ currentRoom: null });
       if (axios.isAxiosError(e)) {
@@ -71,6 +78,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
     }
   },
   leavePageReset: () => {
+    socket.emit("leaveRoom");
     set({
       currentRoom: null,
       rooms: [],
@@ -80,6 +88,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
     });
   },
   logoutReset: () => {
+    if (socket.connected) socket.disconnect();
     set({
       currentRoom: null,
       rooms: [],

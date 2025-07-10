@@ -1,8 +1,14 @@
+import type { Socket } from "socket.io-client";
 import type {User} from "./User.ts"
 
 export type AuthStore = {
-  authUser: User | null,
+  // TODO: Add socket type
+  socket: Socket | null,
+  disconnectSocket(): unknown;
+  connectSocket(): unknown;
 
+
+  authUser: User | null,
   isSigningUp: boolean,
   isLoggedIn: boolean,
   isUpdatingProfile: boolean,
