@@ -4,9 +4,10 @@ import {Home, LogIn, LogOut, Menu, Settings, User} from "lucide-react";
 import {useEffect, useRef, useState} from "react";
 import {useSidebarStore} from "../store/useSidebarStore.ts";
 import {useModalStore} from "../store/useModalStore.ts";
-import socket from "../lib/socket.ts";
+import { useInboxStore } from "../store/useInboxStore.ts";
 
 const Navbar = () => {
+  const { getInbox, inbox } = useInboxStore();
   const {logout, authUser} = useAuthStore();
   const { toggleSidebar } = useSidebarStore();
   const { openCreateRoom } = useModalStore();
@@ -33,9 +34,9 @@ const Navbar = () => {
     };
   }, []);
 
-  const handleInboxClick = () => {
-    socket.emit("getInbox", authUser?.userId);
-    console.log("Inbox clicked"); 
+  const handleInboxClick = async () => {
+    console.log("user id: ", authUser?.userId || "")
+    await getInbox(authUser?.userId || "");
   }
 
   return (
@@ -86,6 +87,7 @@ const Navbar = () => {
           <>
             <button className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer" onClick={() => handleInboxClick()}>
               📫 inbox</button>
+            {console.log("inbox", inbox)}
             <button
               className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer"
               onClick={() => {openCreateRoom()}}

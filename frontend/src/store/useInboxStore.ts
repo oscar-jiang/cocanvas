@@ -12,8 +12,9 @@ export const useInboxStore = create<InboxStore>((set, get) => ({
 
   getInbox: async (userId: string): Promise<void> => {
     try {
-      const response = await axiosInstance.get(`/:${userId}/getInbox`);
+      const response = await axiosInstance.get(`/inbox/getInbox/${userId}`);
       set({ inbox: response.data });
+      console.log("Inbox fetched successfully: ", get().inbox);
     } catch (e) {
       toast.error("Error getting messages");
       console.log("Error getting messages: ", e);

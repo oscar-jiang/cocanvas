@@ -19,9 +19,12 @@ export const sendInvite = async (req: Request, res: Response): Promise<any> => {
         }
 
 
-        const receiver = await User.findOne({ email : email });
+        const receiver = await User.findOne({ email: email });
         if (!receiver) {
             return res.status(400).json({ error: "Receiver not found" });
+        }
+        if (receiver.userId === invitorId) {
+            return res.status(400).json({ error: "You cannot invite yourself" });
         }
 
         // Create the invite object
@@ -49,17 +52,21 @@ export const sendInvite = async (req: Request, res: Response): Promise<any> => {
 
 export const getInbox = async (req: Request, res: Response): Promise<any> => {
     try {
-        const userId = (req as any).user.userId;
+        console.log("this got called")
+        const { userId: userId } = req.params
 
         // Fetch the user's inbox
         const user = await User.findOne({ userId });
+        console.log("user:" + user)
 
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-        // console.log("User's inbox:", user.inbox);
+        const invitations = await Invitation.find({ receiverId: userId });
 
-        // res.status(200).json(user.inbox);
+        console.log("User's inbox:", invitations);
+
+        res.status(200).json(invitations);
     } catch (e) {
         console.error("Error in fetching inbox", e);
         res.status(500).json({ error: "Internal server error" });

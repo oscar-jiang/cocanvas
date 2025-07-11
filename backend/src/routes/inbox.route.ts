@@ -7,7 +7,8 @@ const router = express.Router();
 // Route to create an invitation
 router.post("/sendInvite", protectRoute, sendInvite);
 
-router.get("/getInbox", protectRoute, getInbox);
+router.get("/getInbox/:userId", protectRoute, getInbox);
 
+//TODO: add middleware to make sure user is the same as the userId in the params
 
 export default router;
