@@ -1,28 +1,89 @@
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useModalStore } from "../store/useModalStore";
+import { useInboxStore } from "../store/useInboxStore";
+
 const InviteModal = () => {
+  const { closeInviteModal, selectedRoom } = useModalStore();
+  const { sendInvite } = useInboxStore();
+
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!email || !email.includes("@")) {
+      toast("Please enter a valid email.");
+      return;
+    }
+    // add word limit to personal message
+    const personalMessage =
+      (e.target as HTMLFormElement).querySelector("textarea")?.value || "";
+    if (personalMessage.length > 200) {
+      toast.error("Personal message cannot exceed 200 characters.");
+      return;
+    }
+
+    try {
+      await sendInvite({
+        email,
+        personalMessage,
+        roomId: selectedRoom?.roomId || "",
+        roomName: selectedRoom?.roomName || "",
+      });
+      toast.success(`Invite sent to ${email}`);
+    } catch (e) {
+      console.error("Error sending invite: ", e);
+      toast.error("Failed to send invite. Please try again.");
+      return;
+    }
+    closeInviteModal();
+  };
+
   return (
     <div>
-      {/* Open the modal using document.getElementById('ID').showModal() method */}
-      <dialog id="inviteModal" className="modal">
-        <div className="modal-box flex flex-col items-center">
-          <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-            <legend className="fieldset-legend">Invite Friends</legend>
-            <h4>Send invitations to join Room : 123</h4>
-            <label className="label">Email Address</label>
-            <input type="email" className="input" placeholder="Email" />
+      <form
+        onSubmit={handleSubmit}
+        className="modal modal-open"
+        id="inviteModal"
+      >
+        <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
+          <legend className="fieldset-legend">Invite Friends</legend>
+          <h4>Send invitations to join Room : 123</h4>
 
-            <label className="label">Personal Message (optional) </label>
-            <textarea className="textarea" placeholder="Hi Friend! Join me in this awesome study room... " />
-            <div className="modal-action">
-                {/* make buttons have gaps */}
-              <form method="dialog" className="flex w-full gap-2 justify-center">
-                {/* if there is a button in form, it will close the modal */}
-                <button className="btn btn-neutral mt-4">Cancel</button>
-                <button className="btn btn-neutral mt-4" onClick={()=>{console.log("send invite to server")}}>Send Invite</button>
-              </form>
-            </div>
-          </fieldset>
-        </div>
-      </dialog>
+          <label className="label">Email Address</label>
+          <input
+            type="email"
+            className="input"
+            placeholder="Email"
+            required
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+          />
+
+          <label className="label">Personal Message (optional)</label>
+          <textarea
+            className="textarea"
+            placeholder="Hi Friend! Join me in this awesome study room..."
+          />
+
+          <div className="flex w-full gap-2 justify-center mt-4">
+            <button
+              type="button"
+              className="btn btn-neutral"
+              onClick={closeInviteModal}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-neutral">
+              Send Invite
+            </button>
+          </div>
+        </fieldset>
+      </form>
     </div>
   );
 };

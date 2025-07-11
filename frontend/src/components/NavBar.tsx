@@ -4,6 +4,7 @@ import {Home, LogIn, LogOut, Menu, Settings, User} from "lucide-react";
 import {useEffect, useRef, useState} from "react";
 import {useSidebarStore} from "../store/useSidebarStore.ts";
 import {useModalStore} from "../store/useModalStore.ts";
+import socket from "../lib/socket.ts";
 
 const Navbar = () => {
   const {logout, authUser} = useAuthStore();
@@ -31,6 +32,11 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const handleInboxClick = () => {
+    socket.emit("getInbox", authUser?.userId);
+    console.log("Inbox clicked"); 
+  }
 
   return (
     <header className="flex justify-between items-center px-6 py-4 bg-white">
@@ -78,7 +84,7 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <button className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer">
+            <button className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer" onClick={() => handleInboxClick()}>
               📫 inbox</button>
             <button
               className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer"

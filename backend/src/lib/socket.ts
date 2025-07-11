@@ -31,7 +31,7 @@ io.on("connection", (socket) => {
     // broadcast the message to all users in the room
     socket.to(message.roomId).emit("message", message);
   });
-
+    
   socket.on("disconnect", () => {
     console.log("user disconnected ", socket.id);
   });

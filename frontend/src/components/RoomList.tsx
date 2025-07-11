@@ -6,11 +6,12 @@ import {formatMonthDay} from "../lib/utils.ts";
 import {useAuthStore} from "../store/useAuthStore.ts";
 import {Link} from "react-router-dom";
 import InviteModal from "./InviteModal.tsx";
+import {useModalStore} from "../store/useModalStore.ts";
 
 const RoomList = () => {
   const { isRecentRoomsLoading, recentRooms, getRecentRooms } = useRoomStore();
   const { authUser } = useAuthStore();
-  const [openInviteModal, setOpenInviteModal] = useState(false);
+  const { isInviteModalOpen } = useModalStore();
 
   useEffect(() => {
     getRecentRooms()
@@ -21,17 +22,16 @@ const RoomList = () => {
     return <div>Loading...</div>;
   }
 
-   const handleInviteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+   const handleInviteClick = (e: React.MouseEvent<HTMLButtonElement>, room: Room) => {
     e.preventDefault();
     e.stopPropagation();
-    setOpenInviteModal(!openInviteModal);
-    (document.getElementById("inviteModal") as HTMLDialogElement)?.showModal();
+    useModalStore.getState().openInviteModal(room);
   }
   
 
   return (
     <div className="p-6 text-gray-800">
-      <InviteModal />
+      {isInviteModalOpen && (<InviteModal />)}
       <h2 className="text-3xl font-bold mb-4">Recents</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {recentRooms.map((room: Room) => (
@@ -47,7 +47,7 @@ const RoomList = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800">{room.roomName}</h3>
                   <p className="text-sm text-gray-500 mb-2">{room.description}</p>
-                  <button className="btn btn-sm" onClick={handleInviteClick}>📧 Invite</button>
+                  <button className="btn btn-sm" onClick={(e)=>handleInviteClick(e, room)}>📧 Invite</button>
                 </div>
                 <p className="text-xs text-gray-500">
                   Last updated: {formatMonthDay(room.updatedAt)} • By:{" "}
