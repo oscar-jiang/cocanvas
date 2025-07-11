@@ -17,4 +17,11 @@ export interface RoomStore {
   logoutReset: () => void;
 
   deleteRoom: (id: string) => Promise<void>;
+
+  joinRoom: () => void;
+  leaveRoom: () => void;
+
+  recentRooms: Room[];
+  isRecentRoomsLoading: boolean;
+  getRecentRooms: () => Promise<void>;
 }

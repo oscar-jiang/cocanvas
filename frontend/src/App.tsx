@@ -11,6 +11,7 @@ import LandingPage from "./pages/LandingPage.tsx";
 import DashboardPage from "./pages/DashboardPage.tsx";
 import CollaborativeEditorPage from "./pages/CollaborativeEditorPage.tsx";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
+import LibraryPage from "./pages/LibraryPage.tsx";
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
@@ -62,6 +63,10 @@ const App = () => {
         <Route
           path="/room/:roomId"
           element={authUser ? <CollaborativeEditorPage /> : <Navigate to="/login"/> }
+        />
+        <Route
+          path="/projects"
+          element={authUser ? <LibraryPage /> : <Navigate to="/login"/> }
         />
 
         {/* Fallback */}

@@ -194,3 +194,43 @@ export const getCollaborators = async (req: Request, res: Response): Promise<any
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
+export const getMyRoomsRecent = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userId = (req as any).user.userId;
+
+    // Getting all the rooms that are the most recent
+    const recentRooms = await Room.find({
+      $or: [
+        { createdBy: userId },
+        { collaborators: { $in: [userId] } },
+      ]
+    })
+      .sort({ updatedAt: -1 })
+      .limit(6)
+      .lean();
+
+    // Collect all unique userIds from createdBy
+    const userIds = Array.from(
+      new Set(recentRooms.map(room => room.createdBy.toString()))
+    );
+
+    // Fetch usernames in one query
+    const users = await User.find({ userId: { $in: userIds } }, { username: 1, userId: 1 }).lean();
+
+    // Map userId -> username
+    const userMap = new Map(users.map(user => [user.userId, user.username]));
+
+    // Attach username to each room
+    const roomsWithUsername = recentRooms.map(room => ({
+      ...room,
+      createdByUsername: userMap.get(room.createdBy.toString()) || "Unknown",
+    }));
+
+    // Return as a response to user
+    res.status(200).json(roomsWithUsername);
+  } catch (e) {
+    console.error("Error in getting recent rooms", e);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}

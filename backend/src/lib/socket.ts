@@ -16,12 +16,13 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("user connected ", socket.id);
 
-  socket.on("leaveRoom", () => {
-    console.log(`user ${socket.id} disconnected `, socket.id);
+  socket.on("leaveRoom", (roomId: string) => {
+    // console.log(`user ${socket.id} disconnected `, socket.id);
+    socket.leave(roomId);
   })
 
-  socket.on("joinRoom", (roomId) => {
-    console.log(`user ${socket.id} joined room`, roomId);
+  socket.on("joinRoom", (roomId: string) => {
+    // console.log(`user ${socket.id} joined room`, roomId);
     socket.join(roomId);
   });
 
@@ -31,7 +32,9 @@ io.on("connection", (socket) => {
     socket.to(message.roomId).emit("message", message);
   });
 
-
+  socket.on("disconnect", () => {
+    console.log("user disconnected ", socket.id);
+  });
 })
 
 export { io, app, server }

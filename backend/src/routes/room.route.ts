@@ -7,7 +7,8 @@ import {
   getMyRooms,
   getRoomById, removeCollaborator,
   updateRoom,
-  getCollaborators
+  getCollaborators,
+  getMyRoomsRecent
 } from "../controllers/room.controller.js";
 import {canAccessRoom} from "../middleware/room.canaccessroom.js";
 import {isRoomOwner} from "../middleware/room.isroomowner.js";
@@ -19,6 +20,9 @@ router.post("/create", protectRoute, createRoom);
 
 // Get all rooms a user is in
 router.get("/user/my", protectRoute, getMyRooms);
+
+// Getting the 6 most recent rooms
+router.get("/user/my/recent", protectRoute, getMyRoomsRecent);
 
 // Get room by id
 router.get("/:roomId", protectRoute, canAccessRoom, getRoomById);

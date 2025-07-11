@@ -6,6 +6,7 @@ import type { ChatStore } from "../types/ChatStore.ts";
 import type { MessageInput } from "../types/MessageInput.ts";
 import socket from "../lib/socket.ts";
 import type { Message } from "../types/Message.ts";
+import { useAuthStore } from "./useAuthStore.ts";
 
 export const useChatStore = create<ChatStore>((set, get) => ({
   messages: [],
@@ -33,7 +34,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       const response = await axiosInstance.post(`/message/send/${currentRoom.roomId}`, messageData);
       set({ messages: [...messages, response.data] });
 
-      // Emit the message to the socket server'
+      // Emit the message to the socket server
       socket.emit("sendMessage", response.data);
     } catch (e) {
       toast.error("Error sending messages");
@@ -43,6 +44,13 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   // update local messages list with new message when its received from socket
   addMessage: async (message: Message): Promise<void> => {
     try {
+      const currentRoom = useRoomStore.getState().currentRoom;
+      if (!currentRoom) { return; }
+
+      const socket = useAuthStore.getState().socket;
+      if (!socket) { return; }
+
+      if (message.roomId !== currentRoom.roomId) { return; }
       set((state) => ({
       messages: [...state.messages, message],
     }));

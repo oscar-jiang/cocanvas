@@ -5,3 +5,10 @@ export function formatMessageTime(date:string) {
     hour12: false,
   })
 }
+
+export function formatMonthDay(date: string): string {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short', // or 'short' for Jan, Feb, etc.
+    day: 'numeric',
+  });
+}

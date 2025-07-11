@@ -9,4 +9,5 @@ export interface Room {
   maxDocuments: number;
   createdAt: string;
   updatedAt: string;
+  createdByUsername?: string;
 }

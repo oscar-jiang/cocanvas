@@ -1,62 +1,132 @@
 import {useAuthStore} from "../store/useAuthStore.ts";
 import {Link} from "react-router-dom";
-import {LogIn, LogOut, Settings, User} from "lucide-react";
+import {Home, LogIn, LogOut, Menu, Settings, User} from "lucide-react";
+import {useEffect, useRef, useState} from "react";
+import {useSidebarStore} from "../store/useSidebarStore.ts";
+import {useModalStore} from "../store/useModalStore.ts";
 
 const Navbar = () => {
   const {logout, authUser} = useAuthStore();
+  const { toggleSidebar } = useSidebarStore();
+  const { openCreateRoom } = useModalStore();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    const handleScroll = () => {
+      setMenuOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <header className="navbar bg-base-100 shadow-sm border-b border-base-300">
-      <div className="flex justify-between items-center w-full px-4">
-        {/* Logo/Brand Section */}
-        <div className="flex items-center">
-          <Link
-            to={authUser ? "/dashboard" : "/"}
-            className="flex items-center gap-2.5 hover:opacity-80 transition-all"
-          >
-            <h1 className="text-lg font-bold">
-              Home
-            </h1>
-          </Link>
-        </div>
+    <header className="flex justify-between items-center px-6 py-4 bg-white">
+      {/* Left section */}
+      <div className="flex items-center gap-4">
+        {!authUser ? (
+          <>
+            <Link to={"/"} className="p-2 rounded-md cursor-pointer">
+              <Home className="size-6 text-black " />
+            </Link>
+          </>
+        )  : (
+          <>
+            <button
+              className="p-2 hover:bg-gray-100 rounded-md cursor-pointer"
+              onClick={() => {toggleSidebar()}}
+            >
+              <Menu className="w-5 h-5 text-black" />
+            </button>
 
-        {/* Navigation Items */}
-        <div className="flex items-center gap-2">
-          {!authUser ? (
-            // Guest Navigation
-            <>
-              <Link to="/login" className="btn btn-ghost btn-sm gap-2">
-                <LogIn className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign In</span>
-              </Link>
-              <Link to="/signup" className="btn btn-primary btn-sm gap-2">
-                <User className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign Up</span>
-              </Link>
-            </>
-          ) : (
-            // Authenticated Navigation
-            <>
-              <Link to="/settings" className="btn btn-ghost btn-sm gap-2">
-                <Settings className="w-4 h-4" />
-                <span className="hidden sm:inline">Settings</span>
-              </Link>
+            <Link to={"/dashboard"} className="p-2 rounded-md cursor-pointer">
+              <Home className="size-6 text-black " />
+            </Link>
+          </>
+        )}
+      </div>
 
-              <Link to="/profile" className="btn btn-ghost btn-sm gap-2">
-                <User className="w-4 h-4" />
-                <span className="hidden sm:inline">Profile</span>
-              </Link>
+      {/* Center section */}
+      <div className="flex-1 flex justify-center">
+        <div className="text-sm text-gray-600"></div>
+      </div>
 
-              <button
-                className="btn btn-ghost btn-sm gap-2 text-error hover:bg-error/10"
-                onClick={logout}
-              >
-                <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Log Out</span>
-              </button>
-            </>
-          )}
-        </div>
+      {/* Right section */}
+      <div className="flex items-center gap-4 relative" ref={menuRef}>
+        {!authUser ? (
+          <>
+            <Link to="/login" className="btn btn-outline btn-sm gap-2 text-black">
+              <LogIn className="w-4 h-4" />
+              <span className="hidden sm:inline">Sign In</span>
+            </Link>
+            <Link to="/signup" className="btn btn-outline btn-success btn-sm gap-2">
+              <User className="w-4 h-4" />
+              <span className="hidden sm:inline">Sign Up</span>
+            </Link>
+          </>
+        ) : (
+          <>
+            <button
+              className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer"
+              onClick={() => {openCreateRoom()}}
+            >
+              + Create
+            </button>
+            <div
+              // className="h-8 w-8 bg-gray-400 rounded-full cursor-pointer"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <Settings className={"text-black size-6 cursor-pointer"} />
+            </div>
+
+            {/* Dropdown */}
+            {menuOpen && (
+              <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-md z-50">
+                <ul className="py-2 text-sm text-gray-700">
+                  <li>
+                    <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
+                      <div className={"flex items-center gap-2"}>
+                        <User className="w-4 h-4" />
+                        Profile
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/settings" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>
+                      <div className={"flex items-center gap-2"}>
+                        <Settings className="w-4 h-4" />
+                        Settings
+                      </div>
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {logout(); setMenuOpen(false)}}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 cursor-pointer"
+                    >
+                      <div className={"flex items-center gap-2"}>
+                        <LogOut className="w-4 h-4" />
+                        Log Out
+                      </div>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </header>
   );

@@ -9,7 +9,9 @@ const CollaborativeEditorPage = () => {
     currentRoom,
     isCheckingRoomAuth,
     checkRoomAuth,
-    leavePageReset
+    leavePageReset,
+    joinRoom,
+    leaveRoom,
   } = useRoomStore();
 
   useEffect(() => {
@@ -19,9 +21,16 @@ const CollaborativeEditorPage = () => {
 
     // // when the user exits out of the page we reset the currentRoom
     return () => {
+      leaveRoom();
       leavePageReset();
     }
-  }, [roomId, checkRoomAuth, leavePageReset]);
+  }, [roomId, checkRoomAuth, leavePageReset, leaveRoom]);
+
+  useEffect(() => {
+    if (currentRoom) {
+      joinRoom();
+    }
+  }, [currentRoom, joinRoom]);
 
   // checking the room auth, loading instead
   if (isCheckingRoomAuth) {
@@ -42,7 +51,7 @@ const CollaborativeEditorPage = () => {
   if (currentRoom) {
     return (
       <div>
-          <RoomLayout />
+        <RoomLayout />
       </div>
     );
   }
