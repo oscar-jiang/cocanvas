@@ -13,7 +13,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   isLoggedIn: false,
   isUpdatingProfile: false,
   isCheckingAuth: true,
-  socket: socket,
+  socket: null,
 
   checkAuth: async () :Promise<void> => {
     try {

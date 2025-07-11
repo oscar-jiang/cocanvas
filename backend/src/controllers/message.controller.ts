@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
+import Room from "../models/room.model.js";
 
 // this function can be handled by the room controller
 
@@ -84,6 +85,10 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
 
 		// Saving the message in the database
 		await newMessage.save();
+		// Update the room
+		await Room.findOneAndUpdate({roomId: roomId}, {updatedAt: new Date()});
+
+		// io.to(roomId).emit("newMessage", newMessage);
 
 		res.status(201).json(newMessage);
 	} catch (error) {

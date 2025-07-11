@@ -5,8 +5,9 @@ import type {RoomStore} from "../types/RoomStore.ts";
 import {AxiosError} from "axios";
 import axios from "axios";
 import socket from "../lib/socket.ts";
+import {useAuthStore} from "./useAuthStore.ts";
 
-export const useRoomStore = create<RoomStore>((set) => ({
+export const useRoomStore = create<RoomStore>((set, get) => ({
   currentRoom: null,
   isCreatingRoom: false,
 
@@ -82,6 +83,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
     set({
       currentRoom: null,
       rooms: [],
+      recentRooms: [],
       isRoomsLoading: false,
       isCreatingRoom: false,
       isCheckingRoomAuth: true,
@@ -92,6 +94,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
     set({
       currentRoom: null,
       rooms: [],
+      recentRooms: [],
       isRoomsLoading: false,
       isCreatingRoom: false,
       isCheckingRoomAuth: true,
@@ -107,5 +110,45 @@ export const useRoomStore = create<RoomStore>((set) => ({
       toast.error("Something went wrong.");
       console.error("Error in deleteRoom", e);
     }
-  }
+  },
+
+  joinRoom: () => {
+    const authUser = useAuthStore.getState().authUser;
+    const socket = useAuthStore.getState().socket;
+    const currentRoom = get().currentRoom;
+    if (!authUser || !socket || !currentRoom) { return; }
+
+    const roomId: string = currentRoom.roomId;
+    const userId: string | undefined = authUser.userId;
+
+    socket.emit("joinRoom", {roomId, userId});
+  },
+  leaveRoom: () => {
+    const authUser = useAuthStore.getState().authUser;
+    const socket = useAuthStore.getState().socket;
+    const currentRoom = get().currentRoom;
+
+    if (!authUser || !socket || !currentRoom) return;
+
+    const roomId = currentRoom.roomId;
+    const userId = authUser.userId;
+
+    socket.emit("leaveRoom", { roomId, userId });
+  },
+
+  recentRooms: [],
+  isRecentRoomsLoading: false,
+  getRecentRooms: async ():Promise<void> => {
+    set({isRecentRoomsLoading: true});
+    try {
+      const response = await axiosInstance.get("/room/user/my/recent");
+      // as we log out should rooms be turn back into an empty array
+      set({recentRooms: response.data});
+    } catch (e) {
+      toast.error("Something went wrong loading recent rooms.");
+      console.error("Error in getting recent rooms", e);
+    } finally {
+      set({isRecentRoomsLoading: false});
+    }
+  },
 }));
