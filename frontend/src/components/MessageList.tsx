@@ -35,7 +35,7 @@ const MessageList = () => {
   return (
     <div className="flex-1 overflow-y-auto px-2 py-4 space-y-4">
       {messages.map((message: Message) => {
-        const isMe = message.senderId === authUser.userId;
+        const isMe = message.senderId === authUser?.userId;
 
         return (
           <div
@@ -51,11 +51,11 @@ const MessageList = () => {
                   <>
                     <span>{formatMessageTime(message.createdAt)}</span>
                     <span>•</span>
-                    <span>{authUser.username}</span>
+                    <span>{authUser?.username}</span>
                   </>
                 ):(
                   <>
-                    <span>{message.sender.username}</span>
+                    <span>{message.sender?.username}</span>
                     <span>•</span>
                     <span>{formatMessageTime(message.createdAt)}</span>
                   </>

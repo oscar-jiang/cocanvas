@@ -78,11 +78,13 @@ const Navbar = () => {
           </>
         ) : (
           <>
+            <button className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer">
+              📫 inbox</button>
             <button
               className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer"
               onClick={() => {openCreateRoom()}}
             >
-              + Create
+              ➕ Create
             </button>
             <div
               // className="h-8 w-8 bg-gray-400 rounded-full cursor-pointer"

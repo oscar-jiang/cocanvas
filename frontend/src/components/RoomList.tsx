@@ -1,14 +1,16 @@
 import { FileText } from "lucide-react";
 import {useRoomStore} from "../store/useRoomStore.ts";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import type {Room} from "../types/Room.ts";
 import {formatMonthDay} from "../lib/utils.ts";
 import {useAuthStore} from "../store/useAuthStore.ts";
 import {Link} from "react-router-dom";
+import InviteModal from "./InviteModal.tsx";
 
 const RoomList = () => {
   const { isRecentRoomsLoading, recentRooms, getRecentRooms } = useRoomStore();
   const { authUser } = useAuthStore();
+  const [openInviteModal, setOpenInviteModal] = useState(false);
 
   useEffect(() => {
     getRecentRooms()
@@ -19,8 +21,17 @@ const RoomList = () => {
     return <div>Loading...</div>;
   }
 
+   const handleInviteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenInviteModal(!openInviteModal);
+    (document.getElementById("inviteModal") as HTMLDialogElement)?.showModal();
+  }
+  
+
   return (
     <div className="p-6 text-gray-800">
+      <InviteModal />
       <h2 className="text-3xl font-bold mb-4">Recents</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {recentRooms.map((room: Room) => (
@@ -32,10 +43,11 @@ const RoomList = () => {
               <div className="bg-gray-100 p-2 rounded-full">
                 <FileText className="w-5 h-5 text-gray-600" />
               </div>
-              <div className="flex flex-col justify-between flex-1 h-full">
+              <div className="flex flex-col justify-between flex-1 h-full gap-5">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800">{room.roomName}</h3>
                   <p className="text-sm text-gray-500 mb-2">{room.description}</p>
+                  <button className="btn btn-sm" onClick={handleInviteClick}>📧 Invite</button>
                 </div>
                 <p className="text-xs text-gray-500">
                   Last updated: {formatMonthDay(room.updatedAt)} • By:{" "}
@@ -45,6 +57,8 @@ const RoomList = () => {
             </div>
           </Link>
         ))}
+
+
       </div>
     </div>
   );
