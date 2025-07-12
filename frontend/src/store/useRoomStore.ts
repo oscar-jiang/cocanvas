@@ -1,18 +1,18 @@
-import {create} from "zustand/react";
-import {axiosInstance} from "../lib/Axios.ts";
+import { create } from "zustand/react";
+import { axiosInstance } from "../lib/Axios.ts";
 import toast from "react-hot-toast";
-import type {RoomStore} from "../types/RoomStore.ts";
-import {AxiosError} from "axios";
+import type { RoomStore } from "../types/RoomStore.ts";
+import { AxiosError } from "axios";
 import axios from "axios";
 import socket from "../lib/socket.ts";
-import {useAuthStore} from "./useAuthStore.ts";
+import { useAuthStore } from "./useAuthStore.ts";
 
 export const useRoomStore = create<RoomStore>((set, get) => ({
   currentRoom: null,
   isCreatingRoom: false,
 
   createRoom: async (data) => {
-    set({isCreatingRoom: true});
+    set({ isCreatingRoom: true });
     try {
       const response = await axiosInstance.post("/room/create", data);
       toast.success("Successfully created the room: " + response.data.roomName);
@@ -30,22 +30,22 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         toast.error("Something went wrong.");
       }
     } finally {
-      set({isCreatingRoom: false});
+      set({ isCreatingRoom: false });
     }
   },
 
   rooms: [],
   isRoomsLoading: false,
-  getRooms: async ():Promise<void> => {
-    set({isCreatingRoom: true});
+  getRooms: async (): Promise<void> => {
+    set({ isCreatingRoom: true });
     try {
       const response = await axiosInstance.get("/room/user/my");
       // as we log out should rooms be turn back into an empty array
-      set({rooms: response.data});
+      set({ rooms: response.data });
     } catch (e) {
       toast.error("Something went wrong. " + e);
     } finally {
-      set({isCreatingRoom: false});
+      set({ isCreatingRoom: false });
     }
   },
 
@@ -55,7 +55,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     try {
       const res = await axiosInstance.get(`/room/${roomId}`);
       set({ currentRoom: res.data });
-      if(!socket.connected) {
+      if (!socket.connected) {
         socket.connect();
       }
       socket.emit("joinRoom", roomId);
@@ -102,9 +102,10 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
   },
 
   deleteRoom: async (id: string): Promise<void> => {
-    console.log("id in deleteRoom zustand: ", id);
+    const { recentRooms } = get();
     try {
       await axiosInstance.delete(`/room/${id}`);
+      set({recentRooms: recentRooms.filter(room => room.roomId !== id)});
       toast.success("Successfully deleted!");
     } catch (e) {
       toast.error("Something went wrong.");
@@ -121,7 +122,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     const roomId: string = currentRoom.roomId;
     const userId: string | undefined = authUser.userId;
 
-    socket.emit("joinRoom", {roomId, userId});
+    socket.emit("joinRoom", { roomId, userId });
   },
   leaveRoom: () => {
     const authUser = useAuthStore.getState().authUser;
@@ -138,17 +139,33 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
 
   recentRooms: [],
   isRecentRoomsLoading: false,
-  getRecentRooms: async ():Promise<void> => {
-    set({isRecentRoomsLoading: true});
+  getRecentRooms: async (): Promise<void> => {
+    set({ isRecentRoomsLoading: true });
     try {
       const response = await axiosInstance.get("/room/user/my/recent");
       // as we log out should rooms be turn back into an empty array
-      set({recentRooms: response.data});
+      set({ recentRooms: response.data });
     } catch (e) {
       toast.error("Something went wrong loading recent rooms.");
       console.error("Error in getting recent rooms", e);
     } finally {
-      set({isRecentRoomsLoading: false});
+      set({ isRecentRoomsLoading: false });
     }
   },
+
+  unsubscribeRoom: async (roomId: string): Promise<void> => {
+    const authUser = useAuthStore.getState().authUser;
+    const { recentRooms } = get();
+    try {
+      await axiosInstance.delete(`/room/${roomId}/collaborators/${authUser?.userId}`);
+      set({recentRooms: recentRooms.filter(room => room.roomId !== roomId)});
+      toast.success("Successfully unsubscribed from room!");
+    } catch (e) {
+      toast.error("Something went wrong in unsubcribing room!");
+      console.error("Error in unsubscribing room", e);
+    }
+  }
+
+
+
 }));

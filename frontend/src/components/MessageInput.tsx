@@ -1,28 +1,26 @@
-import React, {useState} from "react";
-import {useChatStore} from "../store/useChatStore.ts";
-import {Send} from "lucide-react";
+import React, { useState } from 'react';
+import { useChatStore } from '../store/useChatStore.ts';
+import { Send } from 'lucide-react';
 
 const MessageInput = () => {
   const [text, setText] = useState('');
   const { sendMessage } = useChatStore();
 
-  const handleSendMessage =  async (evt: React.FormEvent<HTMLFormElement>) : Promise<void> => {
+  const handleSendMessage = async (evt: React.FormEvent<HTMLFormElement>): Promise<void> => {
     evt.preventDefault();
 
     // If it is empty we don't do anything
     if (!text.trim()) return;
 
     try {
-      await sendMessage(
-        {
-          text: text.trim(),
-        }
-      );
+      await sendMessage({
+        text: text.trim(),
+      });
 
       // Clear form
       setText('');
     } catch (e) {
-      console.error("Failed to send message: ", e);
+      console.error('Failed to send message: ', e);
     }
   };
 

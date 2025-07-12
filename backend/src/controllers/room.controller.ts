@@ -4,7 +4,7 @@ import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import Document from "../models/document.model.js";
 
-export const createRoom = async (req: Request, res: Response) : Promise<any> => {
+export const createRoom = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = (req as any).user.userId;
     const { roomName, description } = req.body;
@@ -15,8 +15,8 @@ export const createRoom = async (req: Request, res: Response) : Promise<any> => 
     }
 
     // Check to see the name is <= 100 characters and description is <= 150 characters long
-    const nameLength:number = roomName.length;
-    const descriptionLength:number = description.length;
+    const nameLength: number = roomName.length;
+    const descriptionLength: number = description.length;
     if (nameLength > 100 || descriptionLength > 150) {
       return res.status(400).json({ error: "Room name and/or description is too long" });
     }
@@ -48,7 +48,7 @@ export const createRoom = async (req: Request, res: Response) : Promise<any> => 
   }
 };
 
-export const deleteRoom = async (req: Request, res: Response) : Promise<any> => {
+export const deleteRoom = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = (req as any).user.userId;
     const room = (req as any).room;
@@ -57,11 +57,11 @@ export const deleteRoom = async (req: Request, res: Response) : Promise<any> => 
     // Check to see if the user is the owner of the
     const isRoomCreator = room.createdBy === userId;
     if (!isRoomCreator) {
-      return res.status(403).json({message: "You can only delete rooms you created"});
+      return res.status(403).json({ message: "You can only delete rooms you created" });
     }
 
     // Deleting room from the database
-    await Room.findOneAndDelete({roomId: room.roomId});
+    await Room.findOneAndDelete({ roomId: room.roomId });
 
     //delete Messages associated with the room
     await Message.deleteMany({ roomId: room.roomId });
@@ -69,10 +69,10 @@ export const deleteRoom = async (req: Request, res: Response) : Promise<any> => 
     //delete the documents associated with the room as well
     await Document.deleteMany({ roomId: room.roomId });
 
-    res.status(200).json({message: "Room deleted successfully"});
+    res.status(200).json({ message: "Room deleted successfully" });
   } catch (e) {
     console.log("Error in room deletion: ", e);
-    res.status(500).json({message: "Internal Server Error"});
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -110,7 +110,7 @@ export const getRoomById = async (req: Request, res: Response): Promise<any> => 
 export const updateRoom = async (req: Request, res: Response): Promise<any> => {
   try {
     const room = (req as any).room;
-    const {roomName, description} = req.body;
+    const { roomName, description } = req.body;
 
     // Checking to see if the roomName is valid
     if (!roomName || roomName.trim() === "") {
@@ -143,9 +143,9 @@ export const addCollaborator = async (req: Request, res: Response): Promise<any>
     }
 
     // Checking to see if the email exists in the database
-    const userToBeAdded = await User.findOne({email: collaboratorEmail});
+    const userToBeAdded = await User.findOne({ email: collaboratorEmail });
     if (!userToBeAdded) {
-      return res.status(400).json({error: "User does not exist"});
+      return res.status(400).json({ error: "User does not exist" });
     }
 
     const userToBeAddedId = userToBeAdded.userId;
@@ -160,7 +160,7 @@ export const addCollaborator = async (req: Request, res: Response): Promise<any>
     await room.save();
 
     // Returning the newly updated room
-    const updatedRoom = await Room.findOne({roomId: room.roomId});
+    const updatedRoom = await Room.findOne({ roomId: room.roomId });
 
     res.status(200).json(updatedRoom);
   } catch (e) {
@@ -171,9 +171,16 @@ export const addCollaborator = async (req: Request, res: Response): Promise<any>
 
 export const removeCollaborator = async (req: Request, res: Response): Promise<any> => {
   try {
-    // TODO
+    const room = (req as any).room;
+    const { roomId, userId } = req.params;
+    console.log("Removing collaborator from room: ", roomId, " for user: ", userId);
+    // remove the user from the room's collaborators
+    await Room.findOneAndUpdate(
+      { roomId: roomId },
+      { collaborators: room.collaborators.filter((collaboratorId: string) => collaboratorId !== userId) }, { new: true });
+    res.status(200).json({ message: "Deleted successfully", room });
   } catch (e) {
-    console.error("Error in removing colab", e);
+    console.error("Error in removing collaborator", e);
     res.status(500).json({ error: "Internal server error" });
   }
 }
@@ -186,7 +193,7 @@ export const getCollaborators = async (req: Request, res: Response): Promise<any
     const collaboratorIds = room.collaborators;
 
     // Getting the user information in the db
-    const users = await User.find({ userId: { $in: collaboratorIds}}).select("-password");
+    const users = await User.find({ userId: { $in: collaboratorIds } }).select("-password");
 
     res.status(200).json(users);
   } catch (e) {

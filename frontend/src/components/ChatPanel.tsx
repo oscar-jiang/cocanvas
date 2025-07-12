@@ -1,5 +1,5 @@
-import MessageList from "./MessageList.tsx";
-import MessageInput from "./MessageInput.tsx";
+import MessageList from './MessageList.tsx';
+import MessageInput from './MessageInput.tsx';
 
 const ChatPanel = () => {
   return (

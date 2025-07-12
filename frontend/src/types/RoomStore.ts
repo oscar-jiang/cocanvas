@@ -24,4 +24,6 @@ export interface RoomStore {
   recentRooms: Room[];
   isRecentRoomsLoading: boolean;
   getRecentRooms: () => Promise<void>;
+
+  unsubscribeRoom: (roomId: string) => Promise<void>;
 }
