@@ -12,7 +12,7 @@ const RoomList = () => {
   const { isRecentRoomsLoading, recentRooms, getRecentRooms, unsubscribeRoom, deleteRoom } =
     useRoomStore();
   const { authUser } = useAuthStore();
-  const { isInviteModalOpen } = useModalStore();
+  const { isInviteModalOpen, openInviteModal } = useModalStore();
 
   useEffect(() => {
     getRecentRooms();
@@ -26,7 +26,7 @@ const RoomList = () => {
   const handleInviteClick = (e: React.MouseEvent<HTMLButtonElement>, room: Room) => {
     e.preventDefault();
     e.stopPropagation();
-    useModalStore.getState().openInviteModal(room);
+    openInviteModal(room);
   };
 
   const handleLeaveClick = async (
@@ -49,7 +49,9 @@ const RoomList = () => {
       <h2 className="text-3xl font-bold mb-4">Recents</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {recentRooms.map((room: Room) => {
-          const isOwner = authUser?.username?.trim().toLowerCase() === room.createdByUsername?.trim().toLowerCase();
+          const isOwner =
+            authUser?.username?.trim().toLowerCase() ===
+            room.createdByUsername?.trim().toLowerCase();
           const displayName = isOwner ? 'You' : room.createdByUsername;
           return (
             <Link to={`/room/${room.roomId}`} className={'h-full no-underline'}>

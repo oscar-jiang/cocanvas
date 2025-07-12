@@ -43,7 +43,10 @@ const InviteModal = () => {
       <form onSubmit={handleSubmit} className="modal modal-open" id="inviteModal">
         <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
           <label className="fieldset-legend">Invite Friends</label>
-          <h4>Send invitations to join Room : 123</h4>
+          <div className='flex gap-2'>
+            <h4>Send invitations to Join</h4>
+            <label className="badge badge-soft badge-primary"> Room : {selectedRoom?.roomName}</label>
+          </div>
 
           <label className="label">Email Address</label>
           <input
