@@ -19,8 +19,8 @@ export const useModalStore = create<ModalState>((set) => ({
   closeCreateRoom: () => set({ isCreateRoomOpen: false }),
 
   isInviteModalOpen: false,
-  openInviteModal: (room) => set({ isInviteModalOpen: true , selectedRoom: room}),
-  closeInviteModal: () => set({ isInviteModalOpen: false, selectedRoom: null})
+  openInviteModal: (room) => set({ isInviteModalOpen: true, selectedRoom: room }),
+  closeInviteModal: () => set({ isInviteModalOpen: false, selectedRoom: null })
 }));
 
 

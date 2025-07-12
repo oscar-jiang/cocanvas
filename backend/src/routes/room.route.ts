@@ -42,4 +42,5 @@ router.delete("/:roomId/collaborators/:userId", protectRoute, canAccessRoom, rem
 // getting all collaborators
 router.get("/:roomId/collaborators", protectRoute, canAccessRoom, getCollaborators);
 
+
 export default router;

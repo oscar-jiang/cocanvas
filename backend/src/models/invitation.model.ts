@@ -18,6 +18,10 @@ const inviteSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    invitorEmail: {
+      type: String,
+      required: true,
+    },
     roomId: {
       type: String,
       required: true,

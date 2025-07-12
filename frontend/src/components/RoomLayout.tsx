@@ -1,8 +1,8 @@
-import DocumentEditor from "./DocumentEditor";
-import ChatPanel from "./ChatPanel";
-import TopNavigation from "./Room/TopNavigation.tsx";
-import DocumentTabs from "./Room/DocumentTab.tsx";
-import TextFormattingToolbar from "./Room/TextFormattingHeader.tsx";
+import DocumentEditor from './DocumentEditor';
+import ChatPanel from './ChatPanel';
+import TopNavigation from './Room/TopNavigation.tsx';
+import DocumentTabs from './Room/DocumentTab.tsx';
+import TextFormattingToolbar from './Room/TextFormattingHeader.tsx';
 
 const RoomLayout = () => {
   return (

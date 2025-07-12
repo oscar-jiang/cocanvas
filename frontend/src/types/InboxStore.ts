@@ -7,5 +7,7 @@ export type InboxStore = {
 
   getInbox: (userId: string) => Promise<void>;
   sendInvite: (invitationData: Invitation) => Promise<void>;
+  acceptInvitation: (inviteId: string) => Promise<void>;
+  declineInvitation: (inviteId: string) => Promise<void>;
 
 }

@@ -52,8 +52,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
       if (message.roomId !== currentRoom.roomId) { return; }
       set((state) => ({
-      messages: [...state.messages, message],
-    }));
+        messages: [...state.messages, message],
+      }));
     } catch (e) {
       toast.error("Error adding message");
     }

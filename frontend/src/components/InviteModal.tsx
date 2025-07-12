@@ -1,41 +1,38 @@
-import React, { useState } from "react";
-import toast from "react-hot-toast";
-import { useModalStore } from "../store/useModalStore";
-import { useInboxStore } from "../store/useInboxStore";
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useModalStore } from '../store/useModalStore';
+import { useInboxStore } from '../store/useInboxStore';
 
 const InviteModal = () => {
   const { closeInviteModal, selectedRoom } = useModalStore();
   const { sendInvite } = useInboxStore();
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!email || !email.includes("@")) {
-      toast("Please enter a valid email.");
+    if (!email || !email.includes('@')) {
+      toast('Please enter a valid email.');
       return;
     }
     // add word limit to personal message
-    const personalMessage =
-      (e.target as HTMLFormElement).querySelector("textarea")?.value || "";
+    const personalMessage = (e.target as HTMLFormElement).querySelector('textarea')?.value || '';
     if (personalMessage.length > 200) {
-      toast.error("Personal message cannot exceed 200 characters.");
+      toast.error('Personal message cannot exceed 200 characters.');
       return;
     }
 
     try {
       await sendInvite({
-        email,
+        receiverEmail: email,
         personalMessage,
-        roomId: selectedRoom?.roomId || "",
-        roomName: selectedRoom?.roomName || "",
+        roomId: selectedRoom?.roomId || '',
+        roomName: selectedRoom?.roomName || '',
       });
-      toast.success(`Invite sent to ${email}`);
-    } catch (e) {
-      console.error("Error sending invite: ", e);
-      toast.error("Failed to send invite. Please try again.");
+    } catch (e: Error | any) {
+      console.error('Error sending invite: ', e);
       return;
     }
     closeInviteModal();
@@ -43,13 +40,9 @@ const InviteModal = () => {
 
   return (
     <div>
-      <form
-        onSubmit={handleSubmit}
-        className="modal modal-open"
-        id="inviteModal"
-      >
+      <form onSubmit={handleSubmit} className="modal modal-open" id="inviteModal">
         <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-          <legend className="fieldset-legend">Invite Friends</legend>
+          <label className="fieldset-legend">Invite Friends</label>
           <h4>Send invitations to join Room : 123</h4>
 
           <label className="label">Email Address</label>
@@ -71,11 +64,7 @@ const InviteModal = () => {
           />
 
           <div className="flex w-full gap-2 justify-center mt-4">
-            <button
-              type="button"
-              className="btn btn-neutral"
-              onClick={closeInviteModal}
-            >
+            <button type="button" className="btn btn-neutral" onClick={closeInviteModal}>
               Cancel
             </button>
             <button type="submit" className="btn btn-neutral">

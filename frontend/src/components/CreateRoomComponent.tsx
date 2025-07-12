@@ -1,33 +1,32 @@
-import { useModalStore } from "../store/useModalStore";
-import React, { useState } from "react";
-import {Loader2} from "lucide-react";
-import toast from "react-hot-toast";
-import {useRoomStore} from "../store/useRoomStore.ts";
+import { useModalStore } from '../store/useModalStore';
+import React, { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useRoomStore } from '../store/useRoomStore.ts';
 
 const CreateRoomComponent = () => {
   const { isCreateRoomOpen, closeCreateRoom } = useModalStore();
-  const {createRoom, isCreatingRoom } = useRoomStore();
+  const { createRoom, isCreatingRoom } = useRoomStore();
   const [formData, setFormData] = useState({
-    roomName: "",
-    description: "",
+    roomName: '',
+    description: '',
   });
 
-  const validateRoomCreation  = (): string | boolean => {
-
+  const validateRoomCreation = (): string | boolean => {
     const name = formData.roomName.trim();
     const nameLength = formData.roomName.length;
     const descriptionLength = formData.description.length;
 
-    if (!name || name === "") {
-      return toast.error("Room name is required");
+    if (!name || name === '') {
+      return toast.error('Room name is required');
     }
 
     if (nameLength > 100) {
-      return toast.error("Room name is too long");
+      return toast.error('Room name is too long');
     }
 
     if (descriptionLength > 150) {
-      return toast.error("Description is too long");
+      return toast.error('Description is too long');
     }
 
     return true;
@@ -36,17 +35,17 @@ const CreateRoomComponent = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const isValid : string | boolean = validateRoomCreation();
+    const isValid: string | boolean = validateRoomCreation();
     if (isValid === true) {
       try {
         await createRoom(formData);
         setFormData({
-          roomName: "",
-          description: "",
+          roomName: '',
+          description: '',
         });
       } catch (e) {
-        console.error("Room creation failed", e);
-        toast.error("Room creation failed");
+        console.error('Room creation failed', e);
+        toast.error('Room creation failed');
       }
     }
   };
@@ -61,9 +60,7 @@ const CreateRoomComponent = () => {
         {/* The form & login is what is important */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Room Name
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Room Name</label>
             <input
               type="text"
               className="input input-bordered w-full bg-gray-100"
@@ -74,9 +71,7 @@ const CreateRoomComponent = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <input
               type="text"
               className="input input-bordered w-full bg-gray-100"
@@ -105,7 +100,7 @@ const CreateRoomComponent = () => {
                   Creating...
                 </>
               ) : (
-                "Create Room"
+                'Create Room'
               )}
             </button>
           </div>
