@@ -54,9 +54,8 @@ const RoomList = () => {
             room.createdByUsername?.trim().toLowerCase();
           const displayName = isOwner ? 'You' : room.createdByUsername;
           return (
-            <Link to={`/room/${room.roomId}`} className={'h-full no-underline'}>
+            <Link to={`/room/${room.roomId}`} className={'h-full no-underline'} key={room.roomId}>
               <div
-                key={room.roomId}
                 className="bg-white border border-gray-200 rounded-xl p-4 shadow hover:scale-[1.02] transition-all flex items-start gap-4 h-full"
               >
                 <div className="bg-gray-100 p-2 rounded-full">

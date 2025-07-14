@@ -1,9 +1,5 @@
-import mongoose, {Document as MongooseDocument} from "mongoose";
+import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
-
-interface CustomDoc extends MongooseDocument {
-  docType: "code" | "text";
-}
 
 const documentSchema = new mongoose.Schema({
   docId: {
@@ -35,22 +31,7 @@ const documentSchema = new mongoose.Schema({
     required: true,
   },
   content: {
-    type: String,
-    required: true,
-    default: function(this: CustomDoc) {
-      switch (this.docType) {
-        case "code":
-          return {code: "", codeLanguage: "javascript"};
-        case "text":
-          return {text: "", textFormatting: {}};
-        default:
-          return {};
-      }
-    }
-  },
-  version: {
-    type: Number,
-    default: 1,
+    type: mongoose.Schema.Types.Mixed,
     required: true,
   }
 }, { timestamps: true });

@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.route.js"
 import messageRoutes from "./routes/message.route.js"
 import roomRoutes from "./routes/room.route.js"
 import inboxRoutes from "./routes/inbox.route.js"
+import docRoutes from "./routes/document.route.js"
 import {connectDB} from "./lib/db.js";
 import cors from "cors";
 import { app, server } from "./lib/socket.js"
@@ -29,6 +30,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/room", roomRoutes);
 app.use("/api/inbox", inboxRoutes)
+app.use("/api/doc", docRoutes)
 
 server.listen(5001, () => {
     console.log("Server started on port: " + PORT);
