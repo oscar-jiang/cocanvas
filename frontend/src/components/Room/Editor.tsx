@@ -45,18 +45,18 @@ const Editor = () => {
     extensions,
     editorProps,
     content,
-    // editable: false,
   });
 
   const handleSaveDoc = (e: React.MouseEvent<HTMLButtonElement>, jsonDoc: any) => {
-    // call backend API with jsonDoc to pass in
+    e.stopPropagation();
+    e.preventDefault();
     console.log(jsonDoc);
+    // TODO: get docID of current doc
     const docId = '';
     useDocumentStore.getState().saveDoc(docId, jsonDoc);
   };
 
   const handleCreateDoc = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // docName: string, docType: string, roomId: string
     e.stopPropagation();
     e.preventDefault();
     const docName = 'testing';
@@ -66,6 +66,7 @@ const Editor = () => {
       useDocumentStore.getState().createDoc(docName, docType, currentRoom.roomId);
     }
   };
+
 
   return editor && (
     <div>
