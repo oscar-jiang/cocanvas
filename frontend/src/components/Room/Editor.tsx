@@ -67,6 +67,14 @@ const Editor = () => {
     }
   };
 
+  const handleGetDoc = (e: React.MouseEvent<HTMLButtonElement>, ) => {
+    e.stopPropagation();
+    e.preventDefault();
+    // TODO: get docID of current doc
+    const docId = '';
+    useDocumentStore.getState().getDoc(docId);
+  };
+
 
   return editor && (
     <div>
@@ -78,6 +86,9 @@ const Editor = () => {
       </button>
       <button className="btn items-center gap-2 px-3 py-2" onClick={(e) => handleCreateDoc(e)}>
         Create new doc
+      </button>
+      <button className="btn items-center gap-2 px-3 py-2" onClick={(e) => handleGetDoc(e)}>
+        get doc
       </button>
       <EditorContent editor={editor} />
       <FloatingMenu editor={editor} shouldShow={null}></FloatingMenu>

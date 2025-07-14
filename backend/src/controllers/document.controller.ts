@@ -40,6 +40,7 @@ export const saveDoc = async (req: Request, res: Response): Promise<any> => {
         if (!exisitingDoc) {
             return res.status(400).json({ error: "docId doesn't exist in database" });
         }
+        console.log(exisitingDoc)
         const updatedDoc = await Document.findOneAndUpdate({ docId: docId }, { lastModifiedBy: userId, content });
 
         res.status(201).json(updatedDoc);
@@ -51,7 +52,14 @@ export const saveDoc = async (req: Request, res: Response): Promise<any> => {
 
 export const getDoc = async (req: Request, res: Response): Promise<any> => {
     try {
-        res.status(200).json();
+        console.log("this got called");
+        const { docId } = req.params;
+        console.log(docId);
+        const exisitingDoc  = await Document.findOne({docId : docId});
+        if (!exisitingDoc) {
+            return res.status(400).json({ error: "docId doesn't exist in database" });
+        }
+        res.status(200).json(exisitingDoc);
     } catch (e) {
         console.error("Error in fetching inbox", e);
         res.status(500).json({ error: "Internal server error" });

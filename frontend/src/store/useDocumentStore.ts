@@ -6,7 +6,7 @@ import type { JSONContent } from '@tiptap/core';
 
 type DocumentStates = {
     createDoc: (docName: string, docType: string, roomId: string) => Promise<void>;
-    getDoc: (docId: string, content: JSONContent) => Promise<void>;
+    getDoc: (docId: string) => Promise<void>;
     saveDoc: (docId: string, content: JSONContent) => Promise<void>;
 };
 
@@ -24,7 +24,9 @@ export const useDocumentStore = create<DocumentStates>(() => ({
     getDoc: async (docId: string): Promise<void> => {
         try {
             const response = await axiosInstance.get(`/doc/getDoc/${docId}`);
-            console.log("doc fetched successfully: ", response);
+            const content = response.data.content;
+            console.log("doc fetched successfully: ",content);
+            toast.success(`successfully fetched doc`);
         } catch (e) {
             toast.error("Error getting messages");
         }
