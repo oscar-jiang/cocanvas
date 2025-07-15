@@ -1,12 +1,7 @@
-import DocumentEditor from './DocumentEditor';
 import ChatPanel from './ChatPanel';
 import TopNavigation from './Room/TopNavigation.tsx';
 import DocumentTabs from './Room/DocumentTab.tsx';
-<<<<<<< HEAD
-=======
-import TextFormattingToolbar from './Room/TextFormattingHeader.tsx';
 import Editor from './Room/Editor.tsx';
->>>>>>> 30b48f02e8dc89797cc93291460624a28ed1cc08
 
 const RoomLayout = () => {
   
