@@ -5,7 +5,6 @@ export interface Room {
   createdBy: string; // user ObjectId
   description?: string;
   collaborators: string[]; // user ObjectIds
-  documents: string[]; // document ObjectIds
   maxDocuments: number;
   createdAt: string;
   updatedAt: string;

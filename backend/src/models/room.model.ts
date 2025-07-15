@@ -25,9 +25,6 @@ const roomSchema = new mongoose.Schema({
   collaborators:[{
     type: String,
   }],
-  documents: [{
-    type: String,
-  }],
   maxDocuments: {
     type: Number,
     default: 3,
