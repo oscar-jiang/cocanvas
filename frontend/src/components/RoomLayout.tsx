@@ -2,7 +2,6 @@ import DocumentEditor from './DocumentEditor';
 import ChatPanel from './ChatPanel';
 import TopNavigation from './Room/TopNavigation.tsx';
 import DocumentTabs from './Room/DocumentTab.tsx';
-import TextFormattingToolbar from './Room/TextFormattingHeader.tsx';
 
 const RoomLayout = () => {
   return (
@@ -12,9 +11,6 @@ const RoomLayout = () => {
 
       {/* Document Tabs */}
       <DocumentTabs />
-
-      {/* Formatting Toolbar */}
-      <TextFormattingToolbar />
 
       {/* Main Content */}
       <main className="flex flex-1 overflow-hidden w-full p-4 gap-6">
