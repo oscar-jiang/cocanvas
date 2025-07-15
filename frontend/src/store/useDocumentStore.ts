@@ -59,7 +59,7 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
             const response = await axiosInstance.get(`/doc/getAllDocs/${roomId}`);
             set({ docs: response.data });
             // Set the first of Doc List to be currentDoc
-            if( get().docs.length !== 0 ) {
+            if (get().docs.length !== 0) {
                 set({ currentDoc: get().docs[0] });
             }
         } catch (e: Error | any) {
@@ -67,10 +67,16 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
         }
     },
     handleOnSave: async () => {
-        const editor = get().editorInstance;
-        const docId = get().currentDoc?.docId;
-        if (editor && docId) {
-            await get().saveDoc(docId, editor.getJSON());
+        try {
+            const editor = get().editorInstance;
+            const docId = get().currentDoc?.docId;
+            if (editor?.getJSON() && docId) {
+                await get().saveDoc(docId, editor.getJSON());
+            }
+        } catch (e : Error | any) {
+            console.log(e)
+            toast.error("Failed to handle saving! " + e.response?.data?.error || "Unknown error");
         }
+
     }
 }))
