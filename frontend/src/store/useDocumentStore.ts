@@ -13,7 +13,7 @@ type DocumentStates = {
   createDoc: (docName: string, docType: string, roomId: string) => Promise<void>;
   getDoc: (docId: string) => Promise<void>;
   saveDoc: (docId: string, content: JSONContent) => Promise<void>;
-  getAllDocs: (docroomIdId: string) => Promise<void>;
+  getAllDocs: () => Promise<void>;
   handleOnSave: () => Promise<void>;
 };
 
@@ -29,7 +29,7 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
       const { docs } = get();
       set({ docs: [...docs, doc] });
       set({ currentDoc: doc });
-      toast.success(`successfully created document`);
+      // toast.success(`Successfully created a document`);
     } catch (e) {
       console.log(e)
       toast.error("Error creating document");
@@ -39,9 +39,9 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
     try {
       const response = await axiosInstance.get(`/doc/getDoc/${docId}`);
       set({ currentDoc: response.data });
-      toast.success(`successfully fetched doc`);
+      // toast.success(`successfully fetched doc`);
     } catch (e) {
-      toast.error("Error getting messages");
+      toast.error("Error getting documents");
     }
   },
   saveDoc: async (docId: string, content: JSONContent) => {
@@ -49,14 +49,14 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
       const data = { docId, content }
       const response = await axiosInstance.post("/doc/saveDoc", data);
       set({ currentDoc: response.data });
-      toast.success(`successfully saved doc : ${response.data.docName} to database`);
+      // toast.success(`successfully saved doc : ${response.data.docName} to database`); // should have different way of showing it has been saved
     } catch (e: Error | any) {
       toast.error("Failed to save doc " + e.response?.data?.error || "Unknown error");
     }
   },
-  getAllDocs: async (roomId: string) => {
+  getAllDocs: async () => {
     try {
-      const response = await axiosInstance.get(`/doc/getAllDocs/${roomId}`);
+      const response = await axiosInstance.get(`/doc/getAllDocs`);
       set({ docs: response.data });
       // Set the first of Doc List to be currentDoc
       if (get().docs.length !== 0) {

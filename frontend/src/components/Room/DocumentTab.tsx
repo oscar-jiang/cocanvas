@@ -10,9 +10,9 @@ const DocumentTabs = () => {
 
   useEffect(() => {
     if (currentRoom) {
-      getAllDocs(currentRoom?.roomId);
+      getAllDocs();
     }
-  }, [getAllDocs, createDoc]);
+  }, [getAllDocs, createDoc, currentRoom]);
 
   const handleCreateDoc = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();

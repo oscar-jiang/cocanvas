@@ -60,7 +60,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
         socket.connect();
       }
       socket.emit("joinRoom", roomId);
-      console.log("Socket connected to room: ", roomId);
+      // console.log("Socket connected to room: ", roomId);
     } catch (e) {
       set({ currentRoom: null });
       if (axios.isAxiosError(e)) {
