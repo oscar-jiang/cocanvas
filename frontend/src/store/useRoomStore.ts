@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 import axios from "axios";
 import socket from "../lib/socket.ts";
 import { useAuthStore } from "./useAuthStore.ts";
+import { useDocumentStore } from "./useDocumentStore.ts";
 
 export const useRoomStore = create<RoomStore>((set, get) => ({
   currentRoom: null,
@@ -88,6 +89,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       isCreatingRoom: false,
       isCheckingRoomAuth: true,
     });
+    useDocumentStore.setState({currentDoc : null});
   },
   logoutReset: () => {
     if (socket.connected) socket.disconnect();
@@ -128,7 +130,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     const authUser = useAuthStore.getState().authUser;
     const socket = useAuthStore.getState().socket;
     const currentRoom = get().currentRoom;
-
+    
     if (!authUser || !socket || !currentRoom) return;
 
     const roomId = currentRoom.roomId;

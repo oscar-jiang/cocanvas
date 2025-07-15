@@ -41,7 +41,7 @@ const content = `
 
 const Editor = () => {
   const { currentDoc, handleOnSave } = useDocumentStore();
-  
+
   const editor = useEditor({
     extensions,
     editorProps,

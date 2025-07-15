@@ -58,6 +58,10 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
         try {
             const response = await axiosInstance.get(`/doc/getAllDocs/${roomId}`);
             set({ docs: response.data });
+            // Set the first of Doc List to be currentDoc
+            if( get().docs.length !== 0 ) {
+                set({ currentDoc: get().docs[0] });
+            }
         } catch (e: Error | any) {
             toast.error("Failed to fetch all docs in room " + e.response?.data?.error || "Unknown error");
         }
