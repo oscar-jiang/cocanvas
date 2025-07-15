@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import type { JSONContent } from '@tiptap/core';
 import type { Document } from "../types/Document.ts";
 import type { Editor } from '@tiptap/core';
+import {useRoomStore} from "./useRoomStore.ts";
 
 type DocumentStates = {
   docs: Document[],
@@ -24,7 +25,7 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
   createDoc: async (docName: string, docType: string, roomId: string): Promise<void> => {
     try {
       const data = { docName, docType, roomId };
-      const response = await axiosInstance.post("/doc/createDoc", data);
+      const response = await axiosInstance.post(`/doc/${roomId}/createDoc`, data);
       const doc = response.data;
       const { docs } = get();
       set({ docs: [...docs, doc] });
@@ -37,7 +38,8 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
   },
   getDoc: async (docId: string): Promise<void> => {
     try {
-      const response = await axiosInstance.get(`/doc/getDoc/${docId}`);
+      const roomId = useRoomStore.getState().currentRoom?.roomId;
+      const response = await axiosInstance.get(`/doc/${roomId}/getDoc/${docId}`);
       set({ currentDoc: response.data });
       // toast.success(`successfully fetched doc`);
     } catch (e) {
@@ -47,7 +49,8 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
   saveDoc: async (docId: string, content: JSONContent) => {
     try {
       const data = { docId, content }
-      const response = await axiosInstance.post("/doc/saveDoc", data);
+      const roomId = useRoomStore.getState().currentRoom?.roomId;
+      const response = await axiosInstance.post(`/doc/${roomId}/saveDoc`, data);
       set({ currentDoc: response.data });
       // toast.success(`successfully saved doc : ${response.data.docName} to database`); // should have different way of showing it has been saved
     } catch (e: Error | any) {
@@ -56,7 +59,8 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
   },
   getAllDocs: async () => {
     try {
-      const response = await axiosInstance.get(`/doc/getAllDocs`);
+      const roomId = useRoomStore.getState().currentRoom?.roomId;
+      const response = await axiosInstance.get(`/doc/${roomId}/getAllDocs`);
       set({ docs: response.data });
       // Set the first of Doc List to be currentDoc
       if (get().docs.length !== 0) {
