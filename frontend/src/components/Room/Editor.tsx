@@ -3,8 +3,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import { FloatingMenu, BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import { useDocumentStore } from '../../store/useDocumentStore';
-import { useRoomStore } from '../../store/useRoomStore';
-
+import { useEffect } from 'react';
 
 // define your extension array
 
@@ -41,61 +40,42 @@ const content = `
 `;
 
 const Editor = () => {
+  const { currentDoc, handleOnSave } = useDocumentStore();
+  
   const editor = useEditor({
     extensions,
     editorProps,
     content,
   });
-
-  const handleSaveDoc = (e: React.MouseEvent<HTMLButtonElement>, jsonDoc: any) => {
-    e.stopPropagation();
-    e.preventDefault();
-    console.log(jsonDoc);
-    // TODO: get docID of current doc
-    const docId = '';
-    useDocumentStore.getState().saveDoc(docId, jsonDoc);
-  };
-
-  const handleCreateDoc = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
-    const docName = 'testing';
-    const docType = 'text';
-    const currentRoom = useRoomStore.getState().currentRoom;
-    if (currentRoom) {
-      useDocumentStore.getState().createDoc(docName, docType, currentRoom.roomId);
+  useEffect(() => {
+    if (currentDoc && currentDoc.content) {
+      editor.commands.setContent(currentDoc.content);
     }
-  };
+  }, [currentDoc]);
 
-  const handleGetDoc = (e: React.MouseEvent<HTMLButtonElement>, ) => {
-    e.stopPropagation();
-    e.preventDefault();
-    // TODO: get docID of current doc
-    const docId = '';
-    useDocumentStore.getState().getDoc(docId);
-  };
+  useEffect(() => {
+    if (editor) {
+      useDocumentStore.setState({ editorInstance: editor });
+    }
+  }, [editor]);
 
 
-  return editor && (
-    <div>
-      <button
-        className="btn items-center gap-2 px-3 py-2"
-        onClick={(e) => handleSaveDoc(e, editor.getJSON())}
-      >
-        send json to server
-      </button>
-      <button className="btn items-center gap-2 px-3 py-2" onClick={(e) => handleCreateDoc(e)}>
-        Create new doc
-      </button>
-      <button className="btn items-center gap-2 px-3 py-2" onClick={(e) => handleGetDoc(e)}>
-        get doc
-      </button>
-      <EditorContent editor={editor} />
-      <FloatingMenu editor={editor} shouldShow={null}></FloatingMenu>
-      <BubbleMenu editor={editor} shouldShow={null}>
-        This is the bubble menu
-      </BubbleMenu>
-    </div>
+  return (
+    editor && (
+      <div>
+        <button
+          className="btn items-center gap-2 px-3 py-2"
+          onClick={handleOnSave}
+        >
+          📁Save
+        </button>
+        <EditorContent editor={editor} />
+        <FloatingMenu editor={editor} shouldShow={null}></FloatingMenu>
+        <BubbleMenu editor={editor} shouldShow={null}>
+          This is the bubble menu
+        </BubbleMenu>
+      </div>
+    )
   );
 };
 

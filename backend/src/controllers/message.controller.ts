@@ -3,20 +3,6 @@ import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import Room from "../models/room.model.js";
 
-// this function can be handled by the room controller
-
-//probably not needed
-export const getUsersFromSideBar = async (req: Request, res: Response): Promise<any> => {
-	try {
-		const loggedInUserId = (req as any).user.UserId;
-		const filteredUsers = await User.find({ userId: { $ne: loggedInUserId } }).select("-password");
-
-		res.status(200).json(filteredUsers);
-	} catch (error) {
-		console.error("Error in getUsersFromSideBar", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
-};
 
 export const getMessages = async (req: Request, res: Response): Promise<any> => {
 	try {

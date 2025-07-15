@@ -3,29 +3,42 @@ import { create } from "zustand/react";
 import { axiosInstance } from "../lib/Axios.ts";
 import toast from "react-hot-toast";
 import type { JSONContent } from '@tiptap/core';
+import type { Document } from "../types/Document.ts";
+import type { Editor } from '@tiptap/core';
 
 type DocumentStates = {
+    docs: Document[],
+    currentDoc: Document | null,
+    editorInstance: Editor | null;
     createDoc: (docName: string, docType: string, roomId: string) => Promise<void>;
     getDoc: (docId: string) => Promise<void>;
     saveDoc: (docId: string, content: JSONContent) => Promise<void>;
+    getAllDocs: (docroomIdId: string) => Promise<void>;
+    handleOnSave: () => Promise<void>;
 };
 
-export const useDocumentStore = create<DocumentStates>(() => ({
+export const useDocumentStore = create<DocumentStates>((set, get) => ({
+    docs: [],
+    currentDoc: null,
+    editorInstance: null,
     createDoc: async (docName: string, docType: string, roomId: string): Promise<void> => {
         try {
-            const data = {docName, docType, roomId};
+            const data = { docName, docType, roomId };
             const response = await axiosInstance.post("/doc/createDoc", data);
-            console.log("successfully created document", response);
+            const doc = response.data;
+            const { docs } = get();
+            set({ docs: [...docs, doc] });
+            set({ currentDoc: doc });
             toast.success(`successfully created document`);
         } catch (e) {
+            console.log(e)
             toast.error("Error creating document");
         }
     },
     getDoc: async (docId: string): Promise<void> => {
         try {
             const response = await axiosInstance.get(`/doc/getDoc/${docId}`);
-            const content = response.data.content;
-            console.log("doc fetched successfully: ",content);
+            set({ currentDoc: response.data });
             toast.success(`successfully fetched doc`);
         } catch (e) {
             toast.error("Error getting messages");
@@ -33,12 +46,27 @@ export const useDocumentStore = create<DocumentStates>(() => ({
     },
     saveDoc: async (docId: string, content: JSONContent) => {
         try {
-            const data = {docId, content}
+            const data = { docId, content }
             const response = await axiosInstance.post("/doc/saveDoc", data);
-            toast.success(`successfully saved doc to database`);
-            console.log("successfully saved document", response);
+            set({ currentDoc: response.data });
+            toast.success(`successfully saved doc : ${response.data.docName} to database`);
         } catch (e: Error | any) {
-            toast.error("Failed to ssave doc " + e.response?.data?.error || "Unknown error");
+            toast.error("Failed to save doc " + e.response?.data?.error || "Unknown error");
+        }
+    },
+    getAllDocs: async (roomId: string) => {
+        try {
+            const response = await axiosInstance.get(`/doc/getAllDocs/${roomId}`);
+            set({ docs: response.data });
+        } catch (e: Error | any) {
+            toast.error("Failed to fetch all docs in room " + e.response?.data?.error || "Unknown error");
+        }
+    },
+    handleOnSave: async () => {
+        const editor = get().editorInstance;
+        const docId = get().currentDoc?.docId;
+        if (editor && docId) {
+            await get().saveDoc(docId, editor.getJSON());
         }
     }
 }))

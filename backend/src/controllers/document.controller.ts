@@ -23,6 +23,9 @@ export const createDoc = async (req: Request, res: Response): Promise<any> => {
             lastModifiedBy: userId,
             content: blankContent
         };
+        // TODO: 
+        // find room by roomId
+        // Add document to room
 
         const newDocument = await Document.create(document);
         res.status(201).json(newDocument);
@@ -40,7 +43,6 @@ export const saveDoc = async (req: Request, res: Response): Promise<any> => {
         if (!exisitingDoc) {
             return res.status(400).json({ error: "docId doesn't exist in database" });
         }
-        console.log(exisitingDoc)
         const updatedDoc = await Document.findOneAndUpdate({ docId: docId }, { lastModifiedBy: userId, content });
 
         res.status(201).json(updatedDoc);
@@ -52,16 +54,25 @@ export const saveDoc = async (req: Request, res: Response): Promise<any> => {
 
 export const getDoc = async (req: Request, res: Response): Promise<any> => {
     try {
-        console.log("this got called");
         const { docId } = req.params;
-        console.log(docId);
-        const exisitingDoc  = await Document.findOne({docId : docId});
+        const exisitingDoc = await Document.findOne({ docId: docId });
         if (!exisitingDoc) {
             return res.status(400).json({ error: "docId doesn't exist in database" });
         }
         res.status(200).json(exisitingDoc);
     } catch (e) {
-        console.error("Error in fetching inbox", e);
+        console.error("Error in fetching doc", e);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export const getAllDocs = async (req: Request, res: Response): Promise<any> => {
+    try {
+        const { roomId } = req.params;
+        const docs = await Document.find({roomId});
+        res.status(200).json(docs);
+    } catch (e) {
+        console.error("Error in fetching all docs in room", e);
         res.status(500).json({ error: "Internal server error" });
     }
 }
