@@ -51,7 +51,7 @@ const Editor = () => {
     if (currentDoc && currentDoc.content) {
       editor.commands.setContent(currentDoc.content);
     }
-  }, [currentDoc]);
+  }, [currentDoc, editor.commands]);
 
   useEffect(() => {
     if (editor) {
@@ -62,7 +62,7 @@ const Editor = () => {
 
   return (
     editor && (
-      <div>
+      <div className={"text-black"}>
         <button
           className="btn items-center gap-2 px-3 py-2"
           onClick={handleOnSave}
