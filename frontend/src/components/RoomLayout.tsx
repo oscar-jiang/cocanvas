@@ -2,8 +2,14 @@ import DocumentEditor from './DocumentEditor';
 import ChatPanel from './ChatPanel';
 import TopNavigation from './Room/TopNavigation.tsx';
 import DocumentTabs from './Room/DocumentTab.tsx';
+<<<<<<< HEAD
+=======
+import TextFormattingToolbar from './Room/TextFormattingHeader.tsx';
+import Editor from './Room/Editor.tsx';
+>>>>>>> 30b48f02e8dc89797cc93291460624a28ed1cc08
 
 const RoomLayout = () => {
+  
   return (
     <div className="h-screen flex flex-col bg-gray-100">
       {/* Top Navigation Bar */}
@@ -16,7 +22,7 @@ const RoomLayout = () => {
       <main className="flex flex-1 overflow-hidden w-full p-4 gap-6">
         {/* Document Editor */}
         <div className="flex-1 overflow-auto">
-          <DocumentEditor />
+          <Editor />
         </div>
 
         {/* Chat Panel */}
