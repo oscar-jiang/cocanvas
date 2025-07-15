@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 import axios from "axios";
 import socket from "../lib/socket.ts";
 import { useAuthStore } from "./useAuthStore.ts";
+import { useDocumentStore } from "./useDocumentStore.ts";
 
 export const useRoomStore = create<RoomStore>((set, get) => ({
   currentRoom: null,
@@ -78,16 +79,22 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       set({ isCheckingRoomAuth: false });
     }
   },
-  leavePageReset: () => {
+  leavePageReset: async () => {
     socket.emit("leaveRoom");
+    // save document before leaving room
+    await useDocumentStore.getState().handleOnSave();
     set({
       currentRoom: null,
-      rooms: [],
-      recentRooms: [],
+      // PROBLEM: if we clear the rooms, the fetching goes out of sync and the dashboard page doesn't rerender with any recent rooms
+      // rooms: [],
+      // recentRooms: [],
       isRoomsLoading: false,
       isCreatingRoom: false,
       isCheckingRoomAuth: true,
     });
+    //reset current document
+    useDocumentStore.setState({ currentDoc: null });
+
   },
   logoutReset: () => {
     if (socket.connected) socket.disconnect();
@@ -105,7 +112,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     const { recentRooms } = get();
     try {
       await axiosInstance.delete(`/room/${id}`);
-      set({recentRooms: recentRooms.filter(room => room.roomId !== id)});
+      set({ recentRooms: recentRooms.filter(room => room.roomId !== id) });
       toast.success("Successfully deleted!");
     } catch (e) {
       toast.error("Something went wrong.");
@@ -158,7 +165,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     const { recentRooms } = get();
     try {
       await axiosInstance.delete(`/room/${roomId}/collaborators/${authUser?.userId}`);
-      set({recentRooms: recentRooms.filter(room => room.roomId !== roomId)});
+      set({ recentRooms: recentRooms.filter(room => room.roomId !== roomId) });
       toast.success("Successfully unsubscribed from room!");
     } catch (e) {
       toast.error("Something went wrong in unsubcribing room!");
