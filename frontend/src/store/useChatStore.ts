@@ -56,6 +56,16 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       }));
     } catch (e) {
       toast.error("Error adding message");
+      console.log("Error adding messages: ", e);
     }
+  },
+
+  subscribeMessage: () => {
+    const socket = useAuthStore.getState().socket;
+    if (!socket) { return; }
+
+    socket.on("message", (message: Message) => {
+      get().addMessage(message);
+    });
   }
 }));

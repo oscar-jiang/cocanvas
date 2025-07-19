@@ -28,8 +28,6 @@ export const getMessages = async (req: Request, res: Response): Promise<any> => 
 				sender: sender || null,
 			};
 		});
-		console.log("Enriched messages: ", enrichedMessages);
-
 		// Send messages back to request
 		res.status(200).json(enrichedMessages);
 	} catch (error) {

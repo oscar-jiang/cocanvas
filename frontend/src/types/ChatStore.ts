@@ -9,4 +9,5 @@ export type ChatStore = {
   getMessages: (roomId: string) => Promise<void>;
   sendMessage: (messageData:MessageInput) => Promise<void>;
   addMessage : (msg: Message) => Promise<void>;
+  subscribeMessage: () => void;
 }
