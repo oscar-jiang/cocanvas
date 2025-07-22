@@ -21,8 +21,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors(
   {
-      origin: "http://localhost:5173", // frontend url when we decide to deploy it
-      credentials: true,
+    origin: "http://localhost:5173", // frontend url when we decide to deploy it
+    credentials: true,
   }
 ));
 
@@ -33,6 +33,6 @@ app.use("/api/inbox", inboxRoutes)
 app.use("/api/doc", docRoutes)
 
 server.listen(5001, () => {
-    console.log("Server started on port: " + PORT);
-    connectDB()
+  console.log("Server started on port: " + PORT);
+  connectDB()
 });

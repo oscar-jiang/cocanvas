@@ -3,11 +3,12 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import { FloatingMenu, BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import { useDocumentStore } from '../../store/useDocumentStore';
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 
-// define your extension array
+import * as Y from 'yjs';
+import { WebsocketProvider } from 'y-websocket';
+import Collaboration from "@tiptap/extension-collaboration";
 
-const extensions = [StarterKit];
 
 const editorProps = {
   attributes: {
@@ -42,11 +43,32 @@ const content = `
 const Editor = () => {
   const { currentDoc, handleOnSave } = useDocumentStore();
 
+  const [ydoc] = useState(() => new Y.Doc())
+  const [provider, setProvider] = useState<WebsocketProvider | null>(null)
+
+  useEffect(() => {
+    const p = new WebsocketProvider('ws://localhost:1234', "roomName", ydoc);
+    setProvider(p);
+
+    return () => {
+      p.destroy();
+      ydoc.destroy();
+    }
+  }, [ydoc]);
+
+  const extensions = [
+    StarterKit,
+    Collaboration.configure({
+      document:ydoc
+    }),
+  ];
+
   const editor = useEditor({
     extensions,
     editorProps,
     content,
   });
+
   useEffect(() => {
     if (currentDoc && currentDoc.content) {
       editor.commands.setContent(currentDoc.content);
@@ -58,7 +80,6 @@ const Editor = () => {
       useDocumentStore.setState({ editorInstance: editor });
     }
   }, [editor]);
-
 
   return (
     editor && (
