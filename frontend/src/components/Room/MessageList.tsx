@@ -1,9 +1,9 @@
-import { useChatStore } from '../store/useChatStore.ts';
+import { useChatStore } from '../../store/useChatStore.ts';
 import { useEffect, useRef } from 'react';
-import { useRoomStore } from '../store/useRoomStore.ts';
-import type { Message } from '../types/Message.ts';
-import { useAuthStore } from '../store/useAuthStore.ts';
-import { formatMessageTime } from '../lib/utils.ts';
+import { useRoomStore } from '../../store/useRoomStore.ts';
+import type { Message } from '../../types/Message.ts';
+import { useAuthStore } from '../../store/useAuthStore.ts';
+import { formatMessageTime } from '../../lib/utils.ts';
 
 const MessageList = () => {
   const { messages, getMessages, isMessagesLoading, subscribeMessage } = useChatStore();

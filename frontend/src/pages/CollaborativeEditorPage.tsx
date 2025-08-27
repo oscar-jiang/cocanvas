@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useRoomStore } from '../store/useRoomStore.ts';
-import RoomLayout from "../components/RoomLayout.tsx";
+import RoomLayout from "../components/Room/RoomLayout.tsx";
 
 const CollaborativeEditorPage = () => {
   const { roomId } = useParams();

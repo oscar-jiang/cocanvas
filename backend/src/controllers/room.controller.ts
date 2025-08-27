@@ -86,9 +86,28 @@ export const getMyRooms = async (req: Request, res: Response): Promise<any> => {
         { createdBy: userId },
         { collaborators: { $in: [userId] } },
       ]
-    });
+    }).sort({ updatedAt: -1 })
+      .lean();
 
-    res.status(200).json(rooms);
+    // Collect unique createdBy IDs
+    const userIds = Array.from(new Set(rooms.map(room => room.createdBy.toString())));
+
+    // Fetch usernames in one query
+    const users = await User.find(
+      { userId: { $in: userIds } },
+      { username: 1, userId: 1 }
+    ).lean();
+
+    // Map userId -> username
+    const userMap = new Map(users.map(user => [user.userId, user.username]));
+
+    // Attach username to each room
+    const roomsWithUsername = rooms.map(room => ({
+      ...room,
+      createdByUsername: userMap.get(room.createdBy.toString()) || "Unknown",
+    }));
+
+    res.status(200).json(roomsWithUsername);
   } catch (e) {
     console.error("Error in getting User's rooms", e);
     res.status(500).json({ error: "Internal server error" });

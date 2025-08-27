@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { useModalStore } from '../store/useModalStore';
-import { useInboxStore } from '../store/useInboxStore';
+import { useModalStore } from '../../store/useModalStore.ts';
+import { useInboxStore } from '../../store/useInboxStore.ts';
 
 const InviteModal = () => {
   const { closeInviteModal, selectedRoom } = useModalStore();
