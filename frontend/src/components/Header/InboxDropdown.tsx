@@ -1,4 +1,4 @@
-import { useInboxStore } from '../store/useInboxStore';
+import { useInboxStore } from '../../store/useInboxStore.ts';
 const Inbox = () => {
   const { acceptInvitation, declineInvitation, getInbox } = useInboxStore();
   const inbox = useInboxStore((s) => s.inbox); 
