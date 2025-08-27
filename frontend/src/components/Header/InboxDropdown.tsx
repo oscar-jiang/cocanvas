@@ -1,6 +1,6 @@
 import { useInboxStore } from '../../store/useInboxStore.ts';
-const Inbox = () => {
-  const { acceptInvitation, declineInvitation, getInbox } = useInboxStore();
+const InboxDropdown = () => {
+  const { acceptInvitation, declineInvitation } = useInboxStore();
   const inbox = useInboxStore((s) => s.inbox); 
 
   const handleAcceptClick = async (e: React.MouseEvent<HTMLButtonElement>, inviteId: string) => {
@@ -99,4 +99,4 @@ const Inbox = () => {
   );
 };
 
-export default Inbox;
+export default InboxDropdown;

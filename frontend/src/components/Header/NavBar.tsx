@@ -1,30 +1,32 @@
-import { useAuthStore } from "../store/useAuthStore.ts";
+import { useAuthStore } from "../../store/useAuthStore.ts";
 import { Link } from "react-router-dom";
-import { Home, LogIn, LogOut, Menu, Settings, User } from "lucide-react";
+import { LogIn, MailIcon, Search, User } from 'lucide-react';
 import { useEffect, useRef, useState } from "react";
-import { useSidebarStore } from "../store/useSidebarStore.ts";
-import { useModalStore } from "../store/useModalStore.ts";
-import { useInboxStore } from "../store/useInboxStore.ts";
-import Inbox from "./Inbox.js";
+import { useInboxStore } from "../../store/useInboxStore.ts";
+import InboxDropdown from "./InboxDropdown.tsx";
+import MenuDropdown from './MenuDropdown.tsx';
 
 const Navbar = () => {
-  const { getInbox, inbox } = useInboxStore();
-  const { logout, authUser } = useAuthStore();
-  const { toggleSidebar } = useSidebarStore();
-  const { openCreateRoom } = useModalStore();
+  const { getInbox } = useInboxStore();
+  const { authUser } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [inboxOpen, setInboxOpen] = useState(false);
-  const menuRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const inboxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
+      if (inboxRef.current && !inboxRef.current.contains(event.target as Node)) {
+        setInboxOpen(false);
+      }
     };
 
     const handleScroll = () => {
       setMenuOpen(false);
+      setInboxOpen(false);
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -37,34 +39,31 @@ const Navbar = () => {
   }, []);
 
   const handleInboxClick = async () => {
-    console.log("user id: ", authUser?.userId || "");
     await getInbox(authUser?.userId || "");
     setInboxOpen(!inboxOpen);
   };
 
   return (
-    <header className="flex justify-between items-center px-6 py-4 bg-white">
+    <header className="flex items-center justify-between px-50 py-4 bg-white rounded-b-3xl drop-shadow-xl border-b-4 border-gray-300 font-nunito">
       {/* Left section */}
       <div className="flex items-center gap-4">
         {!authUser ? (
           <>
-            <Link to={"/"} className="p-2 rounded-md cursor-pointer">
-              <Home className="size-6 text-black " />
+            <Link to={"/"} className="flex gap-10 p-2 rounded-md cursor-pointer items-center">
+              <div className={"size-[42px] bg-gray-300 rounded-full border-2 border-gray-500"}>
+              </div>
+              <h1 className={'font-nunito font-black text-black text-xl'}>
+                CoCanvas
+              </h1>
             </Link>
           </>
         ) : (
           <>
-            <button
-              className="p-2 hover:bg-gray-100 rounded-md cursor-pointer"
-              onClick={() => {
-                toggleSidebar();
-              }}
-            >
-              <Menu className="w-5 h-5 text-black" />
-            </button>
-
-            <Link to={"/dashboard"} className="p-2 rounded-md cursor-pointer">
-              <Home className="size-6 text-black " />
+            <Link to={"/dashboard"} className="flex gap-10 p-2 rounded-md cursor-pointer items-center">
+              <div className={"size-[42px] bg-gray-300 rounded-full border-2 border-gray-500"}></div>
+              <h1 className={'font-nunito font-black text-black text-xl'}>
+                CoCanvas
+              </h1>
             </Link>
           </>
         )}
@@ -72,7 +71,17 @@ const Navbar = () => {
 
       {/* Center section */}
       <div className="flex-1 flex justify-center">
-        <div className="text-sm text-gray-600"></div>
+        <div className={'relative w-full max-w-md'}>
+          <input
+            type="text"
+            placeholder="Search"
+            className={'w-full pl-12 pr-4 py-2 border-3 border-gray-300 rounded-2xl focus:outline-none focus:ring-2 text-gray-500 font-bold'}
+          />
+          <Search
+            className={'absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 size-5'}
+            strokeWidth={3.5}
+          />
+        </div>
       </div>
 
       {/* Right section */}
@@ -95,80 +104,23 @@ const Navbar = () => {
             </Link>
           </>
         ) : (
-          <>
-            <div className="relative">
-              <button
-                className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer relative"
-                onClick={() => handleInboxClick()}
-              >
-                📫 inbox
+          <div className={'flex flex-1 items-center gap-10'}>
+            {/*Inbox*/}
+            <div className={'flex gap-20 p-2 rounded-md cursor-pointer items-center'}>
+              <button onClick={() => handleInboxClick()}>
+                <MailIcon className={'size-[42px] text-gray-400'} />
               </button>
-              {inboxOpen && <Inbox />}
+              {/*InboxDropdown Dropdown*/}
+              {inboxOpen && <InboxDropdown />}
             </div>
 
-            {console.log("inbox", inbox)}
-
-            <button
-              className="bg-blue-500 px-4 py-2 rounded-full text-sm font-bold cursor-pointer"
-              onClick={() => {
-                openCreateRoom();
-              }}
-            >
-              ➕ Create
-            </button>
-            <div
-              // className="h-8 w-8 bg-gray-400 rounded-full cursor-pointer"
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              <Settings className={"text-black size-6 cursor-pointer"} />
+            {/*User*/}
+            <div onClick={() => setMenuOpen(!menuOpen)}>
+              <div className={"size-[42px] bg-gray-300 rounded-full border-2 border-gray-500"}></div>
             </div>
-
             {/* Dropdown */}
-            {menuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-md z-50">
-                <ul className="py-2 text-sm text-gray-700">
-                  <li>
-                    <Link
-                      to="/profile"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      <div className={"flex items-center gap-2"}>
-                        <User className="w-4 h-4" />
-                        Profile
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/settings"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                      onClick={() => setMenuOpen(false)}
-                    >
-                      <div className={"flex items-center gap-2"}>
-                        <Settings className="w-4 h-4" />
-                        Settings
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => {
-                        logout();
-                        setMenuOpen(false);
-                      }}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 cursor-pointer"
-                    >
-                      <div className={"flex items-center gap-2"}>
-                        <LogOut className="w-4 h-4" />
-                        Log Out
-                      </div>
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </>
+            {menuOpen && <MenuDropdown setMenuOpen={setMenuOpen} />}
+          </div>
         )}
       </div>
     </header>

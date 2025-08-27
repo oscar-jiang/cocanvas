@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import {Routes, Route, Navigate} from 'react-router-dom';
-import NavBar from './components/NavBar.tsx';
+import NavBar from './components/Header/NavBar.tsx';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import SettingsPage from './pages/SettingsPage';
@@ -12,6 +12,7 @@ import DashboardPage from "./pages/DashboardPage.tsx";
 import CollaborativeEditorPage from "./pages/CollaborativeEditorPage.tsx";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import LibraryPage from "./pages/LibraryPage.tsx";
+import HomePage from './pages/HomePage.tsx';
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
@@ -68,6 +69,10 @@ const App = () => {
           path="/projects"
           element={authUser ? <LibraryPage /> : <Navigate to="/login"/> }
         />
+        <Route
+          path={"/home"}
+          element={authUser ? <HomePage /> : <Navigate to="/login"/> }
+        />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />
@@ -76,9 +81,7 @@ const App = () => {
         <Route path="/unauthorized" element={<UnauthorizedPage />}/>
       </Routes>
 
-
       <Toaster />
-
     </div>
   );
 };
