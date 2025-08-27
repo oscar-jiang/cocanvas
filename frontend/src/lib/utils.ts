@@ -12,3 +12,11 @@ export function formatMonthDay(date: string): string {
     day: 'numeric',
   });
 }
+
+export function formatYear(date: string): string {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short', // or 'short' for Jan, Feb, etc.
+    day: 'numeric',
+    year: 'numeric',
+  });
+}

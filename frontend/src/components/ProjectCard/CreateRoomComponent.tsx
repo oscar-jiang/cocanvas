@@ -1,18 +1,33 @@
-import { useModalStore } from '../store/useModalStore';
-import React, { useState } from 'react';
+import { useModalStore } from '../../store/useModalStore.ts';
+import React, { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useRoomStore } from '../store/useRoomStore.ts';
+import { useRoomStore } from '../../store/useRoomStore.ts';
 
 const CreateRoomComponent = () => {
   const { isCreateRoomOpen, closeCreateRoom } = useModalStore();
-  const { createRoom, isCreatingRoom } = useRoomStore();
+  const { createRoom, isCreatingRoom, getRooms } = useRoomStore();
   const [formData, setFormData] = useState({
     roomName: '',
     description: '',
   });
 
+  useEffect(() => {
+    if (isCreateRoomOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    // Reset on unmount just in case
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isCreateRoomOpen]);
+
   const validateRoomCreation = (): string | boolean => {
+    // Prevent background scroll when modal is open
+
     const name = formData.roomName.trim();
     const nameLength = formData.roomName.length;
     const descriptionLength = formData.description.length;
@@ -43,6 +58,13 @@ const CreateRoomComponent = () => {
           roomName: '',
           description: '',
         });
+
+        // Close the modal
+        closeCreateRoom();
+
+        // Refresh the rooms list
+        getRooms();
+
       } catch (e) {
         console.error('Room creation failed', e);
         toast.error('Room creation failed');
@@ -53,7 +75,7 @@ const CreateRoomComponent = () => {
   if (!isCreateRoomOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 text-black">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 text-black w-full">
       <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
         <h2 className="text-xl font-bold mb-4">Create New Room</h2>
 

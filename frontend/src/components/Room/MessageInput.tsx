@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useChatStore } from '../store/useChatStore.ts';
+import { useChatStore } from '../../store/useChatStore.ts';
 import { Send } from 'lucide-react';
 
 const MessageInput = () => {

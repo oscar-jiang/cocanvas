@@ -10,7 +10,7 @@ const MenuDropdown = ({ setMenuOpen }: MenuDropdownProps) => {
   const { logout } = useAuthStore();
 
   return (
-    <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-md z-50">
+    <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-md z-100">
       <ul className="py-2 text-sm text-gray-700">
         <li>
           <Link

@@ -1,12 +1,12 @@
 import { FileText } from 'lucide-react';
-import { useRoomStore } from '../store/useRoomStore.ts';
+import { useRoomStore } from '../../store/useRoomStore.ts';
 import { useEffect } from 'react';
-import type { Room } from '../types/Room.ts';
-import { formatMonthDay } from '../lib/utils.ts';
-import { useAuthStore } from '../store/useAuthStore.ts';
+import type { Room } from '../../types/Room.ts';
+import { formatMonthDay } from '../../lib/utils.ts';
+import { useAuthStore } from '../../store/useAuthStore.ts';
 import { Link } from 'react-router-dom';
-import InviteModal from './InviteModal.tsx';
-import { useModalStore } from '../store/useModalStore.ts';
+import InviteModal from '../Invite/InviteModal.tsx';
+import { useModalStore } from '../../store/useModalStore.ts';
 
 const RoomList = () => {
   const { isRecentRoomsLoading, recentRooms, getRecentRooms, unsubscribeRoom, deleteRoom } =
