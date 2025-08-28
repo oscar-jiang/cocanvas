@@ -42,12 +42,12 @@ export const useInboxStore = create<InboxStore>((set, get) => ({
   },
   declineInvitation: async (inviteId: string) => {
     try {
-      await axiosInstance.post(`/inbox/acceptInvitation/${inviteId}`);
+      await axiosInstance.post(`/inbox/declineInvitation/${inviteId}`);
       toast.success("Invitation Declined successfully");
       const { inbox } = get();
       set({ inbox: inbox.filter(invitation => invitation.inviteId !== inviteId) });
     } catch (e: Error | any) {
-      toast.error("Failed to accept invitation. " + e.response?.data?.error || "Unknown error");
+      toast.error("Failed to decline invitation. " + e.response?.data?.error || "Unknown error");
     }
   }
 }))

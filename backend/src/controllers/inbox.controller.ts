@@ -13,16 +13,31 @@ export const sendInvite = async (req: Request, res: Response): Promise<any> => {
 
 		// Validate required fields
 		if (!invitorId || !invitorUsername || !roomId || !roomName) {
-			return res.status(400).json({ error: "All fields are required" });
+			return res.status(400).json({ error: "All fields are required." });
 		}
+
+		// find the room
+		const room = await Room.findOne({ roomId: roomId });
+
+		if (!room) {
+			return res.status(400).json({ error: "Room not found." });
+		}
+		const allCollabs = room.collaborators;
+
 
 		//find the receiver by email
 		const receiver = await User.findOne({ email: receiverEmail });
 		if (!receiver) {
-			return res.status(400).json({ error: "Receiver not found" });
+			return res.status(400).json({ error: "Receiver not found." });
 		}
 		if (receiver.userId === invitorId) {
 			return res.status(400).json({ error: "You cannot invite yourself!" });
+		}
+
+		// check to see if receiver is already in room
+		const isReceiverInRoom = allCollabs.find((collabID) => collabID === receiver.userId);
+		if (isReceiverInRoom) {
+			return res.status(400).json({ error: "This User is already in the room!" });
 		}
 
 		// Create the invite object
