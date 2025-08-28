@@ -63,7 +63,7 @@ const CreateRoomComponent = () => {
         closeCreateRoom();
 
         // Refresh the rooms list
-        getRooms();
+        await getRooms();
 
       } catch (e) {
         console.error('Room creation failed', e);

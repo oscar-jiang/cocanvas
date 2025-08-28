@@ -1,14 +1,18 @@
 import { useInboxStore } from '../../store/useInboxStore.ts';
 import { truncateText } from '../../lib/utils.ts';
+import { useRoomStore } from '../../store/useRoomStore.ts'
+
 const InboxDropdown = () => {
   const { acceptInvitation, declineInvitation } = useInboxStore();
-  const inbox = useInboxStore((s) => s.inbox); 
+  const inbox = useInboxStore((s) => s.inbox);
+  const { getRooms } = useRoomStore();
 
   const handleAcceptClick = async (e: React.MouseEvent<HTMLButtonElement>, inviteId: string) => {
     try {
       e.stopPropagation();
       e.preventDefault();
       await acceptInvitation(inviteId);
+      await getRooms();
     } catch (error) {
       console.error('Error accepting invitation:', error);
     }
@@ -38,11 +42,11 @@ const InboxDropdown = () => {
         {
           inbox.map((invitation) => {
             return (
-              <div className={'flex-1 overflow-y-auto'}>
+              <div className={'flex-1 overflow-y-auto'} key={invitation.inviteId}>
                 {/* MAIN CARD CONTAINER */}
                 <div className={'border-b-2 border-[#E5E5E5]'}>
                   {/* --- INVITE CARD --- */}
-                  <div key={invitation.inviteId} className={'w-full p-4 bg-white'}>
+                  <div  className={'w-full p-4 bg-white'}>
                     {/* Top (User Information & Room Information */}
                     <div className={'flex gap-4 mb-4'}>
                       {/* Left (Icon & Name) */}
@@ -88,7 +92,7 @@ const InboxDropdown = () => {
                       <div className={'flex flex-col gap-3'}>
                         <button
                           className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] w-[110px] h-[32px]'}
-                          onclick={ (e) => handleAcceptClick(e, invitation.inviteId || '')}
+                          onClick={ (e) => handleAcceptClick(e, invitation.inviteId || '')}
                         >
                           <span className={'text-sm font-black text-[#7D7D7D]'}>Accept</span>
                         </button>
