@@ -20,3 +20,10 @@ export function formatYear(date: string): string {
     year: 'numeric',
   });
 }
+
+export function formatMonthYear(date: string): string {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'long', // or 'short' for Jan, Feb, etc.
+    year: 'numeric',
+  });
+}

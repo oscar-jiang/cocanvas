@@ -57,10 +57,6 @@ const App = () => {
             element={authUser ? <SettingsPage /> : <Navigate to="/login" />}
           />
           <Route
-            path="/profile"
-            element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
-          />
-          <Route
             path="/p/:roomId"
             element={authUser ? <CollaborativeEditorPage /> : <Navigate to="/login"/> }
           />

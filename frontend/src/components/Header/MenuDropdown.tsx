@@ -1,56 +1,78 @@
-import { Link } from 'react-router-dom';
-import { LogOut, Settings, User } from 'lucide-react';
+import { LogOut, Settings } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore.ts';
+import { formatMonthYear } from '../../lib/utils.ts';
+import { useNavigate } from 'react-router-dom';
 
 interface MenuDropdownProps {
   setMenuOpen: (open: boolean) => void;
 }
 
 const MenuDropdown = ({ setMenuOpen }: MenuDropdownProps) => {
-  const { logout } = useAuthStore();
+  const { logout, authUser } = useAuthStore();
+  const navigate = useNavigate();
+
+  const goSettings = () => navigate('/settings');
+  const closeMenu = () => setMenuOpen(false);
 
   return (
-    <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded shadow-md z-100">
-      <ul className="py-2 text-sm text-gray-700">
-        <li>
-          <Link
-            to="/profile"
-            className="block px-4 py-2 hover:bg-gray-100"
-            onClick={() => setMenuOpen(false)}
-          >
-            <div className={"flex items-center gap-2"}>
-              <User className="w-4 h-4" />
-              Profile
+    <div className={'w-[283px] h-[252px] absolute right-0 top-full mt-2 bg-white border-2 border-[#E5E5E5] rounded-3xl shadow-md z-100 font-nunito'}>
+      {/* Main Container */}
+      <div className={'w-[230px] mx-auto h-full flex flex-col justify-center'}>
+        {/* User Information */}
+        <div className={'flex items-center gap-4 mb-4'}>
+          {/* User Profile Icon */}
+          <div>
+            <div className={'w-[66px] h-[66px] bg-[#D9D9D9] rounded-xl'}></div>
+          </div>
+
+          {/* User Name, Username, joined date */}
+          <div className={'flex flex-col justify-center gap-0'}>
+            {/* Name */}
+            <h1 className={'font-black text-[#4B4B4B] text-lg line-clamp-1'}>
+              {authUser?.fullName}
+            </h1>
+
+            {/* username */}
+            <div className={'flex flex-col justify-center gap-1'}>
+              <span className={'font-black text-[#4B4B4B] text-xs line-clamp-1'}>
+                {authUser?.username}
+              </span>
             </div>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/settings"
-            className="block px-4 py-2 hover:bg-gray-100"
-            onClick={() => setMenuOpen(false)}
-          >
-            <div className={"flex items-center gap-2"}>
-              <Settings className="w-4 h-4" />
-              Settings
+            {/* Join Date */}
+            <div>
+              <span className={'font-black text-[#4B4B4B] text-xs line-clamp-1'}>
+                Joined {authUser?.createdAt ? formatMonthYear(authUser.createdAt) : '?'}
+              </span>
             </div>
-          </Link>
-        </li>
-        <li>
-          <button
-            onClick={() => {
-              logout();
-              setMenuOpen(false);
-            }}
-            className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 cursor-pointer"
-          >
-            <div className={"flex items-center gap-2"}>
-              <LogOut className="w-4 h-4" />
-              Log Out
-            </div>
-          </button>
-        </li>
-      </ul>
+          </div>
+        </div>
+
+        {/* Buttons Container */}
+        <div className={'flex flex-col gap-4'}>
+          {/* Settings Button */}
+          <div className={'flex flex-col gap-3'}>
+            <button
+              className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] w-full h-[40px]'}
+              onClick={() => {goSettings(); closeMenu();}}
+            >
+              <Settings className={'size-[20px] text-[#7D7D7D] mr-3'} />
+              <span className={'text-xl font-black text-[#7D7D7D]'}>Settings</span>
+            </button>
+          </div>
+
+          {/* Log Out Button */}
+          <div className={'flex flex-col gap-3'}>
+            <button
+              className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] w-full h-[40px]'}
+              onClick={() => {logout(); closeMenu();}}
+            >
+              <LogOut className={'size-[20px] text-[#7D7D7D] mr-3'} />
+              <span className={'text-xl font-black text-[#7D7D7D]'}>Sign Out</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 };
