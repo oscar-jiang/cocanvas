@@ -12,9 +12,13 @@ import {
   UsersRound,
 } from 'lucide-react';
 import Editor from '../Room/Editor.tsx';
-import ChatPanel from '../Room/ChatPanel.tsx';
+import ChatPanel from './ChatPanel.tsx';
+import { useNavigate } from 'react-router-dom';
 
 const ProjectRoomLayout = () => {
+  const navigate = useNavigate();
+  const goHome = () => navigate('/home');
+
   return (
     // PRIMARY CONTAINER
     <div className={'font-nunito'}>
@@ -53,7 +57,10 @@ const ProjectRoomLayout = () => {
               </button>
 
               {/* Exit */}
-              <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}>
+              <button
+                className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}
+                onClick={goHome}
+              >
                 <DoorOpen className={'text-[#4B4B4B]'} />
                 <span className={'font-black text-[#4B4B4B]'}>Exit</span>
               </button>
@@ -105,12 +112,12 @@ const ProjectRoomLayout = () => {
 
               {/* Save & Delete Buttons */}
               <div className={'flex space-x-4 ml-14'}>
-                <button className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out'}>
+                <button className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
                   <Save className={'size-[30px] text-[#7D7D7D]'} />
                 </button>
 
                 <button
-                  className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out'}>
+                  className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
                   <Trash2 className={'size-[30px] text-[#7D7D7D]'} />
                 </button>
               </div>
@@ -119,7 +126,7 @@ const ProjectRoomLayout = () => {
             {/* Collapse Chat */}
             <div>
               <button
-                className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out'}
+                className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
               >
                 <MessagesSquare className={'size-[30px] text-[#7D7D7D] mr-5'} />
                 <span className={'text-3xl font-black text-[#7D7D7D]'}>Chat</span>
@@ -130,25 +137,25 @@ const ProjectRoomLayout = () => {
           {/* Tool Bar */}
           <div className={'flex items-center space-x-3 mb-5 ml-5 mx-auto'}>
             <button
-              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out'}>
+              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
               <Bold className={'text-[#7D7D7D]'} />
               <span className={'text-sm font-black text-[#7D7D7D]'}>Bold</span>
             </button>
 
             <button
-              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out'}>
+              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
               <Italic className={'text-[#7D7D7D]'} />
               <span className={'text-sm font-black text-[#7D7D7D]'}>Italic</span>
             </button>
 
             <button
-              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out'}>
+              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
               <Link className={'text-[#7D7D7D]'} />
               <span className={'text-sm font-black text-[#7D7D7D]'}>Link</span>
             </button>
 
             <button
-              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out'}>
+              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
               <CodeXml className={'text-[#7D7D7D]'} />
               <span className={'text-sm font-black text-[#7D7D7D]'}>Code</span>
             </button>
