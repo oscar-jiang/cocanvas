@@ -156,7 +156,7 @@ const SignupPage = () => {
                     <span className={'text-base font-bold text-[#7D7D7D]'}>Loading...</span>
                   </>
                 ) : (
-                  <span className={'text-base font-bold text-[#7D7D7D]'}>Sign In</span>
+                  <span className={'text-base font-bold text-[#7D7D7D]'}>Sign Up</span>
                 )}
               </button>
             </form>
@@ -165,7 +165,7 @@ const SignupPage = () => {
               <p className={"text-base-content/60"}>
                 Already have an account?{" "}
                 <Link to="/login" className={"link"}>
-                  Sign in
+                  Log In
                 </Link>
               </p>
             </div>

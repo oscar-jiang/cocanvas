@@ -1,6 +1,6 @@
 import { useAuthStore } from "../../store/useAuthStore.ts";
 import { Link } from "react-router-dom";
-import { LogIn, MailIcon, Search, User } from 'lucide-react';
+import { Book, LogIn, MailIcon, Search } from 'lucide-react';
 import { useEffect, useRef, useState } from "react";
 import { useInboxStore } from "../../store/useInboxStore.ts";
 import InboxDropdown from "./InboxDropdown.tsx";
@@ -97,17 +97,22 @@ const Navbar = () => {
             <>
               <Link
                 to="/login"
-                className="btn btn-outline btn-sm gap-2 text-black"
+                className="gap-2"
               >
-                <LogIn className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign In</span>
+                {/* Collaborators */}
+                <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}>
+                  <LogIn className={'text-[#4B4B4B]'} />
+                  <span className={'font-black text-[#4B4B4B]'}>Log In</span>
+                </button>
               </Link>
               <Link
                 to="/signup"
-                className="btn btn-outline btn-success btn-sm gap-2"
+                className="gap-2"
               >
-                <User className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign Up</span>
+                <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}>
+                  <Book className={'text-[#4B4B4B]'} />
+                  <span className={'font-black text-[#4B4B4B]'}>Sign Up</span>
+                </button>
               </Link>
             </>
           ) : (

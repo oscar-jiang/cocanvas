@@ -76,7 +76,7 @@ const LoginPage = () => {
                     <span className={'text-base font-bold text-[#7D7D7D]'}>Loading...</span>
                   </>
                 ) : (
-                  <span className={'text-base font-bold text-[#7D7D7D]'}>Sign In</span>
+                  <span className={'text-base font-bold text-[#7D7D7D]'}>Log In</span>
                 )}
               </button>
             </form>
