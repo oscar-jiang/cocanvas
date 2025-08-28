@@ -1,4 +1,4 @@
-import React, {type FormEvent, useState} from "react";
+import {type FormEvent, useState} from "react";
 import {useAuthStore} from "../store/useAuthStore.ts";
 import {Loader2} from "lucide-react";
 import toast from 'react-hot-toast';
@@ -24,7 +24,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className={'flex items-center justify-center min-h-[calc(100vh-4rem)]'}>
+    <div className={'font-nunito flex items-center justify-center min-h-[calc(100vh-4rem)]'}>
 
       {/* MAIN LOGIN COMPONENT */}
       <div>
