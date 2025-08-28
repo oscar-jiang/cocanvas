@@ -64,7 +64,15 @@ const MenuDropdown = ({ setMenuOpen }: MenuDropdownProps) => {
           <div className={'flex flex-col gap-3'}>
             <button
               className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] w-full h-[40px]'}
-              onClick={() => {logout(); closeMenu();}}
+              onClick={async () => {
+                try {
+                  await logout();
+                  closeMenu();
+                } catch (e) {
+                  toast.error('Error logging out');
+                  console.error('Logout failed', e);
+                }
+              }}
             >
               <LogOut className={'size-[20px] text-[#7D7D7D] mr-3'} />
               <span className={'text-xl font-black text-[#7D7D7D]'}>Sign Out</span>

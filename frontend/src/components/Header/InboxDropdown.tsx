@@ -1,4 +1,5 @@
 import { useInboxStore } from '../../store/useInboxStore.ts';
+import { truncateText } from '../../lib/utils.ts';
 const InboxDropdown = () => {
   const { acceptInvitation, declineInvitation } = useInboxStore();
   const inbox = useInboxStore((s) => s.inbox); 
@@ -23,79 +24,101 @@ const InboxDropdown = () => {
   };
 
   return (
-    <div className="absolute top-16 -right-30 z-50">
-      <ul className="bg-base-100 rounded-box shadow-md max-w-sm w-96 p-2 space-y-2">
-        <li className="px-4 pt-2 text-xs opacity-60 tracking-wide">Inbox</li>
-        {inbox.length === 0 && (
-          <li className="text-center text-sm opacity-70 py-4">
-            No invitations yet. Invite your friends to collaborate!
-          </li>
-        )}
+    <div className="absolute top-16 right-15 flex flex-col w-[285px] h-[425px] bg-white border-2 border-[#E5E5E5] rounded-3xl shadow-md z-100">
+      {/* Top */}
+      <div className="border-b-2 border-[#D8D8D8] mb-4 w-full">
+        <h2 className="text-xl font-black text-[#7D7D7D] text-center mt-4 mb-4">
+          Inbox
+          ({inbox.length})
+        </h2>
+      </div>
 
-        {inbox.map((invitation) => {
-          return (
-            <li
-              className="flex items-start gap-3 p-3 rounded-lg hover:bg-base-200 transition"
-              key={invitation.inviteId}
-            >
-              <img
-                className="size-10 rounded-box"
-                src="https://img.daisyui.com/images/profile/demo/1@94.webp"
-                alt="profile"
-              />
+      {/* Middle */}
+      <div className={'flex flex-col gap-4 overflow-y-auto max-h-[280px]'}>
+        {
+          inbox.map((invitation) => {
+            return (
+              <div className={'flex-1 overflow-y-auto'}>
+                {/* MAIN CARD CONTAINER */}
+                <div className={'border-b-2 border-[#E5E5E5]'}>
+                  {/* --- INVITE CARD --- */}
+                  <div key={invitation.inviteId} className={'w-full p-4 bg-white'}>
+                    {/* Top (User Information & Room Information */}
+                    <div className={'flex gap-4 mb-4'}>
+                      {/* Left (Icon & Name) */}
+                      <div className={'flex flex-col items-center gap-2'}>
+                        {/* Top Icon */}
+                        <div>
+                          <div className={'w-11 h-11 bg-[#E5E5E5] rounded-full'}></div>
+                        </div>
 
-              <div className="flex-1">
-                <div className="text-sm font-medium">{invitation.invitorUsername}</div>
-                <div className="text-sm font-medium">{invitation.invitorEmail}</div>
-                <div className="text-xs uppercase font-semibold opacity-60">
-                  Invited you to join :
+                        {/* Bottom Name */}
+                        <div>
+                        <span className={'font-black text-[#4B4B4B] text-xs line-clamp-1'}>
+                          {truncateText(invitation.invitorUsername, 10)}
+                        </span>
+                        </div>
+                      </div>
+
+                      {/* Right (Sender Email, invited you to join and room name) */}
+                      <div className={'flex flex-col justify-center gap-0'}>
+                        {/* sender email */}
+                        <div>
+                        <span className={'font-bold text-[#7D7D7D] text-sm line-clamp-1'}>
+                          {truncateText(invitation.invitorEmail, 20)}
+                        </span>
+                        </div>
+                        {/* invited you to join */}
+                        <div>
+                          <span className={'font-bold text-[#C8C8C8] text-xs line-clamp-1'}>Invited you to join:</span>
+                        </div>
+                        {/* room name */}
+                        <div>
+                          <div className={'bg-[#E5E5E5] p-2 rounded-lg'}>
+                          <span className={'font-bold text-[#7D7D7D] text-sm line-clamp-1'}> {truncateText(invitation.roomName, 30)}
+                          </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Accept & Decline Buttons */}
+                    <div className={'flex items-center gap-3 justify-center'}>
+                      {/* Accept Button */}
+                      <div className={'flex flex-col gap-3'}>
+                        <button
+                          className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] w-[110px] h-[32px]'}
+                          onclick={ (e) => handleAcceptClick(e, invitation.inviteId || '')}
+                        >
+                          <span className={'text-sm font-black text-[#7D7D7D]'}>Accept</span>
+                        </button>
+                      </div>
+
+                      {/* Decline Button */}
+                      <div className={'flex flex-col gap-3'}>
+                        <button
+                          className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] w-[110px] h-[32px]'}
+                          onClick={(e) => handleDeclineClick(e, invitation.inviteId || '')}
+                        >
+                          <span className={'text-sm font-black text-[#7D7D7D]'}>Decline</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  {/* --- INVITE CARD --- */}
                 </div>
-                <div className="mt-1">
-                  <span className="badge badge-soft badge-primary badge-sm">
-                    {invitation.roomName}
-                  </span>
-                </div>
-                <p className="text-xs mt-1 opacity-70">{invitation.personalMessage}</p>
+                {/* MAIN CARD CONTAINER end */}
               </div>
+            );
+            }
+          )}
+      </div>
+      {/*/!* Bottom *!/*/}
+      {/*<div>*/}
 
-              {/* accept / decline buttons */}
-              <div className="flex flex-col gap-1">
-                <button
-                  className="btn btn-xs btn-ghost text-success"
-                  onClick={(e) => handleAcceptClick(e, invitation.inviteId || '')}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="size-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                  </svg>
-                </button>
-                <button
-                  className="btn btn-xs btn-ghost text-error"
-                  onClick={(e) => handleDeclineClick(e, invitation.inviteId || '')}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="size-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      {/*</div>*/}
     </div>
+
   );
 };
 
