@@ -7,7 +7,7 @@ export interface RoomStore {
   isCreatingRoom: boolean;
 
   rooms: Room[];
-  isRoomsLoading: false;
+  isRoomsLoading: boolean;
   getRooms: () => Promise<void>;
 
   isCheckingRoomAuth: boolean;

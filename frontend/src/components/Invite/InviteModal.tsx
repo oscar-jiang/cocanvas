@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useModalStore } from '../../store/useModalStore.ts';
 import { useInboxStore } from '../../store/useInboxStore.ts';
-import { Mail, X } from 'lucide-react';
+import { Loader2, Mail, X } from 'lucide-react';
 
 const InviteModal = () => {
   const { closeInviteModal, selectedRoom, isInviteModalOpen } = useModalStore();
-  const { sendInvite } = useInboxStore();
+  const { sendInvite, isCreatingInvite } = useInboxStore();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -43,8 +43,7 @@ const InviteModal = () => {
     }
 
     if (!email.includes('@')) {
-      toast('Please enter a valid email.');
-      return;
+      return toast('Please enter a valid email.');
     }
 
     return true;
@@ -64,7 +63,7 @@ const InviteModal = () => {
           roomId: selectedRoom?.roomId || '',
           roomName: selectedRoom?.roomName || '',
         });
-      } catch (e: Error) {
+      } catch (e) {
         toast.error('Error sending invite')
         console.error('Error sending invite: ', e);
         return;
@@ -132,7 +131,6 @@ const InviteModal = () => {
                   placeholder={'Enter Message (Optional)'}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  type={'text'}
                 />
               </div>
 
@@ -141,9 +139,19 @@ const InviteModal = () => {
                 <button
                   className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] w-[188px] h-[40px] cursor-pointer'}
                   type="submit"
+                  disabled={isCreatingInvite}
                 >
-                  <Mail className={'size-[20px] text-[#7D7D7D] mr-3'} />
-                  <span className={'text-sm font-black text-[#7D7D7D]'}>Send Invite</span>
+                  {isCreatingInvite ? (
+                    <>
+                      <Loader2 className={'size-[20px] text-[#7D7D7D] mr-3'} />
+                      <span className={'text-sm font-black text-[#7D7D7D]'}>Creating...</span>
+                    </>
+                    ) : (
+                    <>
+                      <Mail className={'size-[20px] text-[#7D7D7D] mr-3'} />
+                      <span className={'text-sm font-black text-[#7D7D7D]'}>Send Invite</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>

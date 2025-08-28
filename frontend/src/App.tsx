@@ -4,7 +4,6 @@ import NavBar from './components/Header/NavBar.tsx';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import SettingsPage from './pages/SettingsPage';
-import ProfilePage from './pages/ProfilePage';
 import {useAuthStore} from "./store/useAuthStore.ts";
 import {Toaster} from "react-hot-toast";
 import LandingPage from "./pages/LandingPage.tsx";

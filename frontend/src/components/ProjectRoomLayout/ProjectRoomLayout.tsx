@@ -14,10 +14,13 @@ import {
 import Editor from '../Room/Editor.tsx';
 import ChatPanel from './ChatPanel.tsx';
 import { useNavigate } from 'react-router-dom';
+import { useRoomStore } from '../../store/useRoomStore.ts';
+import { truncateText } from '../../lib/utils.ts';
 
 const ProjectRoomLayout = () => {
   const navigate = useNavigate();
   const goHome = () => navigate('/home');
+  const { currentRoom: room } = useRoomStore();
 
   return (
     // PRIMARY CONTAINER
@@ -38,7 +41,7 @@ const ProjectRoomLayout = () => {
               </div>
 
               <h2 className={'text-[#4B4B4B] font-black text-2xl  mt-2 p-0 leading-tight line-clamp-2'}>
-                WRDS 150 Summer Course
+                {truncateText(room?.roomName ?? '', 50)}
               </h2>
             </div>
 
