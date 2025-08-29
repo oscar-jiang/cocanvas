@@ -4,9 +4,12 @@ import {useRoomStore} from "../store/useRoomStore.ts";
 import CreateNewProjectCard from '../components/ProjectCard/CreateNewProjectCard.tsx';
 import TemplateProjectCard from '../components/ProjectCard/TemplateProjectCard.tsx';
 import ProjectCard from '../components/ProjectCard/ProjectCard.tsx';
+import { useModalStore } from '../store/useModalStore.ts';
+import InviteModal from '../components/Invite/InviteModal.tsx';
 
 const HomePage = () => {
   const { rooms, isRoomsLoading, getRooms } = useRoomStore();
+  const { isInviteModalOpen } = useModalStore();
 
   useEffect(() => {
     getRooms();
@@ -14,6 +17,8 @@ const HomePage = () => {
 
   return (
     <div>
+      {isInviteModalOpen && <InviteModal />}
+
       {/*--- THIS WILL BE THE MAIN HOMEPAGE LAYOUT ---*/}
       <div className={'flex justify-center h-full bg-white'}>
 

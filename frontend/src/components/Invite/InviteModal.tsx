@@ -101,8 +101,8 @@ const InviteModal = () => {
 
             {/* Room Name (truncate the text if the room name is too long) */}
             <div className={'w-[302px] h-[38px] bg-[#E5E5E5] flex items-center justify-center rounded-md'}>
-              <span className={'font-bold text-[#7D7D7D]'}>
-                Testing Room Name
+              <span className={'font-bold text-[#7D7D7D] truncate'}>
+                {selectedRoom?.roomName}
               </span>
             </div>
           </div>
