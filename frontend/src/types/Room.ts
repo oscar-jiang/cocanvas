@@ -9,4 +9,5 @@ export interface Room {
   createdAt: string;
   updatedAt: string;
   createdByUsername?: string;
+  roomIcon?: string;
 }

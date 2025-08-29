@@ -1,7 +1,7 @@
 import { LogOut, Star, UserRoundPlus, UsersRound, Trash } from 'lucide-react';
 import type { Room } from '../../types/Room.ts';
 import React from 'react';
-import { formatYear } from '../../lib/utils.ts';
+import { formatYear, randomEmoji } from '../../lib/utils.ts';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import { useNavigate } from 'react-router-dom';
 import InviteModal from '../Invite/InviteModal.tsx';
@@ -64,7 +64,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
 
       {/* Project Icon */}
       <div className={'absolute left-1/5 top-[76px] -translate-x-1/2 -translate-y-1/2 text-4xl p-0'}>
-        🚀
+        {room.roomIcon ? room.roomIcon : '🚀'}
       </div>
 
       {/* Action Buttons */}

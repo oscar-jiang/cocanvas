@@ -41,7 +41,7 @@ const ProjectRoomLayout = () => {
             <div className={'flex items-center space-x-6'}>
               {/* Icon */}
               <div className={'text-5xl p-0'}>
-                🤹‍♂️
+                {room?.roomIcon ? room.roomIcon : '🚀'}
               </div>
 
               <h2 className={'text-[#4B4B4B] font-black text-2xl  mt-2 p-0 leading-tight line-clamp-2'}>
@@ -85,56 +85,66 @@ const ProjectRoomLayout = () => {
         {/* Header (document name & toolbar on left; open/close chat button on right; should be flex or something ) */}
         <div>
           <div className={'flex justify-between w-full p-5 max'}>
-            {/* DocNameNSaveDel Container */}
-            <div className={'flex items-center'}>
-              {/* Document Icon & Name */}
-              <div className={'flex items-center space-x-6'}>
-                {/* Icon */}
-                <div className={'text-5xl p-0'}>
-                  📚
+            
+            {currentDoc ? (
+              <>
+                {/* DocNameNSaveDel Container */}
+                <div className={'flex items-center'}>
+                  {/* Document Icon & Name */}
+                  <div className={'flex items-center space-x-6'}>
+                    {/* Icon */}
+                    <div className={'text-5xl p-0'}>
+                      📚
+                    </div>
+
+                    <h2 className={'text-[#7D7D7D] font-black text-2xl mt-2 p-0 leading-tight line-clamp-2'}>
+                      {truncateText(currentDoc?.docName ?? '', 250)}
+                    </h2>
+                  </div>
+
+                  {/* Save & Delete Buttons */}
+                  <div className={'flex space-x-4 ml-14'}>
+                    {/* Save button */}
+                    <button
+                      className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                      onClick={handleOnSave}
+                      disabled={isSavingDoc}
+                    >
+                      {isSavingDoc ? (
+                        <Loader2 className={'size-[30px] text-[#7D7D7D]'} />
+                      ) : (
+                        <Save className={'size-[30px] text-[#7D7D7D]'} />
+                      )}
+                    </button>
+
+                    {/* Delete Button */}
+                    <button
+                      className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                      onClick={handleOnDelete}
+                      disabled={isDeletingDoc}
+                    >
+                      {isDeletingDoc ? (
+                        <Loader2 className={'size-[30px] text-[#7D7D7D]'} />
+                      ) : (
+                        <Trash2 className={'size-[30px] text-[#7D7D7D]'} />
+                      )}
+                    </button>
+
+                    {/* Document Settings Button */}
+                    <button
+                      className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                    >
+                      <Ellipsis className={'size-[30px] text-[#7D7D7D]'} />
+                    </button>
+                  </div>
                 </div>
+              </>
+            ) : (
+              <h2 className={'text-[#7D7D7D] font-black text-2xl mt-2 p-0 leading-tight line-clamp-2'}>
+                No File Chosen
+              </h2>
+            )}
 
-                <h2 className={'text-[#7D7D7D] font-black text-2xl mt-2 p-0 leading-tight line-clamp-2'}>
-                  {truncateText(currentDoc?.docName ?? '', 250)}
-                </h2>
-              </div>
-
-              {/* Save & Delete Buttons */}
-              <div className={'flex space-x-4 ml-14'}>
-                {/* Save button */}
-                <button
-                  className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
-                  onClick={handleOnSave}
-                  disabled={isSavingDoc}
-                >
-                  {isSavingDoc ? (
-                    <Loader2 className={'size-[30px] text-[#7D7D7D]'} />
-                  ) : (
-                    <Save className={'size-[30px] text-[#7D7D7D]'} />
-                  )}
-                </button>
-
-                {/* Delete Button */}
-                <button
-                  className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
-                  onClick={handleOnDelete}
-                  disabled={isDeletingDoc}
-                >
-                  {isDeletingDoc ? (
-                    <Loader2 className={'size-[30px] text-[#7D7D7D]'} />
-                  ) : (
-                    <Trash2 className={'size-[30px] text-[#7D7D7D]'} />
-                  )}
-                </button>
-
-                {/* Document Settings Button */}
-                <button
-                  className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
-                >
-                  <Ellipsis className={'size-[30px] text-[#7D7D7D]'} />
-                </button>
-              </div>
-            </div>
 
             {/* Collapse Chat */}
             <div>

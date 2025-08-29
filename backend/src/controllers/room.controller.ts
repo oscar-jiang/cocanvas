@@ -7,7 +7,7 @@ import Document from "../models/document.model.js";
 export const createRoom = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = (req as any).user.userId;
-    const { roomName, description } = req.body;
+    const { roomName, description, roomIcon } = req.body;
 
     // Checking to see if the room has a name
     if (!roomName || roomName.trim() === "") {
@@ -35,6 +35,7 @@ export const createRoom = async (req: Request, res: Response): Promise<any> => {
       collaborators: [userId],
       documents: [],
       maxDocuments: 3,
+      roomIcon: roomIcon || "🚀",
     });
     await newRoom.save();
 

@@ -29,6 +29,10 @@ const roomSchema = new mongoose.Schema({
     type: Number,
     default: 3,
     required: true,
+  },
+  roomIcon: {
+    type: String,
+    default: '🚀'
   }
 }, { timestamps: true });
 

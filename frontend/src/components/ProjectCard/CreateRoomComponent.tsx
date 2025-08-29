@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader2, PencilLine, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useRoomStore } from '../../store/useRoomStore.ts';
+import { emojiList } from '../../lib/utils.ts';
 
 const CreateRoomComponent = () => {
   const { isCreateRoomOpen, closeCreateRoom } = useModalStore();
@@ -10,6 +11,7 @@ const CreateRoomComponent = () => {
   const [formData, setFormData] = useState({
     roomName: '',
     description: '',
+    roomIcon: '',
   });
 
   useEffect(() => {
@@ -57,6 +59,7 @@ const CreateRoomComponent = () => {
         setFormData({
           roomName: '',
           description: '',
+          roomIcon: '',
         });
 
         // Close the modal
@@ -97,6 +100,25 @@ const CreateRoomComponent = () => {
           {/* Form Main Container */}
           <div className={'flex flex-col items-center w-full max-w-md mx-auto gap-6'}>
             <form onSubmit={handleSubmit} className={'flex flex-col w-full gap-4'}>
+              {/* Project Icon */}
+              <div className={'flex flex-col w-full'}>
+                <label className={'font-black text-[#7D7D7D] mb-1'}>Project Icon</label>
+                <div className={'grid grid-cols-6 gap-2 max-h-20 overflow-y-auto p-2 border-2 border-[#D8D8D8] rounded-xl bg-[#F7F7F7]'}>
+                  {emojiList.map((emoji, index) => (
+                    <button
+                      key={index}
+                      type={'button'}
+                      className={`text-2xl p-1 rounded hover:bg-gray-200 transition-all ${
+                        formData.roomIcon === emoji ? "bg-gray-300" : ""
+                      }`}
+                      onClick={() => setFormData({ ...formData, roomIcon: emoji })}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Email Address Container */}
               <div className={'flex flex-col w-full'}>
                 <label className={'font-black text-[#7D7D7D] mb-1'}>Project Name</label>
@@ -110,7 +132,7 @@ const CreateRoomComponent = () => {
                 />
               </div>
 
-              {/* Personal Message to the user */}
+              {/* Project Description */}
               <div className={'flex flex-col w-full'}>
                 <label className={'font-black text-[#7D7D7D] mb-1'}>Description (Optional)</label>
                 <textarea
