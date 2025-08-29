@@ -38,7 +38,10 @@ const App = () => {
       <div className={`${!shouldHideNavBar ? 'pt-[96px]' : ''}`}>
         <Routes>
           {/* Public landing page */}
-          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/"
+            element={!authUser ? <LandingPage /> : <Navigate to={'/home'} />}
+          />
 
           {/* Auth routes */}
           <Route

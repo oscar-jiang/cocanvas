@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader2, PencilLine, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useRoomStore } from '../../store/useRoomStore.ts';
-import { emojiList } from '../../lib/utils.ts';
+import { emojiCategories } from '../../lib/utils.ts';
 
 const CreateRoomComponent = () => {
   const { isCreateRoomOpen, closeCreateRoom } = useModalStore();
@@ -103,18 +103,28 @@ const CreateRoomComponent = () => {
               {/* Project Icon */}
               <div className={'flex flex-col w-full'}>
                 <label className={'font-black text-[#7D7D7D] mb-1'}>Project Icon</label>
-                <div className={'grid grid-cols-6 gap-2 max-h-20 overflow-y-auto p-2 border-2 border-[#D8D8D8] rounded-xl bg-[#F7F7F7]'}>
-                  {emojiList.map((emoji, index) => (
-                    <button
-                      key={index}
-                      type={'button'}
-                      className={`text-2xl p-1 rounded hover:bg-gray-200 transition-all ${
-                        formData.roomIcon === emoji ? "bg-gray-300" : ""
-                      }`}
-                      onClick={() => setFormData({ ...formData, roomIcon: emoji })}
-                    >
-                      {emoji}
-                    </button>
+                <div className="max-h-60 overflow-y-auto p-2 border-2 border-[#D8D8D8] rounded-xl bg-[#F7F7F7] space-y-4">
+                  {emojiCategories.map((category, catIndex) => (
+                    <div key={catIndex}>
+                      {/* Category label */}
+                      <h3 className="text-xs font-semibold text-[#7D7D7D] mb-1">{category.label}</h3>
+
+                      {/* Emoji grid */}
+                      <div className="grid grid-cols-6 gap-2">
+                        {category.emojis.map((emoji, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            className={`text-2xl p-1 rounded hover:bg-gray-200 transition-all ${
+                              formData.roomIcon === emoji ? "bg-gray-300" : ""
+                            }`}
+                            onClick={() => setFormData({ ...formData, roomIcon: emoji })}
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
