@@ -94,7 +94,7 @@ const CreateRoomComponent = () => {
         <div className={'flex flex-col items-center w-full h-full gap-6 p-6 bg-white rounded-2xl'}>
           {/* Title */}
           <h1 className={'font-black text-2xl text-[#4B4B4B]'}>
-            Create Room
+            Create Project
           </h1>
 
           {/* Form Main Container */}

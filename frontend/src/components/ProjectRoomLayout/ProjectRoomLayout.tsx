@@ -85,7 +85,7 @@ const ProjectRoomLayout = () => {
         {/* Header (document name & toolbar on left; open/close chat button on right; should be flex or something ) */}
         <div>
           <div className={'flex justify-between w-full p-5 max'}>
-            
+
             {currentDoc ? (
               <>
                 {/* DocNameNSaveDel Container */}
