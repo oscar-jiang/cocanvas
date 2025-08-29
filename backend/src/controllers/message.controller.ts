@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import Room from "../models/room.model.js";
+import { io } from '../lib/socket.js';
 
 
 export const getMessages = async (req: Request, res: Response): Promise<any> => {
@@ -59,22 +60,27 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
 			senderId: senderId,
 			text: text,
 			seenBy: [senderId],
+		});
+
+		// Saving the message in the database
+		const savedMessage = await newMessage.save();
+		// Update the room
+		await Room.findOneAndUpdate({roomId: roomId}, {updatedAt: new Date()});
+
+		// Create an enriched message object
+		const enrichedMessage = {
+			...savedMessage.toObject(),
 			sender: {
 				username: senderUsername,
 				email: senderEmail,
 				fullName: senderFullName,
 				userId: senderId
 			}
-		});
+		};
 
-		// Saving the message in the database
-		await newMessage.save();
-		// Update the room
-		await Room.findOneAndUpdate({roomId: roomId}, {updatedAt: new Date()});
+		io.in(roomId).emit("newMessage", enrichedMessage);
 
-		// io.to(roomId).emit("newMessage", newMessage);
-
-		res.status(201).json(newMessage);
+		res.status(201).json(enrichedMessage);
 	} catch (error) {
 		console.error("Error in sendMessage", error);
 		res.status(500).json({ error: "Internal server error" });

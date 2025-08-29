@@ -1,21 +1,31 @@
-import { useModalStore } from '../../store/useModalStore.ts';
+import { useModalStore } from '../../../store/useModalStore.ts';
 import React, { useEffect, useState } from 'react';
 import { Loader2, PencilLine, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useRoomStore } from '../../store/useRoomStore.ts';
-import { emojiCategories } from '../../lib/utils.ts';
+import { emojiCategories } from '../../../lib/utils.ts';
+import { useRoomStore } from '../../../store/useRoomStore.ts';
 
-const CreateRoomComponent = () => {
-  const { isCreateRoomOpen, closeCreateRoom } = useModalStore();
-  const { createRoom, isCreatingRoom, getRooms } = useRoomStore();
+const EditRoomComponent = () => {
+  const { isEditRoomOpen, closeEditRoom } = useModalStore();
   const [formData, setFormData] = useState({
     roomName: '',
     description: '',
     roomIcon: '',
   });
+  const { currentRoom, editRoom, isEditingRoom } = useRoomStore();
 
   useEffect(() => {
-    if (isCreateRoomOpen) {
+    if (currentRoom) {
+      setFormData({
+        roomName: currentRoom.roomName || '',
+        description: currentRoom.description || '',
+        roomIcon: currentRoom.roomIcon || '',
+      });
+    }
+  }, [currentRoom]);
+
+  useEffect(() => {
+    if (isEditRoomOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -25,9 +35,9 @@ const CreateRoomComponent = () => {
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [isCreateRoomOpen]);
+  }, [isEditRoomOpen]);
 
-  const validateRoomCreation = (): string | boolean => {
+  const validateRoomEdit = (): string | boolean => {
     // Prevent background scroll when modal is open
 
     const name = formData.roomName.trim();
@@ -35,11 +45,11 @@ const CreateRoomComponent = () => {
     const descriptionLength = formData.description.length;
 
     if (!name || name === '') {
-      return toast.error('Room name is required');
+      return toast.error('Project name is required');
     }
 
     if (nameLength > 100) {
-      return toast.error('Room name is too long');
+      return toast.error('Project name is too long');
     }
 
     if (descriptionLength > 150) {
@@ -52,30 +62,21 @@ const CreateRoomComponent = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const isValid: string | boolean = validateRoomCreation();
+    const isValid: string | boolean = validateRoomEdit();
     if (isValid === true) {
       try {
-        await createRoom(formData);
-        setFormData({
-          roomName: '',
-          description: '',
-          roomIcon: '',
-        });
+        await editRoom(formData, currentRoom?.roomId ?? '');
 
         // Close the modal
-        closeCreateRoom();
-
-        // Refresh the rooms list
-        await getRooms();
-
+        closeEditRoom();
       } catch (e) {
-        console.error('Room creation failed', e);
-        toast.error('Room creation failed');
+        console.error('Project edit failed', e);
+        toast.error('Project edit failed');
       }
     }
   };
 
-  if (!isCreateRoomOpen) return null;
+  if (!isEditRoomOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 text-black w-full">
@@ -85,7 +86,7 @@ const CreateRoomComponent = () => {
         {/* Absolute in the top right corner */}
         <div
           className={'absolute top-5 right-5 cursor-pointer text-[#7D7D7D]'}
-          onClick={() => closeCreateRoom()}
+          onClick={() => closeEditRoom()}
         >
           <X />
         </div>
@@ -94,7 +95,7 @@ const CreateRoomComponent = () => {
         <div className={'flex flex-col items-center w-full h-full gap-6 p-6 bg-white rounded-2xl'}>
           {/* Title */}
           <h1 className={'font-black text-2xl text-[#4B4B4B]'}>
-            Create Project
+            Edit Project Details
           </h1>
 
           {/* Form Main Container */}
@@ -158,34 +159,30 @@ const CreateRoomComponent = () => {
                 <button
                   className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] w-[188px] h-[40px] cursor-pointer'}
                   type="submit"
-                  disabled={isCreatingRoom}
+                  disabled={isEditingRoom}
                 >
-                  {isCreatingRoom ? (
+                  {isEditingRoom ? (
                     <>
                       <Loader2 className={'size-[20px] text-[#7D7D7D] mr-3'} />
-                      <span className={'text-sm font-black text-[#7D7D7D]'}>Creating...</span>
+                      <span className={'text-sm font-black text-[#7D7D7D]'}>Updating...</span>
                     </>
                   ) : (
                     <>
                       <PencilLine className={'size-[20px] text-[#7D7D7D] mr-3'} />
-                      <span className={'text-sm font-black text-[#7D7D7D]'}>Create Project</span>
+                      <span className={'text-sm font-black text-[#7D7D7D]'}>Update Project</span>
                     </>
                   )}
                 </button>
               </div>
             </form>
 
-
           </div>
         </div>
 
-
       </div>
-      {/* CREATE ROOM FORM CONTAINER end */}
-
 
     </div>
   );
 };
 
-export default CreateRoomComponent;
+export default EditRoomComponent;

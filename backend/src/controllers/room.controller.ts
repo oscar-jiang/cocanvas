@@ -130,16 +130,17 @@ export const getRoomById = async (req: Request, res: Response): Promise<any> => 
 export const updateRoom = async (req: Request, res: Response): Promise<any> => {
   try {
     const room = (req as any).room;
-    const { roomName, description } = req.body;
+    const { roomName, description, roomIcon } = req.body;
 
     // Checking to see if the roomName is valid
     if (!roomName || roomName.trim() === "") {
       return res.status(400).json({ error: "Room name is required" });
     }
 
-    // Reassigning the roomName and description
+    // Rea= = iption
     room.roomName = roomName;
     room.description = description;
+    room.roomIcon = roomIcon;
 
     // Saving the new changes
     const newRoom = await room.save();

@@ -2,7 +2,7 @@ import './editor.css';
 import { useEditor, EditorContent } from '@tiptap/react';
 import { FloatingMenu, BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
-import { useDocumentStore } from '../../store/useDocumentStore';
+import { useDocumentStore } from '../../../store/useDocumentStore.ts';
 import { useEffect } from 'react';
 
 // define your extension array

@@ -6,18 +6,21 @@ import { useAuthStore } from '../../store/useAuthStore.ts';
 import { formatMessageTime } from '../../lib/utils.ts';
 
 const MessageList = () => {
-  const { messages, getMessages, isMessagesLoading, subscribeMessage } = useChatStore();
+  const { messages, getMessages, isMessagesLoading } = useChatStore();
   const { authUser } = useAuthStore();
-  const { currentRoom } = useRoomStore();
+  const { currentRoom, joinRoom, leaveRoom } = useRoomStore();
   const messageEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (currentRoom) {
       getMessages(currentRoom.roomId);
-
-      subscribeMessage()
+      joinRoom();
     }
-  }, [currentRoom, getMessages, subscribeMessage]);
+    
+    return () => {
+      leaveRoom();
+    }
+  }, [currentRoom, getMessages, joinRoom, leaveRoom]);
 
   useEffect(() => {
     if (messageEndRef.current && messages) {

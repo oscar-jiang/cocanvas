@@ -7,6 +7,7 @@ import axios from "axios";
 import socket from "../lib/socket.ts";
 import { useAuthStore } from "./useAuthStore.ts";
 import { useDocumentStore } from "./useDocumentStore.ts";
+import type { Room } from '../types/Room.ts';
 
 export const useRoomStore = create<RoomStore>((set, get) => ({
   currentRoom: null,
@@ -171,8 +172,27 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       toast.error("Something went wrong in unsubcribing room!");
       console.error("Error in unsubscribing room", e);
     }
-  }
+  },
 
+  isEditingRoom: false,
+  editRoom: async (data, id: string): Promise<void> => {
+    set({ isEditingRoom: true });
+    try {
+      const response = await axiosInstance.put(`/room/${id}`, data);
+
+      set({ currentRoom: response.data });
+
+      toast.success("Successfully updated the room: " + response.data.roomName);
+    } catch (e) {
+      console.log("Error in editRoom: " + e);
+      toast.error("Something went wrong.");
+    } finally {
+      set({ isEditingRoom: false });
+    }
+  },
+
+  // setter
+  setCurrentRoom: (room: Room) => set({ currentRoom: room }),
 
 
 }));

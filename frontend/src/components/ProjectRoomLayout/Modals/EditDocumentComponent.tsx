@@ -1,21 +1,29 @@
-import { useModalStore } from '../../store/useModalStore.ts';
+import { useModalStore } from '../../../store/useModalStore.ts';
 import React, { useEffect, useState } from 'react';
 import { Loader2, PencilLine, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useRoomStore } from '../../store/useRoomStore.ts';
-import { emojiCategories } from '../../lib/utils.ts';
+import { emojiCategories } from '../../../lib/utils.ts';
+import { useDocumentStore } from '../../../store/useDocumentStore.ts';
 
-const CreateRoomComponent = () => {
-  const { isCreateRoomOpen, closeCreateRoom } = useModalStore();
-  const { createRoom, isCreatingRoom, getRooms } = useRoomStore();
+const EditDocumentComponent = () => {
+  const { isEditDocOpen, closeEditDoc } = useModalStore();
   const [formData, setFormData] = useState({
-    roomName: '',
-    description: '',
-    roomIcon: '',
+    docName: '',
+    documentIcon: '',
   });
+  const { currentDoc, isEditingDoc, editDoc } = useDocumentStore();
 
   useEffect(() => {
-    if (isCreateRoomOpen) {
+    if (currentDoc) {
+      setFormData({
+        docName: currentDoc.docName || '',
+        documentIcon: currentDoc.documentIcon || '',
+      });
+    }
+  }, [currentDoc]);
+
+  useEffect(() => {
+    if (isEditDocOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -25,25 +33,20 @@ const CreateRoomComponent = () => {
     return () => {
       document.body.style.overflow = 'auto';
     };
-  }, [isCreateRoomOpen]);
+  }, [isEditDocOpen]);
 
-  const validateRoomCreation = (): string | boolean => {
+  const validateRoomEdit = (): string | boolean => {
     // Prevent background scroll when modal is open
 
-    const name = formData.roomName.trim();
-    const nameLength = formData.roomName.length;
-    const descriptionLength = formData.description.length;
+    const name = formData.docName.trim();
+    const nameLength = formData.docName.length;
 
     if (!name || name === '') {
-      return toast.error('Room name is required');
+      return toast.error('Project name is required');
     }
 
-    if (nameLength > 100) {
-      return toast.error('Room name is too long');
-    }
-
-    if (descriptionLength > 150) {
-      return toast.error('Description is too long');
+    if (nameLength > 56) {
+      return toast.error('Project name is too long');
     }
 
     return true;
@@ -52,30 +55,21 @@ const CreateRoomComponent = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const isValid: string | boolean = validateRoomCreation();
+    const isValid: string | boolean = validateRoomEdit();
     if (isValid === true) {
       try {
-        await createRoom(formData);
-        setFormData({
-          roomName: '',
-          description: '',
-          roomIcon: '',
-        });
+         await editDoc(formData, currentDoc?.docId ?? '');
 
         // Close the modal
-        closeCreateRoom();
-
-        // Refresh the rooms list
-        await getRooms();
-
+        closeEditDoc();
       } catch (e) {
-        console.error('Room creation failed', e);
-        toast.error('Room creation failed');
+        console.error('Project edit failed', e);
+        toast.error('Project edit failed');
       }
     }
   };
 
-  if (!isCreateRoomOpen) return null;
+  if (!isEditDocOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 text-black w-full">
@@ -85,7 +79,7 @@ const CreateRoomComponent = () => {
         {/* Absolute in the top right corner */}
         <div
           className={'absolute top-5 right-5 cursor-pointer text-[#7D7D7D]'}
-          onClick={() => closeCreateRoom()}
+          onClick={() => closeEditDoc()}
         >
           <X />
         </div>
@@ -94,15 +88,15 @@ const CreateRoomComponent = () => {
         <div className={'flex flex-col items-center w-full h-full gap-6 p-6 bg-white rounded-2xl'}>
           {/* Title */}
           <h1 className={'font-black text-2xl text-[#4B4B4B]'}>
-            Create Project
+            Edit Project Details
           </h1>
 
           {/* Form Main Container */}
           <div className={'flex flex-col items-center w-full max-w-md mx-auto gap-6'}>
             <form onSubmit={handleSubmit} className={'flex flex-col w-full gap-4'}>
-              {/* Project Icon */}
+              {/* doc Icon */}
               <div className={'flex flex-col w-full'}>
-                <label className={'font-black text-[#7D7D7D] mb-1'}>Project Icon</label>
+                <label className={'font-black text-[#7D7D7D] mb-1'}>Document Icon</label>
                 <div className="max-h-60 overflow-y-auto p-2 border-2 border-[#D8D8D8] rounded-xl bg-[#F7F7F7] space-y-4">
                   {emojiCategories.map((category, catIndex) => (
                     <div key={catIndex}>
@@ -116,9 +110,9 @@ const CreateRoomComponent = () => {
                             key={index}
                             type="button"
                             className={`text-2xl p-1 rounded hover:bg-gray-200 transition-all ${
-                              formData.roomIcon === emoji ? "bg-gray-300" : ""
+                              formData.documentIcon === emoji ? "bg-gray-300" : ""
                             }`}
-                            onClick={() => setFormData({ ...formData, roomIcon: emoji })}
+                            onClick={() => setFormData({ ...formData, documentIcon: emoji })}
                           >
                             {emoji}
                           </button>
@@ -129,63 +123,48 @@ const CreateRoomComponent = () => {
                 </div>
               </div>
 
-              {/* Email Address Container */}
+              {/* doc name Container */}
               <div className={'flex flex-col w-full'}>
-                <label className={'font-black text-[#7D7D7D] mb-1'}>Project Name</label>
+                <label className={'font-black text-[#7D7D7D] mb-1'}>Document Name</label>
                 <input
                   className={'p-2 border-2 border-[#D8D8D8] rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#C8C8C8] bg-[#F7F7F7] max-h-[100px] placeholder:font-nunito placeholder:font-bold placeholder-[#D9D9D9]'}
-                  placeholder="Enter Project Name"
+                  placeholder="Enter Document Name"
                   type={"text"}
-                  value={formData.roomName}
-                  onChange={(e) => setFormData({ ...formData, roomName: e.target.value })}
+                  value={formData.docName}
+                  onChange={(e) => setFormData({ ...formData, docName: e.target.value })}
                   required
                 />
               </div>
 
-              {/* Project Description */}
-              <div className={'flex flex-col w-full'}>
-                <label className={'font-black text-[#7D7D7D] mb-1'}>Description (Optional)</label>
-                <textarea
-                  className={'p-2 border-2 border-[#D8D8D8] rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#C8C8C8] bg-[#F7F7F7] min-h-[72px] max-h-[100px] placeholder:font-nunito placeholder:font-bold placeholder-[#D9D9D9]'}
-                  placeholder={'Enter Description (Optional)'}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                />
-              </div>
-
-              {/* Send Invite Button */}
+              {/* Update Doc Button */}
               <div className={'flex items-center justify-center'}>
                 <button
                   className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] w-[188px] h-[40px] cursor-pointer'}
                   type="submit"
-                  disabled={isCreatingRoom}
+                  disabled={isEditingDoc}
                 >
-                  {isCreatingRoom ? (
+                  {isEditingDoc ? (
                     <>
                       <Loader2 className={'size-[20px] text-[#7D7D7D] mr-3'} />
-                      <span className={'text-sm font-black text-[#7D7D7D]'}>Creating...</span>
+                      <span className={'text-sm font-black text-[#7D7D7D]'}>Updating...</span>
                     </>
                   ) : (
                     <>
                       <PencilLine className={'size-[20px] text-[#7D7D7D] mr-3'} />
-                      <span className={'text-sm font-black text-[#7D7D7D]'}>Create Project</span>
+                      <span className={'text-xs font-black text-[#7D7D7D]'}>Update Document</span>
                     </>
                   )}
                 </button>
               </div>
             </form>
 
-
           </div>
         </div>
 
-
       </div>
-      {/* CREATE ROOM FORM CONTAINER end */}
-
 
     </div>
   );
 };
 
-export default CreateRoomComponent;
+export default EditDocumentComponent;

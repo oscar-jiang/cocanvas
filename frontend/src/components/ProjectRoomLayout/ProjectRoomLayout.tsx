@@ -10,7 +10,7 @@ import {
   Trash2,
   UsersRound,
 } from 'lucide-react';
-import Editor from '../Room/Editor.tsx';
+import Editor from './Editor/Editor.tsx';
 import ChatPanel from './ChatPanel.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useRoomStore } from '../../store/useRoomStore.ts';
@@ -18,6 +18,7 @@ import { truncateText } from '../../lib/utils.ts';
 import DocumentTabs from './DocumentTab.tsx';
 import { useDocumentStore } from '../../store/useDocumentStore.ts';
 import { useState } from 'react';
+import { useModalStore } from '../../store/useModalStore.ts';
 
 const ProjectRoomLayout = () => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const ProjectRoomLayout = () => {
   const { currentRoom: room } = useRoomStore();
   const { currentDoc, isGettingDoc, handleOnSave, isSavingDoc, isDeletingDoc, handleOnDelete } = useDocumentStore();
   const [isChatOpen, setIsChatOpen] = useState(true);
+  const { openEditRoom, openEditDoc } = useModalStore();
 
   return (
     // PRIMARY CONTAINER
@@ -44,9 +46,17 @@ const ProjectRoomLayout = () => {
                 {room?.roomIcon ? room.roomIcon : '🚀'}
               </div>
 
-              <h2 className={'text-[#4B4B4B] font-black text-2xl  mt-2 p-0 leading-tight line-clamp-2'}>
-                {truncateText(room?.roomName ?? '', 50)}
-              </h2>
+              {/* Room name and description */}
+              <div className={'flex flex-col space-y-0 max-w-[720px]'}>
+                <h2 className={'text-[#4B4B4B] font-black text-2xl  mt-2 p-0 leading-tight line-clamp-2'}>
+                  {truncateText(room?.roomName ?? '', 50)}
+                </h2>
+
+                <p className={'text-[#4B4B4B] font-semibold text-sm  mt-2 p-0 leading-tight line-clamp-2'}>
+                  {room?.description}
+                </p>
+              </div>
+
             </div>
 
             {/* Collaborators, Settings, and Home buttons */}
@@ -58,7 +68,10 @@ const ProjectRoomLayout = () => {
               </button>
 
               {/* Settings */}
-              <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}>
+              <button
+                className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}
+                onClick={() => openEditRoom()}
+              >
                 <Settings2 className={'text-[#4B4B4B]'} />
                 <span className={'font-black text-[#4B4B4B]'}>Settings</span>
               </button>
@@ -94,7 +107,7 @@ const ProjectRoomLayout = () => {
                   <div className={'flex items-center space-x-6'}>
                     {/* Icon */}
                     <div className={'text-5xl p-0'}>
-                      📚
+                      {currentDoc.documentIcon ? currentDoc.documentIcon : '📄'}
                     </div>
 
                     <h2 className={'text-[#7D7D7D] font-black text-2xl mt-2 p-0 leading-tight line-clamp-2'}>
@@ -133,6 +146,7 @@ const ProjectRoomLayout = () => {
                     {/* Document Settings Button */}
                     <button
                       className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                      onClick={openEditDoc}
                     >
                       <Ellipsis className={'size-[30px] text-[#7D7D7D]'} />
                     </button>

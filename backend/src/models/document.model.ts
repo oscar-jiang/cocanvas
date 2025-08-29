@@ -33,6 +33,10 @@ const documentSchema = new mongoose.Schema({
   content: {
     type: mongoose.Schema.Types.Mixed,
     required: true,
+  },
+  documentIcon: {
+    type: String,
+    default: '📄',
   }
 }, { timestamps: true });
 

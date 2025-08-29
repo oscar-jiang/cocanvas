@@ -9,14 +9,25 @@ import {Toaster} from "react-hot-toast";
 import LandingPage from "./pages/LandingPage.tsx";
 import CollaborativeEditorPage from "./pages/CollaborativeEditorPage.tsx";
 import HomePage from './pages/HomePage.tsx';
+import { useChatStore } from './store/useChatStore.ts';
+import { useInboxStore } from './store/useInboxStore.ts';
 
 const App = () => {
-  const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
+  const {authUser, checkAuth, isCheckingAuth, socket } = useAuthStore();
   const location = useLocation();
+  const { subscribeMessage } = useChatStore();
+  const { subscribeInbox } = useInboxStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    if (!authUser || !socket) return;
+
+    subscribeMessage();
+    subscribeInbox(authUser?.userId ?? '');
+  }, [authUser, socket, subscribeInbox, subscribeMessage]);
 
   if (isCheckingAuth && !authUser) {
     return (
@@ -38,7 +49,10 @@ const App = () => {
       <div className={`${!shouldHideNavBar ? 'pt-[96px]' : ''}`}>
         <Routes>
           {/* Public landing page */}
-          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/"
+            element={!authUser ? <LandingPage /> : <Navigate to={'/home'} />}
+          />
 
           {/* Auth routes */}
           <Route

@@ -1,8 +1,8 @@
-
 import { Request, Response } from "express";
 import { Invitation } from "../models/invitation.model.js";
 import User from "../models/user.model.js";
 import Room from "../models/room.model.js";
+import { getSocketIdByUserId, io } from '../lib/socket.js';
 
 export const sendInvite = async (req: Request, res: Response): Promise<any> => {
 	try {
@@ -55,6 +55,11 @@ export const sendInvite = async (req: Request, res: Response): Promise<any> => {
 		};
 
 		const newInvite = await Invitation.create(invitation);
+
+		const receiverSocketId = getSocketIdByUserId(receiver.userId);
+		if (receiverSocketId) {
+			io.to(receiverSocketId).emit("incomingInvite", newInvite);
+		}
 
 		// Respond with the created invite
 		res.status(201).json(newInvite);
