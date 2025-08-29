@@ -4,6 +4,7 @@ import { FloatingMenu, BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import { useDocumentStore } from '../../store/useDocumentStore';
 import { useEffect } from 'react';
+import { Loader2 } from 'lucide-react';
 
 // define your extension array
 
@@ -15,32 +16,10 @@ const editorProps = {
   },
 };
 
-const content = `
-    <ul>
-        <li>Item one</li>
-        <li>Item two</li>
-    </ul>
-    <h1>
-      Hi there,
-    </h1>
-    <h2>
-      Hi there,
-    </h2>
-    <p>
-      this is a basic <em>basic</em> example of <strong>Tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-    </p>
-    <pre><code class="language-css">body {
-    display: none;
-    }</code></pre>
-    <blockquote>
-      Wow, that’s amazing. Good work, boy! 👏
-      <br />
-      — Mom
-    </blockquote>
-`;
+const content = `New Document`;
 
 const Editor = () => {
-  const { currentDoc, handleOnSave } = useDocumentStore();
+  const { currentDoc } = useDocumentStore();
 
   const editor = useEditor({
     extensions,
@@ -59,16 +38,19 @@ const Editor = () => {
     }
   }, [editor]);
 
+  if (!currentDoc) {
+    return (
+      <div className={'flex items-center justify-center h-full font-nunito'}>
+        <h2>
+          Create a new document or choose an existing document
+        </h2>
+      </div>
+    );
+  }
 
   return (
     editor && (
       <div className={"text-black"}>
-        <button
-          className="btn items-center gap-2 px-3 py-2"
-          onClick={handleOnSave}
-        >
-          📁Save
-        </button>
         <EditorContent editor={editor} />
         <FloatingMenu editor={editor} shouldShow={null}></FloatingMenu>
         <BubbleMenu editor={editor} shouldShow={null}>

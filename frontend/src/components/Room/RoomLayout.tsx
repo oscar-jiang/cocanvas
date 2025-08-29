@@ -1,6 +1,6 @@
 import ChatPanel from '../ProjectRoomLayout/ChatPanel.tsx';
 import TopNavigation from './TopNavigation.tsx';
-import DocumentTabs from './DocumentTab.tsx';
+import DocumentTabs from '../ProjectRoomLayout/DocumentTab.tsx';
 import Editor from './Editor.tsx';
 
 const RoomLayout = () => {

@@ -92,3 +92,16 @@ export const getAllDocs = async (req: Request, res: Response): Promise<any> => {
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
+export const deleteDoc = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { roomId, docId } = req.params;
+
+    await Document.findOneAndDelete({ docId: docId });
+
+    res.status(200).json({ message: "Document deleted successfully" });
+  } catch (e) {
+    console.error("Error in deleting the document. ", e);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}

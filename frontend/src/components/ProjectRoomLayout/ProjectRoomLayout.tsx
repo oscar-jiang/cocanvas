@@ -1,11 +1,10 @@
 import {
   Bold,
   CodeXml,
-  DoorOpen,
+  DoorOpen, Ellipsis,
   Italic,
-  Link,
+  Link, Loader2,
   MessagesSquare,
-  Plus,
   Save,
   Settings2,
   Trash2,
@@ -16,18 +15,23 @@ import ChatPanel from './ChatPanel.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useRoomStore } from '../../store/useRoomStore.ts';
 import { truncateText } from '../../lib/utils.ts';
+import DocumentTabs from './DocumentTab.tsx';
+import { useDocumentStore } from '../../store/useDocumentStore.ts';
+import { useState } from 'react';
 
 const ProjectRoomLayout = () => {
   const navigate = useNavigate();
   const goHome = () => navigate('/home');
   const { currentRoom: room } = useRoomStore();
+  const { currentDoc, isGettingDoc, handleOnSave, isSavingDoc, isDeletingDoc, handleOnDelete } = useDocumentStore();
+  const [isChatOpen, setIsChatOpen] = useState(true);
 
   return (
     // PRIMARY CONTAINER
     <div className={'font-nunito'}>
 
       {/* Header */}
-      <div className={'h-[171px] border-b-2 border-[#E5E5E5]'}>
+      <div className={'h-auto border-b-2 border-[#E5E5E5] pb-8'}>
 
         {/* Main Container */}
         <div className={'max-w-[1440px] mx-auto'}>
@@ -70,27 +74,9 @@ const ProjectRoomLayout = () => {
             </div>
           </div>
 
-          {/* Add Document Button & Document Tabs */}
-          <div className={'flex items-center space-x-4 px-5 pt-2'}>
-            {/* Add Button */}
-            <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl bg-[#E5E5E5] hover:bg-[#C8C8C8] transition'}>
-              <Plus />
-              <span className={'font-black text-[#4B4B4B]'}>Add</span>
-            </button>
+          {/* DOCUMENT TABS */}
+          <DocumentTabs />
 
-            {/* Document Tab */}
-            <div className={'flex items-center space-x-3 overflow-x-auto'}>
-              <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl bg-[#E5E5E5] hover:bg-[#C8C8C8] transition'}>
-                <div>📄</div>
-                <span className={'font-black text-[#4B4B4B]'}>Untitled Document</span>
-              </button>
-
-              <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl bg-[#E5E5E5] hover:bg-[#C8C8C8] transition'}>
-                <div>📄</div>
-                <span className={'font-black text-[#4B4B4B]'}>Untitled Document</span>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -109,19 +95,43 @@ const ProjectRoomLayout = () => {
                 </div>
 
                 <h2 className={'text-[#7D7D7D] font-black text-2xl mt-2 p-0 leading-tight line-clamp-2'}>
-                  Untitled Document
+                  {truncateText(currentDoc?.docName ?? '', 250)}
                 </h2>
               </div>
 
               {/* Save & Delete Buttons */}
               <div className={'flex space-x-4 ml-14'}>
-                <button className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
-                  <Save className={'size-[30px] text-[#7D7D7D]'} />
+                {/* Save button */}
+                <button
+                  className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                  onClick={handleOnSave}
+                  disabled={isSavingDoc}
+                >
+                  {isSavingDoc ? (
+                    <Loader2 className={'size-[30px] text-[#7D7D7D]'} />
+                  ) : (
+                    <Save className={'size-[30px] text-[#7D7D7D]'} />
+                  )}
                 </button>
 
+                {/* Delete Button */}
                 <button
-                  className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
-                  <Trash2 className={'size-[30px] text-[#7D7D7D]'} />
+                  className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                  onClick={handleOnDelete}
+                  disabled={isDeletingDoc}
+                >
+                  {isDeletingDoc ? (
+                    <Loader2 className={'size-[30px] text-[#7D7D7D]'} />
+                  ) : (
+                    <Trash2 className={'size-[30px] text-[#7D7D7D]'} />
+                  )}
+                </button>
+
+                {/* Document Settings Button */}
+                <button
+                  className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                >
+                  <Ellipsis className={'size-[30px] text-[#7D7D7D]'} />
                 </button>
               </div>
             </div>
@@ -130,9 +140,12 @@ const ProjectRoomLayout = () => {
             <div>
               <button
                 className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                onClick={() => setIsChatOpen(!isChatOpen)}
               >
-                <MessagesSquare className={'size-[30px] text-[#7D7D7D] mr-5'} />
-                <span className={'text-3xl font-black text-[#7D7D7D]'}>Chat</span>
+                <MessagesSquare className={'text-[#7D7D7D] mr-5'} />
+                <span className={'text-xl font-black text-[#7D7D7D]'}>
+                  {isChatOpen ? 'Close Chat' : 'Open Chat'}
+                </span>
               </button>
             </div>
           </div>
@@ -168,11 +181,24 @@ const ProjectRoomLayout = () => {
         {/* Editor & Chat Box */}
         <div className={'flex w-full h-[calc(100vh-171px-100px)] px-5 pb-5 gap-5'}>
           <div className={'flex-1 bg-white rounded-xl border-2 border-[#E5E5E5] overflow-hidden'}>
-            <Editor />
+            {isGettingDoc ? (
+              <>
+                <div className={'flex items-center justify-center h-full'}>
+                  <Loader2 />
+                </div>
+              </>
+            ) : (
+              <>
+                <Editor />
+              </>
+            )}
           </div>
 
-          <div className={'w-[400px] bg-[#F9F9F9] rounded-xl border-2 border-[#E5E5E5] overflow-hidden'}>
-            <ChatPanel />
+          {/* Chat Component */}
+          <div className={`transition-all duration-100 bg-[#F9F9F9] rounded-xl border-2 border-[#E5E5E5] overflow-hidden 
+          ${isChatOpen ? 'w-[400px]' : 'w-0'}`}
+          >
+            {isChatOpen && <ChatPanel />}
           </div>
         </div>
 
