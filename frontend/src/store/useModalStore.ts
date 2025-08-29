@@ -11,6 +11,14 @@ type ModalState = {
   selectedRoom?: Room | null;
   openInviteModal: (room: Room) => void;
   closeInviteModal: () => void;
+
+  isEditRoomOpen: boolean;
+  openEditRoom: ()=>void;
+  closeEditRoom: ()=>void;
+
+  isEditDocOpen: boolean;
+  openEditDoc: ()=>void;
+  closeEditDoc: ()=>void;
 };
 
 export const useModalStore = create<ModalState>((set) => ({
@@ -20,7 +28,15 @@ export const useModalStore = create<ModalState>((set) => ({
 
   isInviteModalOpen: false,
   openInviteModal: (room) => set({ isInviteModalOpen: true, selectedRoom: room }),
-  closeInviteModal: () => set({ isInviteModalOpen: false, selectedRoom: null })
+  closeInviteModal: () => set({ isInviteModalOpen: false, selectedRoom: null }),
+
+  isEditRoomOpen: false,
+  openEditRoom: () => set({ isEditRoomOpen: true }),
+  closeEditRoom: () => set({ isEditRoomOpen: false }),
+
+  isEditDocOpen: false,
+  openEditDoc: () => set({ isEditDocOpen: true }),
+  closeEditDoc: () => set({ isEditDocOpen: false }),
 }));
 
 

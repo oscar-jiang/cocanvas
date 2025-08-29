@@ -106,3 +106,26 @@ export const deleteDoc = async (req: Request, res: Response): Promise<any> => {
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
+export const updateDoc = async (req: Request, res: Response): Promise<any> => {
+  try{
+    const { roomId, docId } = req.params;
+    const { docName, documentIcon } = req.body;
+
+    const curr = await Document.findOne({ docId: docId });
+
+    if (!curr) {
+      return res.status(400).json({ error: "docId doesn't exist in database" });
+    }
+
+    curr.docName = docName;
+    curr.documentIcon = documentIcon;
+
+    const newDoc = await curr.save();
+
+    res.status(200).json(newDoc);
+  } catch (e) {
+    console.error("Error in updating document", e);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}

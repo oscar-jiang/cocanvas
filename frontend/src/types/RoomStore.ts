@@ -26,4 +26,9 @@ export interface RoomStore {
   getRecentRooms: () => Promise<void>;
 
   unsubscribeRoom: (roomId: string) => Promise<void>;
+
+  isEditingRoom: boolean;
+  editRoom: (data: {roomName: string, description: string, roomIcon: string}, id: string) => Promise<void>;
+
+  setCurrentRoom: (room: Room) => void;
 }

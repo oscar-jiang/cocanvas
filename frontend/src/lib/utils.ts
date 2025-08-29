@@ -35,7 +35,7 @@ export function truncateText(text: string, limit: number) {
 export const emojiCategories: {label: string, emojis: string[]}[]  = [
   {
     label: "Commonly Used",
-    emojis: ["🚀","🎨","📊","📖","🧪","🌐","🎉","💡","🔒"]
+    emojis: ["🚀","🎨","📊","📖","🧪","🌐","🎉","💡","🔒", "📄"]
   },
   {
     label: "Faces & People",

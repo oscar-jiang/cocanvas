@@ -29,6 +29,9 @@ type DocumentStates = {
   isDeletingDoc: boolean;
   deleteDoc: (docId: string) => Promise<void>;
   handleOnDelete: () => Promise<void>;
+
+  isEditingDoc: boolean;
+  editDoc: (data: { docName: string, documentIcon: string } ,docId: string) => Promise<void>;
 };
 
 export const useDocumentStore = create<DocumentStates>((set, get) => ({
@@ -144,6 +147,32 @@ export const useDocumentStore = create<DocumentStates>((set, get) => ({
     } catch (e : Error | any) {
       console.log(e)
       toast.error("Failed to handle deleting! " + e.response?.data?.error || "Unknown error");
+    }
+  },
+
+  isEditingDoc: false,
+  editDoc: async (data, docId : string) => {
+    set({ isEditingDoc: true });
+    try {
+      const roomId = useRoomStore.getState().currentRoom?.roomId;
+
+      const response = await axiosInstance.put(`/doc/${roomId}/updateDoc/${docId}`, data);
+
+      set({ currentDoc: response.data });
+
+      // Update the docs array
+      set((state) => ({
+        docs: state.docs.map((doc) =>
+          doc.docId === response.data.docId ? response.data : doc
+        ),
+      }));
+
+      toast.success("Successfully updated the document");
+    } catch (e : Error | any) {
+      console.log(e)
+      toast.error("Failed to update document! " + e.response?.data?.error || "Unknown error");
+    } finally {
+      set({ isEditingDoc: false });
     }
   }
 }))

@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useRoomStore } from '../store/useRoomStore.ts';
 import ProjectRoomLayout from '../components/ProjectRoomLayout/ProjectRoomLayout.tsx';
+import { useModalStore } from '../store/useModalStore.ts';
+import EditRoomComponent from '../components/ProjectRoomLayout/Modals/EditRoomComponent.tsx';
+import EditDocumentComponent from '../components/ProjectRoomLayout/Modals/EditDocumentComponent.tsx';
 
 const CollaborativeEditorPage = () => {
   const { roomId } = useParams();
@@ -12,6 +15,7 @@ const CollaborativeEditorPage = () => {
     leavePageReset,
     leaveRoom,
   } = useRoomStore();
+  const { isEditRoomOpen, isEditDocOpen } = useModalStore();
 
   useEffect(() => {
     if (roomId) {
@@ -44,6 +48,9 @@ const CollaborativeEditorPage = () => {
   if (currentRoom) {
     return (
       <div>
+        {isEditRoomOpen && <EditRoomComponent />}
+        {isEditDocOpen && <EditDocumentComponent />}
+
         <ProjectRoomLayout />
         {/*<RoomLayout />*/}
       </div>
