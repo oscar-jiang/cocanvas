@@ -93,7 +93,7 @@ const SignupPage = () => {
             <form onSubmit={handleSubmit} className={"space-y-4"}>
               {/* Full Name Container */}
               <div className={'flex flex-col w-full'}>
-                <label className={'font-semibold text-xs text-[#7D7D7D] mb-1'}>Email Address</label>
+                <label className={'font-semibold text-xs text-[#7D7D7D] mb-1'}>Full Name</label>
                 <input
                   className={'p-2 border-2 border-[#D8D8D8] rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#C8C8C8] bg-[#F7F7F7] max-h-[100px] placeholder:font-nunito placeholder:font-bold placeholder-[#D9D9D9]'}
                   placeholder="Enter your full name"
@@ -106,7 +106,7 @@ const SignupPage = () => {
 
               {/* Username Container */}
               <div className={'flex flex-col w-full'}>
-                <label className={'font-semibold text-xs text-[#7D7D7D] mb-1'}>Email Address</label>
+                <label className={'font-semibold text-xs text-[#7D7D7D] mb-1'}>Username</label>
                 <input
                   className={'p-2 border-2 border-[#D8D8D8] rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#C8C8C8] bg-[#F7F7F7] max-h-[100px] placeholder:font-nunito placeholder:font-bold placeholder-[#D9D9D9]'}
                   placeholder="Enter Username"
