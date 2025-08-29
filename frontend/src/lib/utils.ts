@@ -20,3 +20,14 @@ export function formatYear(date: string): string {
     year: 'numeric',
   });
 }
+
+export function formatMonthYear(date: string): string {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'long', // or 'short' for Jan, Feb, etc.
+    year: 'numeric',
+  });
+}
+
+export function truncateText(text: string, limit: number) {
+  return text.length > limit ? text.slice(0, limit) + '…' : text;
+}

@@ -1,6 +1,6 @@
 import { useAuthStore } from "../../store/useAuthStore.ts";
 import { Link } from "react-router-dom";
-import { LogIn, MailIcon, Search, User } from 'lucide-react';
+import { Book, LogIn, MailIcon, Search } from 'lucide-react';
 import { useEffect, useRef, useState } from "react";
 import { useInboxStore } from "../../store/useInboxStore.ts";
 import InboxDropdown from "./InboxDropdown.tsx";
@@ -74,17 +74,21 @@ const Navbar = () => {
 
         {/* Center section */}
         <div className="flex-1 flex justify-center">
-          <div className={'relative w-full max-w-md'}>
-            <input
-              type="text"
-              placeholder="Search"
-              className={'w-full pl-12 pr-4 py-2 border-3 border-gray-300 rounded-2xl focus:outline-none focus:ring-2 text-gray-500 font-bold'}
-            />
-            <Search
-              className={'absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 size-5'}
-              strokeWidth={3.5}
-            />
-          </div>
+          {!authUser ? (
+            <></>
+          ) : (
+            <div className={'relative w-full max-w-md'}>
+              <input
+                type="text"
+                placeholder="Search"
+                className={'w-full pl-12 pr-4 py-2 border-3 border-gray-300 rounded-2xl focus:outline-none focus:ring-2 text-gray-500 font-bold'}
+              />
+              <Search
+                className={'absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 size-5'}
+                strokeWidth={3.5}
+              />
+            </div>
+          )}
         </div>
 
         {/* Right section */}
@@ -93,32 +97,35 @@ const Navbar = () => {
             <>
               <Link
                 to="/login"
-                className="btn btn-outline btn-sm gap-2 text-black"
+                className="gap-2"
               >
-                <LogIn className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign In</span>
+                {/* Collaborators */}
+                <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}>
+                  <LogIn className={'text-[#4B4B4B]'} />
+                  <span className={'font-black text-[#4B4B4B]'}>Log In</span>
+                </button>
               </Link>
               <Link
                 to="/signup"
-                className="btn btn-outline btn-success btn-sm gap-2"
+                className="gap-2"
               >
-                <User className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign Up</span>
+                <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}>
+                  <Book className={'text-[#4B4B4B]'} />
+                  <span className={'font-black text-[#4B4B4B]'}>Sign Up</span>
+                </button>
               </Link>
             </>
           ) : (
             <div className={'flex flex-1 items-center gap-10'}>
               {/*Inbox*/}
-              <div className={'flex gap-20 p-2 rounded-md cursor-pointer items-center'}>
-                <button onClick={() => handleInboxClick()}>
-                  <MailIcon className={'size-[42px] text-gray-400'} />
-                </button>
-                {/*InboxDropdown Dropdown*/}
-                {inboxOpen && <InboxDropdown />}
+              <div className={'flex gap-20 p-2 rounded-md cursor-pointer items-center'} onClick={() => handleInboxClick()}>
+                <MailIcon className={'size-[42px] text-gray-400'} />
               </div>
+              {/*InboxDropdown Dropdown*/}
+              {inboxOpen && <InboxDropdown />}
 
               {/*User*/}
-              <div onClick={() => setMenuOpen(!menuOpen)}>
+              <div className={'cursor-pointer'} onClick={() => setMenuOpen(!menuOpen)}>
                 <div className={"size-[42px] bg-gray-300 rounded-full border-2 border-gray-500"}></div>
               </div>
               {/* Dropdown */}

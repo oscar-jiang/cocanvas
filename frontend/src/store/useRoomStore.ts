@@ -38,7 +38,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
   rooms: [],
   isRoomsLoading: false,
   getRooms: async (): Promise<void> => {
-    set({ isCreatingRoom: true });
+    set({ isRoomsLoading: true });
     try {
       const response = await axiosInstance.get("/room/user/my");
       // as we log out should rooms be turn back into an empty array
@@ -46,7 +46,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     } catch (e) {
       toast.error("Something went wrong. " + e);
     } finally {
-      set({ isCreatingRoom: false });
+      set({ isRoomsLoading: false });
     }
   },
 

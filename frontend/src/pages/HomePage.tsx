@@ -1,76 +1,24 @@
 import {useEffect } from "react";
-import { ChevronsUpDown } from 'lucide-react';
+import { ChevronsUpDown, Loader2 } from 'lucide-react';
 import {useRoomStore} from "../store/useRoomStore.ts";
 import CreateNewProjectCard from '../components/ProjectCard/CreateNewProjectCard.tsx';
 import TemplateProjectCard from '../components/ProjectCard/TemplateProjectCard.tsx';
 import ProjectCard from '../components/ProjectCard/ProjectCard.tsx';
+import { useModalStore } from '../store/useModalStore.ts';
+import InviteModal from '../components/Invite/InviteModal.tsx';
 
 const HomePage = () => {
-  // const [formData, setFormData] = useState({
-  //   roomName: "",
-  //   description: "",
-  // });
-
   const { rooms, isRoomsLoading, getRooms } = useRoomStore();
+  const { isInviteModalOpen } = useModalStore();
 
   useEffect(() => {
     getRooms();
   }, [getRooms]);
 
-  if (isRoomsLoading) {return <div>Loading...</div>}
-
-  // const validateRoomCreation  = (): string | boolean => {
-  //
-  //   const name = formData.roomName.trim();
-  //   const nameLength = formData.roomName.length;
-  //   const descriptionLength = formData.description.length;
-  //
-  //   if (!name || name === "") {
-  //     return toast.error("Room name is required");
-  //   }
-  //
-  //   if (nameLength > 100) {
-  //     return toast.error("Room name is too long");
-  //   }
-  //
-  //   if (descriptionLength > 150) {
-  //     return toast.error("Description is too long");
-  //   }
-  //
-  //   return true;
-  // };
-
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //
-  //   const isValid : string | boolean = validateRoomCreation();
-  //   if (isValid === true) {
-  //     try {
-  //       await createRoom(formData);
-  //       setFormData({
-  //         roomName: "",
-  //         description: "",
-  //       });
-  //       getRooms();
-  //     } catch (e) {
-  //       console.error("Room creation failed", e);
-  //       toast.error("Room creation failed");
-  //     }
-  //   }
-  // };
-
-  // const handleDeleteButton = async (roomId: string) => {
-  //   try {
-  //     await deleteRoom(roomId);
-  //     getRooms();
-  //   } catch (e) {
-  //     console.error("Room deletion failed", e);
-  //     toast.error("Room deletion failed");
-  //   }
-  // };
-
   return (
     <div>
+      {isInviteModalOpen && <InviteModal />}
+
       {/*--- THIS WILL BE THE MAIN HOMEPAGE LAYOUT ---*/}
       <div className={'flex justify-center h-full bg-white'}>
 
@@ -110,14 +58,18 @@ const HomePage = () => {
                 <ChevronsUpDown className={'w-5 h-5 text-gray-400 cursor-pointer'} strokeWidth={3.5} />
               </div>
 
-
-              {/* Recent Project Cards Row */}
-              <div className={'flex flex-wrap gap-12 mt-10'}>
-                {rooms.map((room) => (
-                  <ProjectCard key={room.roomId} room={room} />
-                ))}
-              </div>
-
+              {isRoomsLoading ? (
+                <div className={'flex items-center justify-center'}>
+                  <Loader2 />
+                </div>
+              ) : (
+                 // Recent Project Cards Row
+                <div className={'flex flex-wrap gap-12 mt-10'}>
+                  {rooms.map((room) => (
+                    <ProjectCard key={room.roomId} room={room} />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

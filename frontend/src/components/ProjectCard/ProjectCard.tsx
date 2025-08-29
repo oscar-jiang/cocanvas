@@ -1,21 +1,56 @@
-import { LogOut, Star, UserRoundPlus, UsersRound } from 'lucide-react';
+import { LogOut, Star, UserRoundPlus, UsersRound, Trash } from 'lucide-react';
 import type { Room } from '../../types/Room.ts';
 import React from 'react';
 import { formatYear } from '../../lib/utils.ts';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import { useNavigate } from 'react-router-dom';
+import InviteModal from '../Invite/InviteModal.tsx';
+import { useModalStore } from '../../store/useModalStore.ts';
+import { useRoomStore } from '../../store/useRoomStore.ts';
+import toast from 'react-hot-toast';
 
 interface ProjectCardProps {
   room: Room;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
+  const { deleteRoom, unsubscribeRoom, getRooms } = useRoomStore();
   const { authUser } = useAuthStore();
+  const { isInviteModalOpen, openInviteModal } = useModalStore();
 
   const navigate = useNavigate();
 
   const handleClickToProject = () => {
     navigate(`/p/${room.roomId}`);
+  };
+
+  const handleInviteClick = (e: React.MouseEvent<HTMLButtonElement>, room: Room) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openInviteModal(room);
+  };
+
+  const handleLeaveClick = async (e: React.MouseEvent<HTMLButtonElement>, room: Room, isOwner: boolean): Promise<void> => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isOwner) {
+      try {
+        await deleteRoom(room.roomId);
+        await getRooms();
+      } catch (e) {
+        toast.error('Error occurred while deleting room.');
+        console.error(e);
+      }
+    } else {
+      try {
+        await unsubscribeRoom(room.roomId);
+        await getRooms();
+      } catch (e) {
+        toast.error('Error occurred while leaving room.');
+        console.error(e);
+      }
+    }
   };
 
   const isOwner = authUser?.username?.trim().toLowerCase() === room.createdByUsername?.trim().toLowerCase();
@@ -34,14 +69,23 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
 
       {/* Action Buttons */}
       <div className={'absolute top-[83px] right-4 flex space-x-3'}>
+        {/*  */}
         <div className={'p-1 rounded hover:bg-gray-200 cursor-pointer transition-all'}>
           <Star className={'size-5'} />
         </div>
-        <div className={'p-1 rounded hover:bg-gray-200 cursor-pointer transition-all'}>
+        {/* Invite people */}
+        <div
+          className={'p-1 rounded hover:bg-gray-200 cursor-pointer transition-all'}
+          onClick={(e) => handleInviteClick(e, room)}
+        >
           <UserRoundPlus className={'size-5'} />
         </div>
-        <div className={'p-1 rounded hover:bg-gray-200 cursor-pointer transition-all'}>
-          <LogOut className={'size-5'} />
+        {/* leave the room (if not the owner of the room) or delete the room (if IS the owner of the room) */}
+        <div
+          className={'p-1 rounded hover:bg-gray-200 cursor-pointer transition-all'}
+          onClick={(e) => handleLeaveClick(e, room, isOwner)}
+        >
+          {isOwner ? (<Trash className={'size-5'}/>) : (<LogOut className={'size-5'} />)}
         </div>
       </div>
 
@@ -75,7 +119,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
           <p className={'font-bold'}>Last Updated: {formatYear(room.updatedAt)}</p>
         </div>
       </div>
-
     </div>
   );
 };
