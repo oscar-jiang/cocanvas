@@ -4,7 +4,6 @@ import { FloatingMenu, BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import { useDocumentStore } from '../../store/useDocumentStore';
 import { useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
 
 // define your extension array
 

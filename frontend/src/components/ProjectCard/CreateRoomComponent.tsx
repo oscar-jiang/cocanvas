@@ -1,6 +1,6 @@
 import { useModalStore } from '../../store/useModalStore.ts';
 import React, { useEffect, useState } from 'react';
-import { Loader2, Mail, PencilLine, X } from 'lucide-react';
+import { Loader2, PencilLine, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useRoomStore } from '../../store/useRoomStore.ts';
 
