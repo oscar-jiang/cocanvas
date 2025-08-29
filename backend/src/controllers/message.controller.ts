@@ -79,7 +79,6 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
 		};
 
 		io.in(roomId).emit("newMessage", enrichedMessage);
-		console.log(enrichedMessage);
 
 		res.status(201).json(enrichedMessage);
 	} catch (error) {

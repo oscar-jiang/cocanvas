@@ -7,18 +7,12 @@ import InboxDropdown from "./InboxDropdown.tsx";
 import MenuDropdown from './MenuDropdown.tsx';
 
 const Navbar = () => {
-  const { getInbox, subscribeInbox } = useInboxStore();
-  const { authUser, socket } = useAuthStore();
+  const { getInbox } = useInboxStore();
+  const { authUser } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [inboxOpen, setInboxOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const inboxRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (socket && authUser) {
-      subscribeInbox();
-    }
-  }, [socket, authUser, subscribeInbox]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

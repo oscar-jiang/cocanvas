@@ -12,9 +12,16 @@ const io = new Server(server, {
   }
 });
 
+// Map to track online users
+const onlineUsers = new Map<string, string>(); // userId -> socketId
+
 // listen for the user that has connected
 io.on("connection", (socket) => {
-  console.log("user connected ", socket.id);
+  // Register userId with this socket
+  socket.on("registerUser", (userId: string) => {
+    onlineUsers.set(userId, socket.id);
+    console.log("Registered user:", userId, "with socket:", socket.id);
+  });
 
   socket.on("leaveRoom", (roomId: string) => {
     // console.log(`user ${socket.id} disconnected `, socket.id);
@@ -33,8 +40,18 @@ io.on("connection", (socket) => {
   });
     
   socket.on("disconnect", () => {
-    console.log("user disconnected ", socket.id);
+    for (const [userId, sId] of onlineUsers.entries()) {
+      if (sId === socket.id) {
+        onlineUsers.delete(userId);
+        console.log("User disconnected:", userId);
+        break;
+      }
+    }
   });
-})
+});
+
+export const getSocketIdByUserId = (userId: string) => {
+  return onlineUsers.get(userId);
+};
 
 export { io, app, server }

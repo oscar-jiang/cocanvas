@@ -10,22 +10,24 @@ import LandingPage from "./pages/LandingPage.tsx";
 import CollaborativeEditorPage from "./pages/CollaborativeEditorPage.tsx";
 import HomePage from './pages/HomePage.tsx';
 import { useChatStore } from './store/useChatStore.ts';
+import { useInboxStore } from './store/useInboxStore.ts';
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth, socket } = useAuthStore();
   const location = useLocation();
   const { subscribeMessage } = useChatStore();
+  const { subscribeInbox } = useInboxStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
   useEffect(() => {
-    const canSubscribe = authUser && socket;
-    if (!canSubscribe) return;
+    if (!authUser || !socket) return;
 
     subscribeMessage();
-  }, [authUser, socket, subscribeMessage]);
+    subscribeInbox(authUser?.userId ?? '');
+  }, [authUser, socket, subscribeInbox, subscribeMessage]);
 
   if (isCheckingAuth && !authUser) {
     return (
