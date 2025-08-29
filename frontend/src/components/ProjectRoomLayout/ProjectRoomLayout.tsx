@@ -44,9 +44,17 @@ const ProjectRoomLayout = () => {
                 {room?.roomIcon ? room.roomIcon : '🚀'}
               </div>
 
-              <h2 className={'text-[#4B4B4B] font-black text-2xl  mt-2 p-0 leading-tight line-clamp-2'}>
-                {truncateText(room?.roomName ?? '', 50)}
-              </h2>
+              {/* Room name and description */}
+              <div className={'flex flex-col space-y-0 max-w-[720px]'}>
+                <h2 className={'text-[#4B4B4B] font-black text-2xl  mt-2 p-0 leading-tight line-clamp-2'}>
+                  {truncateText(room?.roomName ?? '', 50)}
+                </h2>
+
+                <p className={'text-[#4B4B4B] font-semibold text-sm  mt-2 p-0 leading-tight line-clamp-2'}>
+                  {room?.description}
+                </p>
+              </div>
+
             </div>
 
             {/* Collaborators, Settings, and Home buttons */}
@@ -94,7 +102,7 @@ const ProjectRoomLayout = () => {
                   <div className={'flex items-center space-x-6'}>
                     {/* Icon */}
                     <div className={'text-5xl p-0'}>
-                      📚
+                      {currentDoc.documentIcon ? currentDoc.documentIcon : '📄'}
                     </div>
 
                     <h2 className={'text-[#7D7D7D] font-black text-2xl mt-2 p-0 leading-tight line-clamp-2'}>

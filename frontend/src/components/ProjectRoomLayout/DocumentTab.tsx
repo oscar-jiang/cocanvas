@@ -82,7 +82,7 @@ const DocumentTabs = () => {
               disabled={isGettingDoc}
             >
               <div>
-                📄
+                {doc.documentIcon ? doc.documentIcon : '📄'}
               </div>
               <span className={'font-black text-[#4B4B4B] truncate max-w-[120px]'}>
                 {doc.docName} {index}

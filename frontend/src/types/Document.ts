@@ -4,5 +4,6 @@ export type Document = {
   docType? : string,
   content? : object,
   lastModifiedBy?: string,
-  createdBy? : string
+  createdBy? : string,
+  documentIcon? : string,
 }

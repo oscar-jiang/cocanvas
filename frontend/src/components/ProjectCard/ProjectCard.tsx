@@ -1,10 +1,9 @@
 import { LogOut, Star, UserRoundPlus, UsersRound, Trash } from 'lucide-react';
 import type { Room } from '../../types/Room.ts';
 import React from 'react';
-import { formatYear, randomEmoji } from '../../lib/utils.ts';
+import { formatYear } from '../../lib/utils.ts';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import { useNavigate } from 'react-router-dom';
-import InviteModal from '../Invite/InviteModal.tsx';
 import { useModalStore } from '../../store/useModalStore.ts';
 import { useRoomStore } from '../../store/useRoomStore.ts';
 import toast from 'react-hot-toast';
@@ -16,7 +15,7 @@ interface ProjectCardProps {
 const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
   const { deleteRoom, unsubscribeRoom, getRooms } = useRoomStore();
   const { authUser } = useAuthStore();
-  const { isInviteModalOpen, openInviteModal } = useModalStore();
+  const { openInviteModal } = useModalStore();
 
   const navigate = useNavigate();
 

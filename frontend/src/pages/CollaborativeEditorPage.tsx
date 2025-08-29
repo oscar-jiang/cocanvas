@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useRoomStore } from '../store/useRoomStore.ts';
 import ProjectRoomLayout from '../components/ProjectRoomLayout/ProjectRoomLayout.tsx';
-import { useChatStore } from '../store/useChatStore.ts';
 
 const CollaborativeEditorPage = () => {
   const { roomId } = useParams();

@@ -3,7 +3,7 @@ import Document from "../models/document.model.js";
 
 export const createDoc = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { docName, docType, roomId } = (req as any).body;
+    const { docName, docType, roomId, docIcon } = (req as any).body;
     const { userId } = (req as any).user;
 
     // count documents
@@ -29,7 +29,8 @@ export const createDoc = async (req: Request, res: Response): Promise<any> => {
       docType,
       createdBy: userId,
       lastModifiedBy: userId,
-      content: blankContent
+      content: blankContent,
+      documentIcon: docIcon,
     };
 
     // save
