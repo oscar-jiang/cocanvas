@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useRoomStore } from '../store/useRoomStore.ts';
 import ProjectRoomLayout from '../components/ProjectRoomLayout/ProjectRoomLayout.tsx';
+import { useChatStore } from '../store/useChatStore.ts';
 
 const CollaborativeEditorPage = () => {
   const { roomId } = useParams();
@@ -10,7 +11,6 @@ const CollaborativeEditorPage = () => {
     isCheckingRoomAuth,
     checkRoomAuth,
     leavePageReset,
-    joinRoom,
     leaveRoom,
   } = useRoomStore();
 
@@ -25,12 +25,6 @@ const CollaborativeEditorPage = () => {
       leavePageReset();
     }
   }, [roomId, checkRoomAuth, leavePageReset, leaveRoom]);
-
-  useEffect(() => {
-    if (currentRoom) {
-      joinRoom();
-    }
-  }, [currentRoom, joinRoom]);
 
   // checking the room auth, loading instead
   if (isCheckingRoomAuth) {

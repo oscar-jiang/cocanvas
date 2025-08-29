@@ -9,14 +9,23 @@ import {Toaster} from "react-hot-toast";
 import LandingPage from "./pages/LandingPage.tsx";
 import CollaborativeEditorPage from "./pages/CollaborativeEditorPage.tsx";
 import HomePage from './pages/HomePage.tsx';
+import { useChatStore } from './store/useChatStore.ts';
 
 const App = () => {
-  const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
+  const {authUser, checkAuth, isCheckingAuth, socket } = useAuthStore();
   const location = useLocation();
+  const { subscribeMessage } = useChatStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    const canSubscribe = authUser && socket;
+    if (!canSubscribe) return;
+
+    subscribeMessage();
+  }, [authUser, socket, subscribeMessage]);
 
   if (isCheckingAuth && !authUser) {
     return (

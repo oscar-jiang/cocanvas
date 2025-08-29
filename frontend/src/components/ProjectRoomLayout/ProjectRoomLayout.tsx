@@ -10,7 +10,7 @@ import {
   Trash2,
   UsersRound,
 } from 'lucide-react';
-import Editor from '../Room/Editor.tsx';
+import Editor from './Editor/Editor.tsx';
 import ChatPanel from './ChatPanel.tsx';
 import { useNavigate } from 'react-router-dom';
 import { useRoomStore } from '../../store/useRoomStore.ts';

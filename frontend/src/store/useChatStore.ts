@@ -4,7 +4,6 @@ import { axiosInstance } from "../lib/Axios.ts";
 import { useRoomStore } from "./useRoomStore.ts";
 import type { ChatStore } from "../types/ChatStore.ts";
 import type { MessageInput } from "../types/MessageInput.ts";
-import socket from "../lib/socket.ts";
 import type { Message } from "../types/Message.ts";
 import { useAuthStore } from "./useAuthStore.ts";
 
@@ -33,9 +32,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       }
       const response = await axiosInstance.post(`/message/send/${currentRoom.roomId}`, messageData);
       set({ messages: [...messages, response.data] });
-
-      // Emit the message to the socket server
-      socket.emit("sendMessage", response.data);
     } catch (e) {
       toast.error("Error sending messages");
       console.log("Error sending messages: ", e);
@@ -51,9 +47,16 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       if (!socket) { return; }
 
       if (message.roomId !== currentRoom.roomId) { return; }
-      set((state) => ({
-        messages: [...state.messages, message],
-      }));
+
+      set((state) => {
+        // Only add if it doesn't exist yet
+        if (state.messages.some((m) => m.messageId === message.messageId)) {
+          return state;
+        }
+
+        console.log(message);
+        return { messages: [...state.messages, message] };
+      });
     } catch (e) {
       toast.error("Error adding message");
       console.log("Error adding messages: ", e);
@@ -64,7 +67,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     const socket = useAuthStore.getState().socket;
     if (!socket) { return; }
 
-    socket.on("message", (message: Message) => {
+    socket.on("newMessage", (message: Message) => {
       get().addMessage(message);
     });
   }

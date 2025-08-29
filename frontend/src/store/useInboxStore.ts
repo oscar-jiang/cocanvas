@@ -4,8 +4,7 @@ import { axiosInstance } from "../lib/Axios.ts";
 import toast from "react-hot-toast";
 import type { InboxStore } from "../types/InboxStore.ts";
 import type { Invitation } from "../types/Invitation.ts";
-
-
+import { useAuthStore } from './useAuthStore.ts';
 
 export const useInboxStore = create<InboxStore>((set, get) => ({
   inbox: [],
@@ -64,5 +63,17 @@ export const useInboxStore = create<InboxStore>((set, get) => ({
     } finally {
       set({ isAcceptingOrDecliningInvite: false });
     }
+  },
+
+  subscribeInbox: () => {
+    const socket = useAuthStore.getState().socket;
+    if (!socket) { return; }
+
+    socket.off("incomingInvite"); // prevent duplicate listeners
+    socket.on("incomingInvite", (invite: Invitation) => {
+      const { inbox } = get();
+      set({ inbox: [...inbox, invite] });
+      toast.success(`New invite from ${invite.invitorEmail}`);
+    })
   }
 }))

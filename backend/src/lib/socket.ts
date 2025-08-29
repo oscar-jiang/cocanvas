@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
   //message event
   socket.on("sendMessage", (message) => {
     // broadcast the message to all users in the room
-    socket.to(message.roomId).emit("message", message);
+    socket.in(message.roomId).emit("newMessage", message);
   });
     
   socket.on("disconnect", () => {
