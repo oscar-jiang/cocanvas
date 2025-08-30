@@ -1,6 +1,6 @@
 import { LogOut, Star, UserRoundPlus, UsersRound, Trash } from 'lucide-react';
 import type { Room } from '../../types/Room.ts';
-import React from 'react';
+import React, { useState } from 'react';
 import { formatYear } from '../../lib/utils.ts';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import { useNavigate } from 'react-router-dom';
@@ -16,11 +16,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
   const { deleteRoom, unsubscribeRoom, getRooms, isDeletingRoom, isLeavingRoom } = useRoomStore();
   const { authUser } = useAuthStore();
   const { openInviteModal } = useModalStore();
+  const [isLeavingToJoinProject, setIsLeavingToJoinProject] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const handleClickToProject = () => {
-    navigate(`/p/${room.roomId}`);
+    try {
+      setIsLeavingToJoinProject(true);
+      navigate(`/p/${room.roomId}`);
+    } catch (error) {
+      console.error(error);
+      setIsLeavingToJoinProject(false);
+    }
   };
 
   const handleInviteClick = (e: React.MouseEvent<HTMLButtonElement>, room: Room) => {
@@ -57,7 +64,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
 
 
   return (
-    <div onClick={handleClickToProject} className={'relative w-[259px] h-[322px] bg-white border-2 rounded-xl border-[#E5E5E5] overflow-hidden m-0 p-0 font-nunito hover:scale-[1.02] transition-all cursor-pointer'}>
+    <div
+      onClick={handleClickToProject}
+      className={'relative w-[259px] h-[322px] bg-white border-2 rounded-xl border-[#E5E5E5] overflow-hidden m-0 p-0 font-nunito hover:scale-[1.02] transition-all cursor-pointer'}
+      aria-disabled={isLeavingToJoinProject}
+    >
       {/* Top bar */}
       <div className={'absolute top-0 w-[270px] h-[80px] bg-[#E5E5E5] p-0'}></div>
 
