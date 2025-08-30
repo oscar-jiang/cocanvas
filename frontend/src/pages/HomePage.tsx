@@ -6,14 +6,17 @@ import TemplateProjectCard from '../components/ProjectCard/TemplateProjectCard.t
 import ProjectCard from '../components/ProjectCard/ProjectCard.tsx';
 import { useModalStore } from '../store/useModalStore.ts';
 import InviteModal from '../components/Invite/InviteModal.tsx';
+import { useTemplateRoomStore } from '../store/useTemplateRoomStore.ts';
 
 const HomePage = () => {
   const { rooms, isRoomsLoading, getRooms } = useRoomStore();
   const { isInviteModalOpen } = useModalStore();
+  const { getTemplates, templates } = useTemplateRoomStore();
 
   useEffect(() => {
     getRooms();
-  }, [getRooms]);
+    getTemplates();
+  }, [getRooms, getTemplates]);
 
   return (
     <div>
@@ -40,9 +43,12 @@ const HomePage = () => {
                 <CreateNewProjectCard />
 
                 {/* Display three templates */}
-                <TemplateProjectCard />
-                <TemplateProjectCard />
-                <TemplateProjectCard />
+                {templates.map((template) => (
+                  <TemplateProjectCard
+                    key={template.templateRoomId}
+                    templateRoom={template}
+                  />
+                ))}
               </div>
 
             </div>

@@ -236,4 +236,30 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     }
   },
 
+  createTemplateRoom: async (templateId: string) => {
+    set({ isCreatingRoom: true })
+    const { getRooms } = get();
+    try {
+      const response = await axiosInstance.post(`/room/create/from-template/${templateId}`);
+
+      await getRooms();
+
+      toast.success("Successfully created the room: " + response.data.room.roomName);
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        const error = e as AxiosError;
+        if (error.response?.status === 403) {
+          toast.error("Room limit reached (10 rooms max)");
+        } else {
+          toast.error("Something went wrong.");
+          console.error("An error has occurred in createTemplateRoom", e);
+        }
+      } else {
+        console.log("Error in createTemplateRoom: " + e);
+        toast.error("Something went wrong.");
+      }
+    } finally {
+      set({ isCreatingRoom: false });
+    }
+  },
 }));

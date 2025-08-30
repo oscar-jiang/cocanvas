@@ -3,6 +3,7 @@ import Room from "../models/room.model.js";
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import Document from "../models/document.model.js";
+import TemplateRoom from "../models/templateroom.model.js";
 
 export const createRoom = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -259,6 +260,59 @@ export const getMyRoomsRecent = async (req: Request, res: Response): Promise<any
     res.status(200).json(roomsWithUsername);
   } catch (e) {
     console.error("Error in getting recent rooms", e);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+export const createTemplateRoom = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const userId = (req as any).user.userId;
+    const templateRoomId = req.params.templateRoomId;
+
+    // Count how many rooms the user has already created
+    const userRoomCount: number = await Room.countDocuments({ createdBy: userId });
+    if (userRoomCount >= 10) {
+      return res.status(403).json({ error: "Room limit reached (10 rooms max)" });
+    }
+
+    // finding the  template from the database
+    const templateRoom = await TemplateRoom.findOne({ templateRoomId: templateRoomId });
+    if (!templateRoom) {
+      return res.status(404).json({ error: "Template room not found" });
+    }
+
+    // Creating the new room for the user
+    const newRoom = new Room({
+      roomName: templateRoom.roomName,
+      createdBy: userId,
+      description: templateRoom.description,
+      collaborators: [userId],
+      maxDocuments: 3,
+      roomIcon: templateRoom.roomIcon || "🚀",
+    });
+    // saving this new room
+    await newRoom.save();
+
+    // creating all template documents for the new rom
+    const docs = templateRoom.documents.map((doc) => {
+      const docObj = doc.toObject ? doc.toObject() : doc;
+
+      // remove unique identifiers
+      delete (docObj as any)._id;
+      delete (docObj as any).templateDocId;
+
+      return {
+        ...docObj,
+        roomId: newRoom.roomId,
+        createdBy: userId,
+        lastModifiedBy: userId,
+      };
+    });
+    await Document.insertMany(docs);
+
+    res.status(200).json({ room: newRoom, documents: docs });
+  } catch (e) {
+    console.error("Error in createTemplateRoom", e);
     res.status(500).json({ error: "Internal server error" });
   }
 }

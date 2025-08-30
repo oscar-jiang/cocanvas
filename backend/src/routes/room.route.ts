@@ -8,7 +8,8 @@ import {
   getRoomById, removeCollaborator,
   updateRoom,
   getCollaborators,
-  getMyRoomsRecent
+  getMyRoomsRecent,
+  createTemplateRoom
 } from "../controllers/room.controller.js";
 import {canAccessRoom} from "../middleware/room.canaccessroom.js";
 import {isRoomOwner} from "../middleware/room.isroomowner.js";
@@ -41,6 +42,9 @@ router.delete("/:roomId/collaborators/:userId", protectRoute, canAccessRoom, rem
 
 // getting all collaborators
 router.get("/:roomId/collaborators", protectRoute, canAccessRoom, getCollaborators);
+
+// creating a room from a template
+router.post("/create/from-template/:templateRoomId", protectRoute, createTemplateRoom);
 
 
 export default router;
