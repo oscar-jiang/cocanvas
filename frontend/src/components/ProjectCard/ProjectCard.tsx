@@ -1,6 +1,6 @@
 import { LogOut, Star, UserRoundPlus, UsersRound, Trash } from 'lucide-react';
 import type { Room } from '../../types/Room.ts';
-import React from 'react';
+import React, { useState } from 'react';
 import { formatYear } from '../../lib/utils.ts';
 import { useAuthStore } from '../../store/useAuthStore.ts';
 import { useNavigate } from 'react-router-dom';
@@ -13,14 +13,21 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
-  const { deleteRoom, unsubscribeRoom, getRooms } = useRoomStore();
+  const { deleteRoom, unsubscribeRoom, getRooms, isDeletingRoom, isLeavingRoom } = useRoomStore();
   const { authUser } = useAuthStore();
   const { openInviteModal } = useModalStore();
+  const [isLeavingToJoinProject, setIsLeavingToJoinProject] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const handleClickToProject = () => {
-    navigate(`/p/${room.roomId}`);
+    try {
+      setIsLeavingToJoinProject(true);
+      navigate(`/p/${room.roomId}`);
+    } catch (error) {
+      console.error(error);
+      setIsLeavingToJoinProject(false);
+    }
   };
 
   const handleInviteClick = (e: React.MouseEvent<HTMLButtonElement>, room: Room) => {
@@ -43,7 +50,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
       }
     } else {
       try {
-        await unsubscribeRoom(room.roomId);
+        await unsubscribeRoom(room.roomId, authUser?.userId ?? '');
         await getRooms();
       } catch (e) {
         toast.error('Error occurred while leaving room.');
@@ -52,12 +59,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
     }
   };
 
-  const isOwner = authUser?.username?.trim().toLowerCase() === room.createdByUsername?.trim().toLowerCase();
+  const isOwner = authUser?.userId === room.createdBy;
   const displayName = isOwner ? 'You' : room.createdByUsername;
 
 
   return (
-    <div onClick={handleClickToProject} className={'relative w-[259px] h-[322px] bg-white border-2 rounded-xl border-[#E5E5E5] overflow-hidden m-0 p-0 font-nunito hover:scale-[1.02] transition-all cursor-pointer'}>
+    <div
+      onClick={handleClickToProject}
+      className={'relative w-[259px] h-[322px] bg-white border-2 rounded-xl border-[#E5E5E5] overflow-hidden m-0 p-0 font-nunito hover:scale-[1.02] transition-all cursor-pointer'}
+      aria-disabled={isLeavingToJoinProject}
+    >
       {/* Top bar */}
       <div className={'absolute top-0 w-[270px] h-[80px] bg-[#E5E5E5] p-0'}></div>
 
@@ -83,6 +94,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
         <div
           className={'p-1 rounded hover:bg-gray-200 cursor-pointer transition-all'}
           onClick={(e) => handleLeaveClick(e, room, isOwner)}
+          aria-disabled={isDeletingRoom || isLeavingRoom}
         >
           {isOwner ? (<Trash className={'size-5'}/>) : (<LogOut className={'size-5'} />)}
         </div>

@@ -19,6 +19,10 @@ type ModalState = {
   isEditDocOpen: boolean;
   openEditDoc: ()=>void;
   closeEditDoc: ()=>void;
+
+  isCollabModalOpen: boolean;
+  openCollabModal: ()=>void;
+  closeCollabModal: ()=>void;
 };
 
 export const useModalStore = create<ModalState>((set) => ({
@@ -37,6 +41,10 @@ export const useModalStore = create<ModalState>((set) => ({
   isEditDocOpen: false,
   openEditDoc: () => set({ isEditDocOpen: true }),
   closeEditDoc: () => set({ isEditDocOpen: false }),
+
+  isCollabModalOpen: false,
+  openCollabModal: ()=>set({ isCollabModalOpen: true }),
+  closeCollabModal: ()=>set({ isCollabModalOpen: false }),
 }));
 
 

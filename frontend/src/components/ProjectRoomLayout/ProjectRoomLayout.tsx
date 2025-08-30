@@ -26,7 +26,7 @@ const ProjectRoomLayout = () => {
   const { currentRoom: room } = useRoomStore();
   const { currentDoc, isGettingDoc, handleOnSave, isSavingDoc, isDeletingDoc, handleOnDelete } = useDocumentStore();
   const [isChatOpen, setIsChatOpen] = useState(true);
-  const { openEditRoom, openEditDoc } = useModalStore();
+  const { openEditRoom, openEditDoc, openCollabModal } = useModalStore();
 
   return (
     // PRIMARY CONTAINER
@@ -62,14 +62,17 @@ const ProjectRoomLayout = () => {
             {/* Collaborators, Settings, and Home buttons */}
             <div className={'flex items-center space-x-6'}>
               {/* Collaborators */}
-              <button className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}>
+              <button
+                className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition cursor-pointer'}
+                onClick={() => openCollabModal()}
+              >
                 <UsersRound className={'text-[#4B4B4B]'} />
                 <span className={'font-black text-[#4B4B4B]'}>Collaborators</span>
               </button>
 
               {/* Settings */}
               <button
-                className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}
+                className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition cursor-pointer'}
                 onClick={() => openEditRoom()}
               >
                 <Settings2 className={'text-[#4B4B4B]'} />
@@ -78,7 +81,7 @@ const ProjectRoomLayout = () => {
 
               {/* Exit */}
               <button
-                className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition'}
+                className={'flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition cursor-pointer'}
                 onClick={goHome}
               >
                 <DoorOpen className={'text-[#4B4B4B]'} />
@@ -119,7 +122,7 @@ const ProjectRoomLayout = () => {
                   <div className={'flex space-x-4 ml-14'}>
                     {/* Save button */}
                     <button
-                      className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                      className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] cursor-pointer'}
                       onClick={handleOnSave}
                       disabled={isSavingDoc}
                     >
@@ -132,7 +135,7 @@ const ProjectRoomLayout = () => {
 
                     {/* Delete Button */}
                     <button
-                      className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                      className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] cursor-pointer'}
                       onClick={handleOnDelete}
                       disabled={isDeletingDoc}
                     >
@@ -145,7 +148,7 @@ const ProjectRoomLayout = () => {
 
                     {/* Document Settings Button */}
                     <button
-                      className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                      className={'size-[48px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] cursor-pointer'}
                       onClick={openEditDoc}
                     >
                       <Ellipsis className={'size-[30px] text-[#7D7D7D]'} />
@@ -163,7 +166,7 @@ const ProjectRoomLayout = () => {
             {/* Collapse Chat */}
             <div>
               <button
-                className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}
+                className={'px-6 py-3 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] cursor-pointer'}
                 onClick={() => setIsChatOpen(!isChatOpen)}
               >
                 <MessagesSquare className={'text-[#7D7D7D] mr-5'} />
@@ -177,25 +180,25 @@ const ProjectRoomLayout = () => {
           {/* Tool Bar */}
           <div className={'flex items-center space-x-3 mb-5 ml-5 mx-auto'}>
             <button
-              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
+              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] cursor-pointer'}>
               <Bold className={'text-[#7D7D7D]'} />
               <span className={'text-sm font-black text-[#7D7D7D]'}>Bold</span>
             </button>
 
             <button
-              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
+              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] cursor-pointer'}>
               <Italic className={'text-[#7D7D7D]'} />
               <span className={'text-sm font-black text-[#7D7D7D]'}>Italic</span>
             </button>
 
             <button
-              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
+              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] cursor-pointer'}>
               <Link className={'text-[#7D7D7D]'} />
               <span className={'text-sm font-black text-[#7D7D7D]'}>Link</span>
             </button>
 
             <button
-              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1]'}>
+              className={'px-2 py-1 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] cursor-pointer'}>
               <CodeXml className={'text-[#7D7D7D]'} />
               <span className={'text-sm font-black text-[#7D7D7D]'}>Code</span>
             </button>

@@ -36,7 +36,7 @@ const MessageInput = () => {
         />
         <button
           type="submit"
-          className={'size-10 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out disabled:opacity-50 border-2 border-[#D1D1D1] focus:outline-none'}
+          className={'size-10 bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out disabled:opacity-50 border-2 border-[#D1D1D1] focus:outline-none cursor-pointer'}
           disabled={!text.trim()}
         >
           <Send className={'size-7 text-[#7D7D7D]'} />

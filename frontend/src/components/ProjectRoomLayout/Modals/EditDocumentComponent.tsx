@@ -88,7 +88,7 @@ const EditDocumentComponent = () => {
         <div className={'flex flex-col items-center w-full h-full gap-6 p-6 bg-white rounded-2xl'}>
           {/* Title */}
           <h1 className={'font-black text-2xl text-[#4B4B4B]'}>
-            Edit Project Details
+            Edit Document Details
           </h1>
 
           {/* Form Main Container */}
