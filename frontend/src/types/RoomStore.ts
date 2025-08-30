@@ -41,4 +41,6 @@ export interface RoomStore {
 
   isRemovingCollab: boolean;
   removeCollab: (userId: string) => Promise<void>;
+
+  createTemplateRoom: (templateId: string) => Promise<void>;
 }
