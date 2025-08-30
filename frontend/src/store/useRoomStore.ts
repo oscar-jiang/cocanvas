@@ -67,7 +67,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
       if (axios.isAxiosError(e)) {
         const error = e as AxiosError;
         if (error.response?.status === 401 || error.response?.status === 403 || error.response?.status === 404) {
-          toast.error("You are not authorized to access this room.");
+          toast.error("You are not authorized to access this room or this room does not exist.");
         } else {
           toast.error("Something went wrong.");
           console.error("An error has occurred in checkRoomAuth", e);
@@ -87,7 +87,7 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     set({
       currentRoom: null,
       // PROBLEM: if we clear the rooms, the fetching goes out of sync and the dashboard page doesn't rerender with any recent rooms
-      // rooms: [],
+      // : [],
       // recentRooms: [],
       isRoomsLoading: false,
       isCreatingRoom: false,
@@ -161,16 +161,19 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     }
   },
 
-  unsubscribeRoom: async (roomId: string): Promise<void> => {
-    const authUser = useAuthStore.getState().authUser;
+  isLeavingRoom: false,
+  unsubscribeRoom: async (roomId: string, userId : string): Promise<void> => {
+    set({ isLeavingRoom: true });
     const { recentRooms } = get();
     try {
-      await axiosInstance.delete(`/room/${roomId}/collaborators/${authUser?.userId}`);
+      await axiosInstance.delete(`/room/${roomId}/collaborators/${userId}`);
       set({ recentRooms: recentRooms.filter(room => room.roomId !== roomId) });
       toast.success("Successfully unsubscribed from room!");
     } catch (e) {
-      toast.error("Something went wrong in unsubcribing room!");
+      toast.error("Something went wrong in unsubscribing room!");
       console.error("Error in unsubscribing room", e);
+    } finally {
+      set({ isLeavingRoom: false });
     }
   },
 
@@ -194,5 +197,39 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
   // setter
   setCurrentRoom: (room: Room) => set({ currentRoom: room }),
 
+  collaborators: [],
+  isGettingAllCollabs: false,
+  getAllCollaborators: async () => {
+    set({ isGettingAllCollabs: true });
+    const { currentRoom } = get();
+    try {
+      const response = await axiosInstance.get(`/room/${currentRoom?.roomId}/collaborators`);
+
+      set({ collaborators: response.data });
+    } catch (e) {
+      console.log("Error in getting all collabs: " + e);
+      toast.error("Something went wrong.");
+    } finally {
+      set({ isGettingAllCollabs: false });
+    }
+  },
+
+  isRemovingCollab: false,
+  removeCollab: async (userId: string) => {
+    set({ isRemovingCollab: true });
+    const { currentRoom, getAllCollaborators } = get();
+    try {
+      await axiosInstance.delete(`/room/${currentRoom?.roomId}/collaborators/${userId}`);
+
+      await getAllCollaborators();
+
+      toast.success("Successfully removed the collaborator!");
+    } catch (e) {
+      console.log("Error in removing the collaborator: " + e);
+      toast.error("Something went wrong.");
+    } finally {
+      set({ isRemovingCollab: false });
+    }
+  },
 
 }));

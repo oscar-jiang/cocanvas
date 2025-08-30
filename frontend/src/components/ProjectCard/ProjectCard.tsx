@@ -43,7 +43,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
       }
     } else {
       try {
-        await unsubscribeRoom(room.roomId);
+        await unsubscribeRoom(room.roomId, authUser?.userId ?? '');
         await getRooms();
       } catch (e) {
         toast.error('Error occurred while leaving room.');
@@ -52,7 +52,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
     }
   };
 
-  const isOwner = authUser?.username?.trim().toLowerCase() === room.createdByUsername?.trim().toLowerCase();
+  const isOwner = authUser?.userId === room.createdBy;
   const displayName = isOwner ? 'You' : room.createdByUsername;
 
 

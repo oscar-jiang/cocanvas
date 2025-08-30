@@ -5,6 +5,8 @@ import ProjectRoomLayout from '../components/ProjectRoomLayout/ProjectRoomLayout
 import { useModalStore } from '../store/useModalStore.ts';
 import EditRoomComponent from '../components/ProjectRoomLayout/Modals/EditRoomComponent.tsx';
 import EditDocumentComponent from '../components/ProjectRoomLayout/Modals/EditDocumentComponent.tsx';
+import CollabModal from '../components/ProjectRoomLayout/Modals/CollabModal.tsx';
+import InviteModal from '../components/Invite/InviteModal.tsx';
 
 const CollaborativeEditorPage = () => {
   const { roomId } = useParams();
@@ -15,7 +17,7 @@ const CollaborativeEditorPage = () => {
     leavePageReset,
     leaveRoom,
   } = useRoomStore();
-  const { isEditRoomOpen, isEditDocOpen } = useModalStore();
+  const { isEditRoomOpen, isEditDocOpen, isCollabModalOpen, isInviteModalOpen } = useModalStore();
 
   useEffect(() => {
     if (roomId) {
@@ -50,6 +52,8 @@ const CollaborativeEditorPage = () => {
       <div>
         {isEditRoomOpen && <EditRoomComponent />}
         {isEditDocOpen && <EditDocumentComponent />}
+        {isCollabModalOpen && <CollabModal />}
+        {isInviteModalOpen && <InviteModal />}
 
         <ProjectRoomLayout />
         {/*<RoomLayout />*/}
