@@ -13,7 +13,7 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
-  const { deleteRoom, unsubscribeRoom, getRooms } = useRoomStore();
+  const { deleteRoom, unsubscribeRoom, getRooms, isDeletingRoom, isLeavingRoom } = useRoomStore();
   const { authUser } = useAuthStore();
   const { openInviteModal } = useModalStore();
 
@@ -83,6 +83,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ room }) => {
         <div
           className={'p-1 rounded hover:bg-gray-200 cursor-pointer transition-all'}
           onClick={(e) => handleLeaveClick(e, room, isOwner)}
+          aria-disabled={isDeletingRoom || isLeavingRoom}
         >
           {isOwner ? (<Trash className={'size-5'}/>) : (<LogOut className={'size-5'} />)}
         </div>

@@ -17,6 +17,7 @@ export interface RoomStore {
   leavePageReset: () => void;
   logoutReset: () => void;
 
+  isDeletingRoom: boolean;
   deleteRoom: (id: string) => Promise<void>;
 
   joinRoom: () => void;

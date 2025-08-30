@@ -1,9 +1,12 @@
 import { useModalStore } from '../../../store/useModalStore.ts';
 import React, { useEffect, useState } from 'react';
-import { Loader2, PencilLine, X } from 'lucide-react';
+import { Loader2, PencilLine, Trash2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { emojiCategories } from '../../../lib/utils.ts';
 import { useRoomStore } from '../../../store/useRoomStore.ts';
+import { useAuthStore } from '../../../store/useAuthStore.ts';
+import type { Room } from '../../../types/Room.ts';
+import { useNavigate } from 'react-router-dom';
 
 const EditRoomComponent = () => {
   const { isEditRoomOpen, closeEditRoom } = useModalStore();
@@ -12,7 +15,10 @@ const EditRoomComponent = () => {
     description: '',
     roomIcon: '',
   });
-  const { currentRoom, editRoom, isEditingRoom } = useRoomStore();
+  const { currentRoom, editRoom, isEditingRoom, deleteRoom, isDeletingRoom } = useRoomStore();
+  const { authUser } = useAuthStore();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (currentRoom) {
@@ -36,6 +42,8 @@ const EditRoomComponent = () => {
       document.body.style.overflow = 'auto';
     };
   }, [isEditRoomOpen]);
+
+  const isOwner : boolean = authUser?.userId === currentRoom?.createdBy;
 
   const validateRoomEdit = (): string | boolean => {
     // Prevent background scroll when modal is open
@@ -73,6 +81,16 @@ const EditRoomComponent = () => {
         console.error('Project edit failed', e);
         toast.error('Project edit failed');
       }
+    }
+  };
+
+  const handleDeleteRoom = async (room: Room): Promise<void> => {
+    try {
+      await deleteRoom(room.roomId);
+      navigate(`/home`);
+    } catch (e) {
+      toast.error('Error occurred while deleting room.');
+      console.error(e);
     }
   };
 
@@ -175,6 +193,26 @@ const EditRoomComponent = () => {
                 </button>
               </div>
             </form>
+
+            {isOwner && (
+              <div className={'flex flex-col items-center justify-center gap-2'}>
+                {/* Delete room button */}
+                <button
+                  className={'px-6 py-3 h-[40px] bg-[#F7F7F7] flex items-center justify-center rounded-xl shadow-[0_6px_0_#D1D1D1] active:shadow-[0_2px_0_#D1D1D1] active:translate-y-1 transition-all duration-150 ease-out border-1 border-[#D1D1D1] cursor-pointer'}
+                  onClick={() => {
+                    if (!currentRoom) return toast.error('Room not found.')
+
+                    handleDeleteRoom(currentRoom);
+                  }}
+                  disabled={isDeletingRoom}
+                >
+                  <Trash2 className={'size-[24px] text-[#7D7D7D]'} />
+                  <span className={'text-sm font-black text-[#7D7D7D]'}>Delete Project</span>
+                </button>
+
+                <span className={'text-xs font-semibold text-[#7D7D7D]'}>There is no confirmation screen if you press the delete.</span>
+              </div>
+            )}
 
           </div>
         </div>

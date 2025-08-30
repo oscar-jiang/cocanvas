@@ -109,7 +109,9 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     });
   },
 
+  isDeletingRoom: false,
   deleteRoom: async (id: string): Promise<void> => {
+    set({ isDeletingRoom: true });
     const { recentRooms } = get();
     try {
       await axiosInstance.delete(`/room/${id}`);
@@ -118,6 +120,8 @@ export const useRoomStore = create<RoomStore>((set, get) => ({
     } catch (e) {
       toast.error("Something went wrong.");
       console.error("Error in deleteRoom", e);
+    } finally {
+      set({ isDeletingRoom: false });
     }
   },
 
