@@ -35,7 +35,8 @@ const HomePage = () => {
             <div className={'bg-[#F6F6F6] rounded-3xl border-2 border-[#E5E5E5] p-10 relative'}>
               <h2 className={'font-nunito font-black text-gray-500 text-xl'}>Start a New Project</h2>
 
-              <ChevronsUpDown className={'w-5 h-5 text-gray-400 absolute top-10 right-10 cursor-pointer'} strokeWidth={3.5} />
+              {/* TODO: Make these buttons/icon functional; remove the hidden after */}
+              <ChevronsUpDown className={'w-5 h-5 text-gray-400 absolute top-10 right-10 cursor-pointer hidden'} strokeWidth={3.5} />
 
               {/* This is where the create project button is and where you can make other templates. */}
               <div className={'flex flex-wrap justify-start space-x-6 mt-6'}>
@@ -59,7 +60,8 @@ const HomePage = () => {
             <div className={'p-10'}>
               <h2 className={'font-nunito font-black text-gray-500 text-xl'}>Recent Projects</h2>
 
-              <div className={'absolute top-10 right-10 flex justify-between space-x-4'}>
+              {/* TODO: Make these buttons/icon functional; remove the hidden after */}
+              <div className={'absolute top-10 right-10 flex justify-between space-x-4 hidden'}>
                 <ChevronsUpDown className={'w-5 h-5 text-gray-400 cursor-pointer'} strokeWidth={3.5} />
                 <ChevronsUpDown className={'w-5 h-5 text-gray-400 cursor-pointer'} strokeWidth={3.5} />
               </div>
